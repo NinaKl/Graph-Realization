@@ -1,0 +1,308 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[a4paper, total={6.5in, 10in}]{geometry}
+
+\usepackage[english]{babel}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{complexity} %% already defined: \NP \APX \SAT \MaxSAT \FPT ...
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{comment}
+%\usepackage{mathabx}
+\usepackage{mathrsfs}
+\usepackage{blindtext, rotating} %turn environments
+\usepackage{diagbox} %slashbox in tabular environment
+\usepackage{multicol} %\begin{multicols}{3}[ta del ni v kolonah]
+%\usepackage{enumitem}
+\usepackage{changepage} %inside figure we can put \begin{adjustwidth}{-1cm}{-1cm} \end{adjustwidth} and we can ignore the margins
+\usepackage{enumerate}
+\usepackage{wrapfig} %wrap the text around the picture
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage{caption} %for subfigure - join multiple figures and add captions
+\usepackage{subcaption}
+\usepackage{graphicx}
+\usepackage{multirow} %join two rows in a table
+\usepackage{todonotes}
+\newcommand{\todogr}[2][]{\todo[color=cyan!10!green!100!,#1]{#2}} %special color todo note
+\newcommand{\todonkl}[2][]{\todo[color=red!100!green!33,#1]{NKL:\\ #2}} %todo note that starts with NKL:
+\setlength{\marginparwidth}{3.7cm} %setting the length of todonote
+
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usetikzlibrary{shapes}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{patterns}
+\usetikzlibrary{fadings}
+\tikzstyle{vert2}=[circle,inner sep=1.5,fill=white,draw,minimum size=.2cm]
+\tikzstyle{vert3}=[inner sep=1.5,fill=white,draw=black,minimum size=.2cm]
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows.meta}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Environments
+\newenvironment{remark}{\itshape Remark:}{\par}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%listings je paket za vnašanje programske kode
+\usepackage{listings}
+\renewcommand{\lstlistingname}{Koda}
+
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+	language=Python,
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	numberstyle=\tiny\color{codegray},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\footnotesize,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	numbers=left,                    
+	numbersep=10pt,                  
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=4
+}
+
+\lstset{basicstyle=\large,style=mystyle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Hyperref
+\usepackage[pdfusetitle]{hyperref}
+
+\definecolor{myBlue}{rgb}{0.25, 0.0, 1.0}
+\hypersetup{
+	pdfauthor=  {Nina Klobas},
+	colorlinks = true,
+	linkcolor=myBlue,
+	citecolor=green!50!black,
+	urlcolor=green!50!black,
+	bookmarksopen=true,
+	bookmarksnumbered,
+	bookmarksopenlevel=2,
+	bookmarksdepth=3
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%% Cref (nameinLink = whole name is a link)
+\usepackage[capitalise,nameinlink, noabbrev]{cleveref}
+\usepackage{authblk} % customize author and affiliation
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% My macros
+\newcommand{\ie}{i.\,e.,\ }
+\newcommand{\st}{s.\,t.,\ }
+\newcommand{\etal}{et.\,al.\ }
+\newcommand{\appsymb}{$\star$}
+
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\QQ}{\mathbb{Q}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Defining a problem
+%%%%%%%%%%%%%%%%%%\problemdef{NAME} {Input} {Output}
+\usepackage{tabularx}
+\newcommand{\problemdef}[3]{
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\noindent
+			#1
+			\vspace{5pt}\\
+			\setlength{\tabcolsep}{3pt}
+			\begin{tabularx}{\textwidth}{@{}lX@{}}
+				\textbf{Input:}& #2 \\
+				\textbf{Output:}& #3
+			\end{tabularx}
+		\end{minipage}
+	\end{center}
+}
+
+
+%\newcommand{\Walks}{\textsc{Temporally Disjoint Walks}}
+
+%\graphicspath{{../fig/}} %%%%%definiramo pot do mape s slikami
+
+\title{Graph Realization -- literature}
+\author{}
+\begin{document}
+
+\section{Motivation}
+\begin{enumerate}
+	\item \hyperlink
+{http://dagstuhl.sunsite.rwth-aachen.de/volltexte/2022/16811/pdf/LIPIcs-MFCS-2022-13.pdf}
+{Graph Realization of Distance Sets - Amotz Bar-Noy, David Peleg, Mor Perry, Dror Rawitz}
+
+``
+Network realization problems are fundamental graph-algorithmic questions in which one is asked to construct a network conforming to some predefined requirements.
+Given a specification (or information profile) that consists of constraints on some network parameters, such as the vertex degrees, distances, or connectivity, one is required to construct a network conforming to the given specification, i.e., satisfying the requirements, or to determine that no such network exists. The motivation for network realization problems stems from both “exploratory” contexts where one attempts to reconstruct an existing network of unknown structure based on the outcomes of experimental measurements, and engineering contexts related to network design.
+''
+
+\item
+\hyperlink{https://arxiv.org/pdf/1912.13287.pdf}{Efficiently Realizing Interval Sequences - Amotz Bar-Noy, Keerti Choudhary, David Peleg, Dror Rawitz}
+
+``
+The Graph Realization problem for a property P deals with the following existential question: Does there
+exist a graph that satisfies the property P? Its fundamental importance is apparent, ranging from better
+theoretical understanding, to network design questions (such as constructing networks with certain desirable
+connectivity properties). Some very basic, yet challenging, properties that have been considered in past are
+degree sequences [9, 18, 20], eccentricites [6, 24], connectivity and flow [16, 12, 10, 11].
+''
+
+\item 
+\hyperlink{https://arxiv.org/pdf/1912.13286.pdf}{Graph Realizations: Maximum and Minimum Degree in Vertex
+	Neighborhoods - Amotz Bar-Noy, Keerti Choudhary, David Peleg, Dror Rawitz}
+
+``
+The motivation underlying the current paper is
+rooted in the observation that realization questions of a similar nature pose themselves naturally in a large
+variety of other application contexts, where given some type of information profile specifying the desired
+vertex properties (be it concerning degrees, distances, centrality, or any other property of significance), it
+can be asked whether there exists a graph conforming to the specified profile. Broadly speaking, this type
+of investigation may arise, and find potential applications, both in scientific contexts, where the information
+profile reflects measurement results obtained from some natural network of unknown structure, and the goal
+is to obtain a model that may explain these measurements, and in engineering contexts, where the informa-
+tion profile represents a specification with some desired properties, and the goal is to find an implementation
+in the form of a network conforming to that specification.
+
+This basic observation motivates a vast research direction, which was little studied over the last five
+decades. In this paper we make a step towards a systematic study of one specific type of information
+profiles, concerning neighborhood degree profiles. Such profiles are of theoretical interest in context of
+social networks (where degrees often reflect influence and centrality, and consequently neighboring degrees
+reflect “closeness to power”).
+''
+
+\item 
+\hyperlink{https://sci-hub.ru/https://link.springer.com/chapter/10.1007/978-3-030-79987-8_5}
+{Relaxed and Approximate Graph Realizations Amotz Bar-Noy, Toni Bohnlein, David Peleg, Mor Perry, Dror Rawitz}\footnote{Page 22 of 605 (page 3)}
+
+``
+Network realization problems are fundamental questions pertaining to the ability
+to construct a network conforming to pre-defined requirements. Given a specifica-
+tion (or information profile) detailing constraints on some network parameters,
+such as the vertex degrees, distances or connectivity, it is required to construct
+a network abiding by the specified profile, i.e., satisfying the requirements, or to
+determine that no such network exists.
+
+Realization problems may arise in two general types of contexts. In scientific
+contexts, the information profile may consist of the outcomes of some measure-
+ments obtained from observing some real world network (e.g., social networks
+and information networks) whose full structure is unknown. In such a setting, our
+goal is to construct a model that may possibly explain the empirical observations.
+Many of the studies in the field of phylogenetics and evolutionary trees (see, e.g.,
+[16,23,41,42,51,63,68,84,88]) as well as in the field of discrete tomography and
+microscopic image reconstruction (see, e.g., [3–5,11,15,46,47,52,64,77]) belong
+to this class.
+
+A second, engineering-related context where realization problems come up is
+network design. Here, the profile may be defined based on a specification dic-
+tated by the future users of the network, and the goal is to construct a network
+that obeys the specification. For example, the profile may specify the required
+connectivity, flow capacities, or distances between vertex pairs in the network. In
+particular, network realization techniques may be useful in the area of software
+defined networks (SDN). For example, in service chain placement, the specifi-
+cation can define a directed acyclic graph (DAG) of virtual network functions
+(VNF), and the realization must determine the placement of one of the paths of
+the DAG in the physical network [38,39,72].
+'''
+
+\item 
+\hyperlink{https://sci-hub.ru/https://link.springer.com/chapter/10.1007/978-3-030-79987-8_5}{Composed Degree-Distance Realizations of Graphs - Amotz Bar-Noy, David Peleg, Mor Perry, Dror Rawitz}\footnote{Page 80 of 605 (page 63)}
+
+```
+Network realization problems require, given a speciﬁcation $\Pi$
+for some network parameter (such as degrees, distances or connectivity),
+to construct a network $G$ conforming to $\Pi$, or to determine that no such
+network exists. In this paper we study composed proﬁle realization, where
+the given instance consists of two or more proﬁle speciﬁcations that need
+to be realized simultaneously. To gain some understanding of the problem, we focus on two classical proﬁle types, namely, degrees and distances,
+which were (separately) studied extensively in the past.
+'''
+\end{enumerate}
+
+\section{Related work}
+\begin{enumerate}
+
+\item \hyperlink{https://arxiv.org/pdf/2002.05376.pdf}
+{DISTRIBUTED GRAPH REALIZATIONS - John Augustine, Keerti Choudhary, Avi Cohen, David Peleg, Sumathi Sivasubramaniam, Suman Sourav}
+
+\textbf{Motivation/development:}
+``
+Over the last two decades, peer-to-peer (P2P) networks have developed as a versatile and effective platform for cooperative distributed computations. Research on P2P has lead to ideas that have become crucial in a variety of contexts,
+ranging from fully decentralized applications like blockchain networks to more controlled contexts like Akamai’s
+network services [33]. Overlay construction is an important P2P component, involving the formation of new links
+– so called overlay links – that comprise an overlay network tailored to benefit P2P applications. In the typical scenario, starting from some basic network state, the nodes in a P2P network must interact with each other in a fully
+decentralized manner and form an overlay network to be used for specific purposes.
+
+The constructed overlay network G is often required to possess certain desirable properties. A common requirement
+is that G be of bounded degree, so that the overhead for network formation and maintenance at each node is bounded.
+Additionally, one can envision a variety of other desired properties that the overlay G should possess, like bounded
+diameter, well-connectedness, flow guarantees, tolerance to both benign and malicious failures, and so on.
+
+Note, however, that such overlay constructions can be viewed as (distributed) graph realization problems. This natural
+connection makes it plausible that ideas from graph realization theory may lend interesting new techniques allowing
+us to build better overlay networks. Conversely, the endeavor to build useful overlay networks is expected to pose new
+theoretical challenges that are likely to enrich graph realization theory. We hope that our work will initiate this new
+synergy between these two areas that, to the best of our knowledge, has not been formally explored in the past.
+
+Towards the goal of formulating and studying distributed graph realization problems, we employ the node capacitated
+clique (NCC) model [4] that captures several key aspects of P2P networks. In this model, we have n nodes V with
+unique identifiers called IDs. Any node u can send messages of bounded size to any other node v provided u knows
+v’s ID; we can think of v’s ID as its IP address. In this sense, the NCC model is somewhat similar to the congested
+clique (CC) model [23, 25]. However, in the interest of being useful in the P2P context, NCC limits each node to send
+and receive a bounded number of messages, which, interestingly, makes NCC quite distinct from CC.
+''
+
+\textbf{Problem Statements}:
+
+``
+We say that an overlay graph $G = (V, E)$ is constructed if, for every $e = (u, v) \in E$, at
+least one of the endpoints is aware of the ID of the other and also aware that $e \in E$. We say that the overlay graph
+is explicit if, for every edge in the graph, both endpoints are aware of the edge. Otherwise, the overlay is said to be
+implicit. In this paper, we focus on distributed realization problems in which, from a given initial knowledge graph
+and some other required input parameters, we are to construct an overlay graph that satisfies certain requirements. We
+study both explicit and implicit versions of the following two realization problems.
+
+\emph{Degree Realization:} Each node $v_i$ in the distributed network knows its required degree $d(v_i) = d_i$. The goal is to
+construct a realizing graph (if one exists). Formally, our input is a vector $D = (d_1, d_2, \dots, d_n)$ such that each $d_i$
+is only known to the corresponding node $v_i$. The required output is an overlay graph in which every $v_i$ has degree
+$d_i$ if $D$ is realizable; otherwise, at least one node outputs Unrealizable. We also explore degree realization in the
+non-preassigned setting. In this case, each node $v_i$ is given a degree $d_i$, but the required output is an overlay graph
+whose degree sequence is only required to be a permutation of $D$.
+
+\emph{Connectivity Threshold Realization:} The local edge connectivity of two nodes $u$ and $v$, denoted $Conn_G(u, v)$, captures the minimum number of edge disjoint paths required between the nodes $u$ and $v$¸. In the connectivity realization
+problem, each node $v$ in the distributed network is provided with a vector specifying the required minimum local edge
+connectivity (denoted by $\sigma (u, v)$) to every other node $u$. The goal is then to compute an overlay graph $G$ with as few
+edges as possible so that any two nodes $u, v \in G$ satisfy the edge-connectivity relation $Conn_G(u, v) \geq \sigma (u, v)$.
+For this problem, we primarily focus on an approximate solution. In particular, we ensure that the number of edges in
+the overlay network is larger by at most twice that of the optimal realization.
+''
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,147 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[english]{babel}
+
+\usepackage{fullpage}
+
+\usepackage{amsmath}
+\let\proof\relax
+\let\endproof\relax
+
+
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{wrapfig} %wrap the text around the picture
+
+\usepackage{thmtools} 
+\usepackage{thm-restate}
+
+\usepackage{caption} %for subfigure - join multiple figures and add captions
+\usepackage{subcaption}
+\usepackage{changepage} %inside figure we can put \begin{adjustwidth}{-1cm}{-1cm} \end{adjustwidth} and we can ignore the margins
+\usepackage{mathtools} % write text [under]{over} arrow $\xrightarrow[\text{world}]{\text{hello}}$
+
+\usepackage{graphicx}
+\graphicspath{{Figures/}}
+
+%\usepackage{enumitem} %enumerate 
+\usepackage{enumerate}
+\usepackage{todonotes}
+\newcommand{\todonkl}[2][]{\todo[color=red!100!green!33,#1]{NKL:\\ #2}} %todo note that starts with NKL:
+\setlength{\marginparwidth}{3.7cm} %setting the length of todonote
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{observation}{Observation}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[definition]{Example}
+\usepackage{comment}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+%font encoding
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+\usepackage{hyperref}
+
+\usepackage[capitalise,nameinlink, noabbrev]{cleveref}
+\crefname{claim}{Claim}{Claims}
+
+\usepackage{authblk}
+
+%\usepackage{natbib}
+
+\newcommand{\ie}{i.\,e.,\ }
+\newcommand{\st}{s.\,t.,\ }
+\newcommand{\NP}{\textrm{NP}}
+\newcommand{\APX}{\textrm{APX}}
+\newcommand{\FPT}{\textrm{FPT}}
+\newcommand{\XP}{\textrm{XP}}
+
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\QQ}{\mathbb{Q}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Defining a problem
+%%%%%%%%%%%%%%%%%%\problemdef{NAME} {Input} {Output}
+\usepackage{tabularx}
+\newcommand{\problemdef}[3]{
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\noindent
+			#1
+			\vspace{5pt}\\
+			\setlength{\tabcolsep}{3pt}
+			\begin{tabularx}{\textwidth}{@{}lX@{}}
+				\textbf{Input:}& #2 \\
+				\textbf{Question:}& #3
+			\end{tabularx}
+		\end{minipage}
+	\end{center}
+}
+
+\title{Realizing Temporal Graphs}
+\author{Nina Klobas, George B. Mertzios, Hendrik Molter, Paul G. Spirakis}
+
+
+\bibliographystyle{abbrv}
+\begin{document}
+	\maketitle
+
+\section{Preliminaries}
+
+\begin{definition}
+	Let $P = ((e_1, \lambda_1), (e_2,\lambda_2), \dots , (e_k, \lambda_k))$ be a temporal path from $u$ to $v$, then the duration of $P$, denoted as $d(P)$ is $\lambda(e_k) - \lambda(e_1) + 1$.
+\end{definition}
+
+We denote with $d(u,v)$ the duration of the \emph{fastest} temporal path from $u$ to $v$.
+	
+	
+\problemdef{\textsc{Exact Realization $(\Delta, k)$}}
+{A matrix $D$ of exact durations of fastest temporal paths among each pair of vertices, and a period $\Delta$.}
+{Does there exist a labeling $\lambda$ of the underlying graph $G$ of $D$, such that every edge receives exactly one label and $d(v_i,v_j) = D_{i,j}$, for any pair of vertices $v_i, v_j \in V(G)$.}
+
+\problemdef{\textsc{Upper-bounded Realization $(\Delta, k)$}}
+{A matrix $D$ of exact durations of fastest temporal paths among each pair of vertices, and a period $\Delta$.}
+{Does there exist a labeling $\lambda$ of the underlying graph $G$ of $D$, such that every edge receives exactly one label and $d(v_i,v_j) \leq D_{i,j}$, for any pair of vertices $v_i, v_j \in V(G)$.}
+
+
+\section{Results}
+
+\begin{theorem}
+	\textsc{Exact Realization $(\Delta, k)$} can be solved in polynomial time on paths, cycles, trees and stars.
+\end{theorem}
+
+\begin{proof}[Idea:]
+	Starting from a fixed vertex we can fix the temporal path to all/some other vertices in the graph. This allows us to determine the value of labels on edges, with respect to each other.
+	We then fix one label as $1$ and all other labels follow.
+	Produced labeling is unique, up to $\Delta$ (\ie we get $\Delta$ ``equivalent'' labelings).
+	
+	Exact proof TBD.
+\end{proof}
+
+\begin{theorem}
+	\textsc{Exact Realization $(\Delta, k)$} is \NP-hard on general graphs.
+\end{theorem}
+
+\begin{proof}
+	Reduction from 3-SAT.
+	
+	Idea for gadgets, see ``Whiteboards/2022-11-03-Hendrik-Nina-Paul.pdf'', details TBD.
+\end{proof}
+
+%\bibliography{bibliography}	
+\end{document}
