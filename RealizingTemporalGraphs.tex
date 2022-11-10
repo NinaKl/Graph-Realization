@@ -57,6 +57,7 @@
 
 \usepackage[capitalise,nameinlink, noabbrev]{cleveref}
 \crefname{claim}{Claim}{Claims}
+\crefname{observation}{Observation}{Observations}
 
 \usepackage{authblk}
 
@@ -110,38 +111,230 @@
 We denote with $d(u,v)$ the duration of the \emph{fastest} temporal path from $u$ to $v$.
 	
 	
-\problemdef{\textsc{Exact Realization $(\Delta, k)$}}
-{A matrix $D$ of exact durations of fastest temporal paths among each pair of vertices, and a period $\Delta$.}
+\problemdef{\textsc{Exact Realization $(\Delta)$}}
+{A matrix $D$ of exact durations of fastest strict temporal paths among each pair of vertices, and a period $\Delta$.}
 {Does there exist a labeling $\lambda$ of the underlying graph $G$ of $D$, such that every edge receives exactly one label and $d(v_i,v_j) = D_{i,j}$, for any pair of vertices $v_i, v_j \in V(G)$.}
 
-\problemdef{\textsc{Upper-bounded Realization $(\Delta, k)$}}
-{A matrix $D$ of exact durations of fastest temporal paths among each pair of vertices, and a period $\Delta$.}
+\problemdef{\textsc{Upper-bounded Realization $(\Delta)$}}
+{A matrix $D$ of exact durations of fastest strict temporal paths among each pair of vertices, and a period $\Delta$.}
 {Does there exist a labeling $\lambda$ of the underlying graph $G$ of $D$, such that every edge receives exactly one label and $d(v_i,v_j) \leq D_{i,j}$, for any pair of vertices $v_i, v_j \in V(G)$.}
 
 
-\section{Results}
+%\section{Results}
 
+\section{
+\texorpdfstring{\textsc{Exact Realization $(\Delta)$} is in $P$}
+{Exact Realization (Delta) is in P}
+}
+
+	Let $G$ be the underlying graph of matrix $D$ and let $v$ be an arbitrary vertex in $G$, we want to determine the labeling $\lambda: E(G) \rightarrow [\Delta]$, that assigns exactly one label to each edge in $G$ and satisfies the distances from $D$.
+	To do so we observe some properties of the problem.
+	
+	Let $v \in V$ be an arbitrary vertex in $V(G)$ and let $u \in V \setminus \{v\}$ be a vertex, that is at distance at least $2$ from $v$, in the underlying graph $G$.
+	Let $\mathcal{P}_{u}^v$ be a set of all $P_3$ paths on $3$ vertices in $G$, of form $(v_1, v_2, u)$, where $v_1, v_2 \in V(G)$, \st $v_1 v_2, v_2 u \in E(G)$ and $d(v,v_1) < d(v,v_2) < d(v,u)$. 
+	Intuitively, we can imagine the set $\mathcal{P}_{u}^v$ as the set of all incoming temporal $P_3$ paths to the vertex $u$, with respect to starting from the vertex $v$.
+	
+	Let $P = (v_1,v_2,u)$ be an arbitrary path from $\mathcal{P}_u^v$, denote with $\lambda_1, \lambda_2$ the labels of edges $(v_1,v_2)$ and $(v_2, u)$, respectively.
+	By the definition of $\mathcal{P}_u^v$ it follows that $v_1, v_2$ are reached by $v$ faster than $u$ is reached by $v$, therefore we get the following inequality:
+	\begin{equation}\label{eq:ineq-uv-onePath}
+	    \lambda_2 \geq_\Delta \lambda_1 + d(v,u)-d(u,v_2) \pmod \Delta
+	\end{equation}
+	We repeat the above procedure for every path $P \in \mathcal{P}$ and collect all the inequalities to a set $S_u^v$.
+	Similarly we proceed for every pair of vertices $u$ and $v$.
+	At the end we get the collection of sets, each containing inequalities of the form \cref{eq:ineq-uv-onePath}.
+	
+	\begin{claim}
+	\label{claim:exact-setsOfInequalities}
+	For the labeling $\lambda$ of $G$, that fulfills the fastest temporal paths conditions from $D$, the following two conditions have to hold. 
+	\begin{enumerate}
+	    \item $\lambda$ has to satisfy all the inequalities of sets $S_u^v$.
+	    \item At least one inequality in each set $S_u^v$ has to be an equality.
+	\end{enumerate}
+	\end{claim}
+    Intuitively, we know that we reach the vertex $u$ starting from $v$, only through paths in $\mathcal{P}_u^v$. 
+    An arbitrary path $P \in \mathcal{P}_u^v$ is either a part of the fastest path from $v$ to $u$, which means that the path arrives to $u$ at the time equal to $d(v,u)$,
+    or it is not a part of the fastest path, which means it arrives to $u$ at some time greater than $d(v,u)$.
+    This is how the inequalities from $S_u^v$ are constructed. Since the fastest path from $v$ to $u$ has to be of duration $d(v,u)$, at least one of the inequalities from $S_u^v$ has to be an equality.
+    
+    Let $e_1=uv$ and $e_2=vz$ be two incident edges with $e_1 \cap e_2 = v$.
+    We denote with $\tau_v^{uz}$ the difference of the labels of $e_2$ and $e_1$, where we subtract the value of the label of $e_1$ from the label of $e_2$,  modulo $\Delta$.
+    More specifically:
+    \begin{equation}\label{eq:def-VertexWaitingTime}
+       \tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta.
+    \end{equation}
+    Similarly, $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
+    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal paths waits at vertex $v$ when first taking the edge $e_1=uv$ and then the edge $e_2 = vz$.
+    
+    \begin{observation}
+    For any two consecutive edges $e_1 = uv$ and $e_2 = vz$ on vertices $u,v,z \in V$, with $e_1 \cap e_2 = v$, the value $\tau_v^{zu} = \Delta - \tau_v^{uz}$.
+    \end{observation}
+    
+    \begin{proof}
+        Let $e_1 = uv$ and $e_2 = vz$ be two edges in $G$ for which $e_1 \cap e_2 = v$. 
+        By the definition $\tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta$ and $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
+        Summing now both equations we get $\tau_v^{uz} + \tau_v^{zu} \equiv \lambda(e_2) - \lambda(e_1) + \lambda (e_1) - \lambda(e_2) \pmod \Delta$, and therefore $\tau_v^{uz} + \tau_v^{zu} \equiv 0 \pmod \Delta$, which is equivalent as saying $\tau_v^{uz} \equiv - \tau_v^{zu} \pmod \Delta$ or $\tau_v^{zu} = \Delta - \tau_v^{uz}$.
+    \end{proof}
+
+    \begin{observation} \label{obs:exact-CyclesSum}
+    Let $C = (v_1, v_2, \dots, v_k)$ be a cycle in $G$.
+    Then 
+    \begin{equation*}
+        \sum_{i = 1}^k \tau_{v_i}^{v_{i-1}v_{i+1}} \equiv  0 \pmod \Delta,
+    \end{equation*}
+    where the indices of vertices $v_i$ are taken modulo $k$ (\ie $v_{-1}=v_{k-1}, v_0 = v_k, v_1 = v_{k+1}, \dots$).
+    \end{observation}
+    
+    
+    \begin{proof}
+        Using \cref{eq:def-VertexWaitingTime} and the fact that the indices of vertices $v_i$ are taken modulo $k$, we get the following:
+        \begin{align*}
+            &\sum_{i = 1}^k \tau_{v_i}^{v_{i-1}v_{i+1}}  \equiv  \sum_{i = 1}^k  (\lambda(v_i v_{i+1} - \lambda (v_{i-1} v_i) \pmod \Delta \equiv \\
+            &\lambda(v_1 v_2) - \lambda(v_{k}v_1) + \lambda(v_2 v_3) - \lambda(v_2 v_1) + \dots + \lambda(v_k v_1) - \lambda(v_{k-1}v_k) \pmod \Delta.
+        \end{align*}
+        
+    \end{proof}
+    
 \begin{theorem}
-	\textsc{Exact Realization $(\Delta, k)$} can be solved in polynomial time on paths, cycles, trees and stars.
+	\textsc{Exact Realization $(\Delta)$} can be solved in polynomial time on paths, cycles, trees and stars.
 \end{theorem}
 
 \begin{proof}[Idea:]
-	Starting from a fixed vertex we can fix the temporal path to all/some other vertices in the graph. This allows us to determine the value of labels on edges, with respect to each other.
-	We then fix one label as $1$ and all other labels follow.
-	Produced labeling is unique, up to $\Delta$ (\ie we get $\Delta$ ``equivalent'' labelings).
-	
-	Exact proof TBD.
+    For a labeling $\lambda$ we know that it has to satisfy \cref{claim:exact-setsOfInequalities}.
+    There are at most $n^2$ different sets $S_u^v$, each containing at most $n^2$ inequalities. 
+    Therefore we have $O(n^4)$ inequalities to satisfy with at least of $n^2$ of them being equalities (one for each set $S_u^v$. 
+    
+    Besides that we can also use the fact from \cref{obs:exact-CyclesSum}, which produces some extra restrictions on all inequalities.
+    We believe we can create some ``base of cycles'' over $G$ that would help us use \cref{obs:exact-CyclesSum} efficiently.
 \end{proof}
+    
+\section{Hardness of Exact Realization}
+
+\todo[inline]{HM: For the following hardness I assume that we only consider strict temporal paths. (NK: Yes you are right, all paths are strict, sorry forgot to specify). \\
+Furthermore, I can currently only make it work if we do not have periods ($\Delta=\infty$). I am not sure the idea also works if we have periods.}
 
 \begin{theorem}
-	\textsc{Exact Realization $(\Delta, k)$} is \NP-hard on general graphs.
+	\textsc{Exact Realization $(\infty)$} is \NP-hard.
 \end{theorem}
 
 \begin{proof}
-	Reduction from 3-SAT.
-	
-	Idea for gadgets, see ``Whiteboards/2022-11-03-Hendrik-Nina-Paul.pdf'', details TBD.
+	We present a polynomial-time reduction from the NP-hard problem 3-SAT~\cite{Karp1972Reducibility}. Here, we are given a formula $\phi$ in conjunctive normal form, where each clause contains exactly 3 literals (with three distinct variables). We construct an instance of \textsc{Exact Realization $(\infty)$} as follows.
+
+ We start by describing the vertex set of the underlying graph $G$.
+\begin{itemize}
+\item For each variable $x$ in $\phi$, we create three variable vertices $x, x^T, x^F$.
+\item For each clause $c$ in $\phi$, we create one clause vertex $c$.
+\item We add one additional super vertex $v$.
+\end{itemize}
+Next, we describe the edge set of $G$.
+\begin{itemize}
+\item For each variable $x$ in $\phi$ we add the following five edges: 
+
+$\{x, x^T\}, \{x, x^F\}, \{x^T, x^F\}, \{x^T, v\}, \{x^F,v\}$.
+\item For each pair of variables $x,y$ in $\phi$ with $x\neq y$ we add the following four edges 
+
+$\{x^T,y^T\},\{x^T,y^F\}, \{x^F,y^T\},\{x^F,y^F\}$.
+\item For each clause $c$ in $\phi$ we add one edge for each literal. Let $x$ appear in $c$. If $X$ appears non-negated in $c$ we add edge $\{c,x^T\}$. If $x$ appears negated in $c$ we add edge $\{c, x^F\}$.
+\end{itemize}
+This finishes the construction of $G$.
+
+Now we specify the distances between all vertex pairs. Naturally, the distance between all pairs of adjacent vertices is one.
+\begin{itemize}
+    %\item For each variable $x$ in $\phi$ we specify the following distances between the non-adjacent variable vertices:
+    
+    %$d(x_1,x_2)=2$. 
+    %\item For pair of variable $x,y$ in $\phi$ with $x\neq y$ we specify the following distances:
+
+    %$d(x_1,y^T)=d(x_1,y^F)=3$, $d(x_2,y^T)=d(x_2,y^F)=2$.
+    \item For each variable $x$ in $\phi$ we specify the following distances to the super vertex $v$:
+
+    $d(x,v)=2$. %, $d(x_2,v)=3$.
+
+    \item For each clause $c$ in $\phi$ we specify the following distances to the super vertex $v$:
+
+    $d(c,v)=2$
+    \item Let $x$ be a variable that appears in clause $c$, then  we specify the following distances:
+
+    $d(c,x)=2$.
+    
+    If $x$ appears non-negated in $c$ we specify the following distances:
+
+    $d(c,x_F)=2$.
+
+    If $x$ appears negated in $c$ we specify the following distances:
+
+    $d(c,x_T)=2$.
+    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we specify the following distances:
+
+    $d(c,x^T)=d(c,x^F)=2$.
+\end{itemize}
+All distances between non-adjacent vertex pairs that are not defined above are set to $\infty$.
+
+This finishes the construction of the \textsc{Exact Realization $(\infty)$} which can clearly be done in polynomial time. In the remainder we show that it is a yes-instance if and only if $\phi$ is satisfiable.
+
+$(\Rightarrow)$: Assume the constructed \textsc{Exact Realization $(\infty)$} is a yes-instance. Then there exist a label $\lambda(e)$ for each edge $e\in E(G)$ such that for each vertex pair $u,w$ in the temporal graph $(G,\lambda)$ we have that a fastest temporal path between from $u$ to $w$ has exactly duration $d(u,w)$. In particular, for any two vertices $u,w$ with $d(u,w)=\infty$ we have that there does not exist a temporal path from $u$ to $w$ in $(G,\lambda)$.
+
+We construct a satisfying assignment for $\phi$ as follows. For each variable $x$, if $\lambda(\{x,x^T\})=\lambda(\{x^T,v\})$, then we set $x$ to \texttt{true}, otherwise we set $x$ to \texttt{false}.
+
+To show that this yields a satisfying assignment, we need to show some following properties of $\lambda$.
+First, observe that adding some integer $t$ to all time labels does not change the duration of any temporal path. Second, observe that if for two vertices $u,w$ we have that $d(u,w)$ equals the distance between $u$ and $w$ in $G$, then there is a shortest path from $u$ to $w$ in $G$ such that $\lambda$ puts consecutive time labels on the edges of that shortest path. 
+
+Assume that for some variable $x$ we have that $\lambda(\{x,x^T\})=t$ and $\lambda(\{x,x^F\})=t'$. We can deduce that $\lambda(\{x^T,v\})=t+1$ or $\lambda(\{x^F,v\})=t'+1$ (or both), otherwise we have that $d(x,v)>2$.
+In particular, this means that if $\lambda(\{x,x^F\})=\lambda(\{x^F,v\})$, then we set $x$ to \texttt{false}, since in this case $\lambda(\{x,x^T\})\neq\lambda(\{x^T,v\})$.
+
+%Furthermore, we have that if $x$ appears non-negated in clause $c$, then $\lambda(\{c,x^T\})=t-1$, otherwise we have $d(c,x^T)>2$. Symmetrically, we have that if $x$ appears negated in clause $c$, then $\lambda(\{c,x^F\})=t'-1$, otherwise we have $d(c,x^F)>2$.
+
+Now assume for contradiction that the described assignment is not satisfying. Then there exists a clause $c$ that is not satisfied. Recall that we require $d(c,v)=2$. Hence, we must have a temporal path consisting of two edges from $c$ to $v$ such that the two edges have consecutive labels. By construction of $G$ there are three candidates for such a path, one for each literal of $c$. Assume w.l.o.g.\ that $x$ appears in $c$ non-negated (the case of negated is symmetrical) and the temporal path realizing $d(c,v)=2$ goes through vertex $x^T$. Then we have that $\lambda(\{c,x^T\})=\lambda(\{x^T,v\})-1$. Furthermore, since $d(c,x)=2$ we also have that $\lambda(\{c,x^T\})=\lambda(\{x,x^T\})-1$. It follows that $\lambda(\{x,x^T\})=\lambda(\{x^T,v\})$. However, this implies that $x$ is set to \texttt{true} in the satisfying assignment and the clause $c$ is satisfied, a contradiction.
+
+%Assume w.l.o.g.\ that variable $x$ appears non-negated in clause $c$. Then we have that $\{c,x^T\}\in E(G)$. Assume that $\lambda(\{c,x^T\})=t$. Recall that we have specified $d(c,x_2)=2$. Hence we have that $\lambda(\{x_2,x^T\})=t+1$.
+
+$(\Leftarrow)$: Assume that $\phi$ is satisfiable. Then there exists a satisfying assignment for the variables in $\phi$.
+
+We construct a labelling $\lambda$ as follows.
+\begin{itemize}
+    \item All edges incident with a clause vertex $c$ obtain label one.
+    %\item For each variable $x$, we set $\lambda(\{x^T,x^F\})=1$.
+    \item If variable $x$ is set to \texttt{true}, we set $\lambda(\{x^F,v\})=3$.
+    \item If variable $x$ is set to \texttt{false}, we set $\lambda(\{x^T,v\})=3$.
+    \item We set the labels of all other edges to two.
+\end{itemize}
+
+Next, we verify that all distances are realized.
+\begin{itemize}
+    \item For each variable $x$ in $\phi$ we have $d(x,v)=2$: 
+    
+    If $x$ is set to \texttt{true}, then there is a temporal path from $x$ to $v$ via $x^F$ such that $\lambda(\{x,x^F\})=2$ and $\lambda(\{x^F,v\})=3$. If $x$ is set to \texttt{false}, then there is a temporal path from $x$ to $v$ via $x^T$ such that $\lambda(\{x,x^T\})=2$ and $\lambda(\{x^T,v\})=3$.
+
+    \item For each clause $c$ in $\phi$ we have that $d(c,v)=2$:
+
+    Since we have a satisfying assignment there is a variable $x$ appearing in $c$ that is set to a truth-value that satisfies $c$. If $x$ appears non-negated in $c$ (and hence is set to \texttt{true}), then there is a temporal path from $c$ to $v$ through $x^T$ such that $\lambda(\{c,x^T\})=1$ and $\lambda(\{x^T,v\})=2$. If $x$ appears negated in $c$ (and hence is set to \texttt{false}), then there is a temporal path from $c$ to $v$ through $x^F$ such that $\lambda(\{c,x^F\})=1$ and $\lambda(\{x^F,v\})=2$.
+    \item Let $x$ be a variable that appears in clause $c$.
+    If $x$ appears non-negated in $c$ we have $d(c,x)=d(c,x_F)=2$:
+
+    There is a temporal path from $c$ to $x$ via $x^T$ and also a temporal path from $c$ to $x^F$ via $x^T$ such that $\lambda(\{c,x^T\})=1$ and $\lambda(\{x,x^T\})=\lambda(\{x^T,x^F\})=2$.
+
+    If $x$ appears non-negated in $c$ we have $d(c,x)=d(c,x_T)=2$:
+
+    There is a temporal path from $c$ to $x$ via $x^F$ and also a temporal path from $c$ to $x^T$ via $x^F$ such that $\lambda(\{c,x^F\})=1$ and $\lambda(\{x,x^F\})=\lambda(\{x^T,x^F\})=2$.
+    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we have $d(c,x^T)=d(c,x^F)=2$:
+
+    Let $y$ be a variable that appears non-negated in $c$ (the case where $y$ appears negated is symmetrical). Then there is a temporal path from $c$ to $x^T$ via $y^T$ and also a temporal path from $c$ to $x^F$ via $y^T$ such that $\lambda(\{c,y^T\})=1$ and $\lambda(\{y^T,x^T\})=\lambda(\{y^T,x^F\})=2$.
+\end{itemize}
+Lastly, we show that all non-adjacent vertex pairs $u,w$ with $d(u,w)=\infty$ are not temporally connected in $(G,\lambda)$.
+\todo[inline]{HM: this part is unfinished}
+\begin{itemize}
+\item For all pairs of clause vertices $c,c'$ we have $d(c,c')=\infty$: 
+
+Since all edges incident with clause vertices have label one and clause vertices are pairwise non-adjacent, there cannot be a temporal path from one clause vertex to another.
+\item For all variable vertices $x$ and clause vertices $c$ we have $d(x,c)=\infty$:
+
+Since all edges incident with variable vertices have label two and all edges incident with clause vertices have label one, there cannot be a temporal path from a variable vertex to a clause vertex.
+\item For all pairs of variable vertices $x,y$ we have $d(x,y)=\infty$:
+
+Since all edges incident with variable vertices have label two and variable vertices are pairwise non-adjacent, there cannot be a temporal path from one variable vertex to another.
+\item $d(x,y^T)=d(x,y^F)=d(y^T,x)=d(y^F,x)=\infty$
+\item $d(v,x)=d(v,c)=\infty$
+\end{itemize}
 \end{proof}
 
-%\bibliography{bibliography}	
+\bibliography{bibliography}	
 \end{document}
