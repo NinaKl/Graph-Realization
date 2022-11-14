@@ -94,6 +94,24 @@
 	\end{center}
 }
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROBLEMS NAMES
+%% One label per edge, period Delta, exact realization
+\newcommand{\deltaExactLong}{\textsc{Simple $\Delta$-periodic Exact Temporal Graph Realization}}
+\newcommand{\deltaExact}{\textsc{Simple $\Delta$-TGR}}
+
+%% k labels per edge, period Delta, exact realization
+\newcommand{\kDeltaExactLong}{\textsc{$(k,\Delta)$-periodic Exact Temporal Graph Realization}}
+\newcommand{\kDeltaExact}{\textsc{$(k,\Delta)$-TGR}}
+
+%% One label per edge, period Delta, upper-bounded realization
+\newcommand{\kDeltaUpperBoundLong}{\textsc{Simple $\Delta$-periodic Upper-Bounded Temporal Graph Realization}}
+%\newcommand{\deltaUpperBound}{}
+
+%% k labels per edge, period Delta, lower-bound realization
+\newcommand{\kDeltaLowerBoundLong}{\textsc{Simple $\Delta$-periodic Lower-Bounded Temporal Graph Realization}}
+
+
 \title{Realizing Temporal Graphs}
 \author{Nina Klobas, George B. Mertzios, Hendrik Molter, Paul G. Spirakis}
 
@@ -104,31 +122,83 @@
 
 \section{Preliminaries}
 
-\begin{definition}
-	Let $P = ((e_1, \lambda_1), (e_2,\lambda_2), \dots , (e_k, \lambda_k))$ be a temporal path from $u$ to $v$, then the duration of $P$, denoted as $d(P)$ is $\lambda(e_k) - \lambda(e_1) + 1$.
+Let $G=(V,E)$ and $k,\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ be an edge-labeling function that assigns to every edge of $G$ exactly $k$ different labels from $\{1,\ldots,\Delta\}$. 
+Then we denote by $(G,\lambda,\Delta)$ the \emph{$\Delta$-periodic temporal graph} $(G,\lambda_{\Delta})$, where for every edge $e\in E$ we have $\lambda_{\Delta}(e)=\{i\Delta + x : i\geq 0, x\in \lambda(e)\}$. 
+In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of $G$. If $k=1$, we call $\lambda$ a \emph{simple $\Delta$-periodic labeling} of $G$.
+
+\begin{definition}[temporal path]
+Let $(G,\lambda)$ be a temporal graph. A \emph{temporal path} $P$ from $u=u_0$ to $v=u_k$ in $(G,\lambda)$ is a sequence $(u_0 u_1,t_1),(u_1 u_2,t_2),\ldots,(u_{k-1} u_k,t_k)$, where $(u_0,u_1,\ldots,u_k)$ is a path in the underlying static graph $G$, $t_i\in \lambda(u_{i-1}u_i)$ for every $i=1,\ldots,k$, and $t_1<t_2<\ldots<t_k$. 
+The \emph{duration} of this temporal path $P$ from $u$ to $v$ is $d(P)=t_k - t_1 + 1$.
+A \emph{fastest} temporal path $P$ from $u$ to $v$ in $(G,\lambda)$ is a temporal path from $u$ to $v$ with the smallest possible duration.
+The duration of the \emph{fastest} temporal path from $u$ to $v$ is denoted by $d(u,v)$.
 \end{definition}
 
-We denote with $d(u,v)$ the duration of the \emph{fastest} temporal path from $u$ to $v$.
-	
-	
-\problemdef{\textsc{Exact Realization $(\Delta)$}}
-{A matrix $D$ of exact durations of fastest strict temporal paths among each pair of vertices, and a period $\Delta$.}
-{Does there exist a labeling $\lambda$ of the underlying graph $G$ of $D$, such that every edge receives exactly one label and $d(v_i,v_j) = D_{i,j}$, for any pair of vertices $v_i, v_j \in V(G)$.}
 
-\problemdef{\textsc{Upper-bounded Realization $(\Delta)$}}
-{A matrix $D$ of exact durations of fastest strict temporal paths among each pair of vertices, and a period $\Delta$.}
-{Does there exist a labeling $\lambda$ of the underlying graph $G$ of $D$, such that every edge receives exactly one label and $d(v_i,v_j) \leq D_{i,j}$, for any pair of vertices $v_i, v_j \in V(G)$.}
+
+
+	
+	
+\problemdef{\deltaExactLong\ (\deltaExact)}
+{An $n \times n$ matrix $D$.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
+and a simple $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
+for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is equal to $D_{i,j}$.}
+
+\problemdef{\kDeltaExactLong\ (\kDeltaExact)}
+{An $n \times n$ matrix $D$ of positive integers.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ such that, 
+for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is equal to $D_{i,j}$.}
+
+\problemdef{\kDeltaUpperBoundLong}
+{An $n \times n$ matrix $D$ of positive integers.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ such that, 
+for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{i,j}$.}
+
+\problemdef{\kDeltaLowerBoundLong}
+{An $n \times n$ matrix $D$ of positive integers.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ such that, 
+for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at least} $D_{i,j}$.}
+
+
+Let $v_1,v_2,\ldots,v_n$ be the $n$ vertices of the graph $G$ that we are looking for in the above problems. 
+For simplicity of the presentation (and with a slight abuse of notation), we may refer during the paper to the entry $D_{i,j}$ of the matrix $D$ as 
+$D_{a,b}$, where $a=v_i$ and $b=v_j$. That is, we might put as indices of the matrix $D$ the corresponding vertices of $G$ instead of their numbering.
+
+
+\begin{definition}[$D$-increasing temporal path]
+Let $(G,\lambda,\Delta)$ be a $\Delta$-periodic temporal graph on $n$ vertices, and let $D$ be an $n\times n $ matrix of positive integers. 
+Let $P$ be a temporal path from $u_0$ to $u_k$ on the vertices $u_0,u_1,\ldots,u_k$, and let $P^\textsc{ST}=(u_0,u_1,\ldots,u_k)$ be the underlying \emph{static} path in $G$.
+Then $P$ is \emph{$D$-increasing} in $G$ if $0=D_{u_0,u_0}<D_{u_0,u_1}<D_{u_0,u_2}<\ldots,D_{u_0,u_k}$.
+\end{definition}
+
+
+\begin{observation}
+Let $D$ be \textsc{YES}-instance of \textsc{$(k,\Delta)$-TGR}, and let 
+$(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2,\ldots,\Delta\}^k$ a $\Delta$-periodic labeling of $G$.
+Then, for every pair $u,v$ of vertices of $G$, every fastest temporal path from $u$ to $v$ is $D$-increasing.
+\end{observation}
+
+
+
+
 
 
 %\section{Results}
 
 \section{
-\texorpdfstring{\textsc{Exact Realization $(\Delta)$} is in $P$}
-{Exact Realization (Delta) is in P}
-}
+\texorpdfstring{\deltaExact\ is polynomial-time solvable}
+{\textsc{Simple Delta-TGR} is polynomial-time solvable}
+}\
+
+$G$ can be deduced easily from $D$.
 
 	Let $G$ be the underlying graph of matrix $D$ and let $v$ be an arbitrary vertex in $G$, we want to determine the labeling $\lambda: E(G) \rightarrow [\Delta]$, that assigns exactly one label to each edge in $G$ and satisfies the distances from $D$.
 	To do so we observe some properties of the problem.
+	
+\subsection*{Inequalities}
 	
 	Let $v \in V$ be an arbitrary vertex in $V(G)$ and let $u \in V \setminus \{v\}$ be a vertex, that is at distance at least $2$ from $v$, in the underlying graph $G$.
 	Let $\mathcal{P}_{u}^v$ be a set of all $P_3$ paths on $3$ vertices in $G$, of form $(v_1, v_2, u)$, where $v_1, v_2 \in V(G)$, \st $v_1 v_2, v_2 u \in E(G)$ and $d(v,v_1) < d(v,v_2) < d(v,u)$. 
@@ -137,45 +207,103 @@ We denote with $d(u,v)$ the duration of the \emph{fastest} temporal path from $u
 	Let $P = (v_1,v_2,u)$ be an arbitrary path from $\mathcal{P}_u^v$, denote with $\lambda_1, \lambda_2$ the labels of edges $(v_1,v_2)$ and $(v_2, u)$, respectively.
 	By the definition of $\mathcal{P}_u^v$ it follows that $v_1, v_2$ are reached by $v$ faster than $u$ is reached by $v$, therefore we get the following inequality:
 	\begin{equation}\label{eq:ineq-uv-onePath}
-	    \lambda_2 \geq_\Delta \lambda_1 + d(v,u)-d(u,v_2) \pmod \Delta
+	    \lambda_2 \geq_\Delta \lambda_1 + d(v,u)-d(v,v_2) \pmod \Delta
 	\end{equation}
+ \todo[inline]{GM: WHY??? THIS IS WRONG}
 	We repeat the above procedure for every path $P \in \mathcal{P}$ and collect all the inequalities to a set $S_u^v$.
 	Similarly we proceed for every pair of vertices $u$ and $v$.
 	At the end we get the collection of sets, each containing inequalities of the form \cref{eq:ineq-uv-onePath}.
 	
-	\begin{claim}
+	\begin{lemma}
 	\label{claim:exact-setsOfInequalities}
-	For the labeling $\lambda$ of $G$, that fulfills the fastest temporal paths conditions from $D$, the following two conditions have to hold. 
+    Let $D$ be \textsc{YES}-instance of \textsc{Simple $\Delta$-TGR}, and let 
+$(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2,\ldots,\Delta\}$ a simple periodic labeling of $G$. Then, for every pair $u,v$ of non-adjacent vertices:
 	\begin{enumerate}
-	    \item $\lambda$ has to satisfy all the inequalities of sets $S_u^v$.
-	    \item At least one inequality in each set $S_u^v$ has to be an equality.
+	    \item \label{itemize:Claim-exact-AtLeastOneEquality-1} $\lambda$ satisfies all the inequalities of the set $S_u^v$, and 
+	    \item \label{itemize:Claim-exact-AtLeastOneEquality} at least one of the inequalities of $S_u^v$ is an equality.
 	\end{enumerate}
-	\end{claim}
-    Intuitively, we know that we reach the vertex $u$ starting from $v$, only through paths in $\mathcal{P}_u^v$. 
+	\end{lemma}
+
+    \begin{proof}
+    By the definition of $\mathcal{P}_u^v$, every fastest temporal path from $v$ to $u$ must reach $u$ using one of the $P_3$ paths of $\mathcal{P}_u^v$.
+    Let $P$ be an arbitrary temporal path from $v$ to $u$. 
     An arbitrary path $P \in \mathcal{P}_u^v$ is either a part of the fastest path from $v$ to $u$, which means that the path arrives to $u$ at the time equal to $d(v,u)$,
     or it is not a part of the fastest path, which means it arrives to $u$ at some time greater than $d(v,u)$.
-    This is how the inequalities from $S_u^v$ are constructed. Since the fastest path from $v$ to $u$ has to be of duration $d(v,u)$, at least one of the inequalities from $S_u^v$ has to be an equality.
+    This is how the inequalities from $S_u^v$ are constructed. 
+    \todo{GM: WHY? WRONG} 
+    Since the fastest path from $v$ to $u$ has to be of duration $d(v,u)$, at least one of the inequalities from $S_u^v$ has to be an equality.    
+    \end{proof}
     
+    
+    \paragraph{Manipulation of inequalities modulo $\Delta$.}
+    Suppose we have a path $P$ on three vertices, of form $(v_1, v_2, u)$,
+    and suppose $d(v,v_1) < d(v,v_2) < d(v,u)$ for some $v \in V \setminus P$, with $d(v,v_2) = a, d(v,u)=b$. 
+    Let us denote with $\lambda_1 = \lambda(v_1 v_2), \lambda_2 = \lambda(v_2 u)$ and $k = b-a$, where $1 \leq k \leq \Delta$ as all edge labels have values from $1$ to $\Delta$.
+    Then by \cref{eq:ineq-uv-onePath} we know that 
+    \begin{equation}\label{eq:inequalities-properties-example}
+        \lambda_2 \geq_\Delta \lambda_1 + k \pmod \Delta.
+    \end{equation}
+    Note that if $\lambda_2 = \lambda_1$, the duration of temporal path $(P, \lambda) = ((v_1v_2, \lambda_1), (v_2u, \lambda_2))$ is exactly $\Delta+1$,
+    therefore $\lambda_1 = \lambda_2$ satisfies \cref{eq:inequalities-properties-example}.
+    We can rewrite \cref{eq:inequalities-properties-example} as
+    \begin{equation*}
+        \lambda_2 \in 
+        \{
+        \lambda_1 + k, \lambda_1 + (k + 1), \dots , \lambda_1 + (\Delta - 1), \lambda_1 + \Delta 
+        \} \pmod \Delta.
+    \end{equation*}
+    Suppose now we have the following two inequalities
+    \begin{align*}
+        & \lambda_2 \geq_\Delta \lambda_1 + k \pmod \Delta, \\
+        & \lambda_2 \geq_\Delta \lambda_1 + k' \pmod \Delta,
+    \end{align*}
+    for some $k' > k$, then the set of all possible solutions satisfying both equations is the following
+        \begin{equation*}
+        \lambda_2 \in 
+        \{
+        \lambda_1 + k', \lambda_1 + (k' + 1), \dots , \lambda_1 + (\Delta - 1), \lambda_1 + \Delta 
+        \} \pmod \Delta.
+    \end{equation*}
+    
+    Observe now that without the condition~\ref{itemize:Claim-exact-AtLeastOneEquality} of \cref{claim:exact-setsOfInequalities}, all inequalities of condition~\ref{itemize:Claim-exact-AtLeastOneEquality-1} can be satisfied by setting the label of every edge of the graph to be the same.
+    
+    \subsection*{Cycles}
+    \begin{definition}[Travel delays]
     Let $e_1=uv$ and $e_2=vz$ be two incident edges with $e_1 \cap e_2 = v$.
-    We denote with $\tau_v^{uz}$ the difference of the labels of $e_2$ and $e_1$, where we subtract the value of the label of $e_1$ from the label of $e_2$,  modulo $\Delta$.
+    We define the \emph{travel delay} from $u$ to $z$ at vertex $v$, denoted with $\tau_v^{uz}$,
+    as the difference of the labels of $e_2$ and $e_1$, where we subtract the value of the label of $e_1$ from the label of $e_2$,  modulo~$\Delta$.
     More specifically:
     \begin{equation}\label{eq:def-VertexWaitingTime}
        \tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta.
     \end{equation}
     Similarly, $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
-    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal paths waits at vertex $v$ when first taking the edge $e_1=uv$ and then the edge $e_2 = vz$.
+    \end{definition}
+    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal path waits at vertex $v$ when first taking the edge $e_1=uv$ and then the edge $e_2 = vz$.
     
     \begin{observation}
-    For any two consecutive edges $e_1 = uv$ and $e_2 = vz$ on vertices $u,v,z \in V$, with $e_1 \cap e_2 = v$, the value $\tau_v^{zu} = \Delta - \tau_v^{uz}$.
+    For any two incident edges $e_1 = uv$ and $e_2 = vz$ on vertices $u,v,z \in V$, with $e_1 \cap e_2 = v$, we have $\tau_v^{zu} = \Delta - \tau_v^{uz} \pmod \Delta$.
     \end{observation}
     
     \begin{proof}
         Let $e_1 = uv$ and $e_2 = vz$ be two edges in $G$ for which $e_1 \cap e_2 = v$. 
         By the definition $\tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta$ and $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
-        Summing now both equations we get $\tau_v^{uz} + \tau_v^{zu} \equiv \lambda(e_2) - \lambda(e_1) + \lambda (e_1) - \lambda(e_2) \pmod \Delta$, and therefore $\tau_v^{uz} + \tau_v^{zu} \equiv 0 \pmod \Delta$, which is equivalent as saying $\tau_v^{uz} \equiv - \tau_v^{zu} \pmod \Delta$ or $\tau_v^{zu} = \Delta - \tau_v^{uz}$.
+        Summing now both equations we get $\tau_v^{uz} + \tau_v^{zu} \equiv \lambda(e_2) - \lambda(e_1) + \lambda (e_1) - \lambda(e_2) \pmod \Delta$, and therefore $\tau_v^{uz} + \tau_v^{zu} \equiv 0 \pmod \Delta$, which is equivalent as saying $\tau_v^{uz} \equiv - \tau_v^{zu} \pmod \Delta$ or $\tau_v^{zu} = \Delta - \tau_v^{uz} \pmod \Delta$.
     \end{proof}
 
-    \begin{observation} \label{obs:exact-CyclesSum}
+    \begin{observation} \label{obs:exact-VertexSum}
+    Let $v$ be a vertex of $G$, and let $N(v)=\{u_1, u_2, \ldots, u_k\}$, Then 
+    \begin{equation*}
+        \sum_{i = 1}^k \tau_{v}^{u_{i}v_{i+1}} \equiv  0 \pmod \Delta,
+    \end{equation*}
+    where the indices of vertices $u_i$ are taken modulo $k$.
+    \end{observation}
+
+    \begin{proof}
+        tbd
+    \end{proof}
+
+
+\begin{observation} \label{obs:exact-CyclesSum}
     Let $C = (v_1, v_2, \dots, v_k)$ be a cycle in $G$.
     Then 
     \begin{equation*}
@@ -188,10 +316,19 @@ We denote with $d(u,v)$ the duration of the \emph{fastest} temporal path from $u
     \begin{proof}
         Using \cref{eq:def-VertexWaitingTime} and the fact that the indices of vertices $v_i$ are taken modulo $k$, we get the following:
         \begin{align*}
-            &\sum_{i = 1}^k \tau_{v_i}^{v_{i-1}v_{i+1}}  \equiv  \sum_{i = 1}^k  (\lambda(v_i v_{i+1} - \lambda (v_{i-1} v_i) \pmod \Delta \equiv \\
+            &\sum_{i = 1}^k \tau_{v_i}^{v_{i-1}v_{i+1}}  \equiv  
+            \sum_{i = 1}^k  ( \lambda(v_i v_{i+1}) - \lambda (v_{i-1} v_i) ) \pmod \Delta \equiv \\
             &\lambda(v_1 v_2) - \lambda(v_{k}v_1) + \lambda(v_2 v_3) - \lambda(v_2 v_1) + \dots + \lambda(v_k v_1) - \lambda(v_{k-1}v_k) \pmod \Delta.
         \end{align*}
-        
+    \end{proof}
+    
+    \begin{claim}
+    Labelling $\lambda$ is a solution for the \textsc{Exact Realization $(\Delta)$} if and only if
+    for every cycle $C$ of $(G,\lambda)$ it holds that the sum of the travel delays along $C$ is $0$ modulo $\Delta$.
+    \end{claim}
+    
+    \begin{proof}
+        TBD
     \end{proof}
     
 \begin{theorem}
@@ -206,6 +343,78 @@ We denote with $d(u,v)$ the duration of the \emph{fastest} temporal path from $u
     Besides that we can also use the fact from \cref{obs:exact-CyclesSum}, which produces some extra restrictions on all inequalities.
     We believe we can create some ``base of cycles'' over $G$ that would help us use \cref{obs:exact-CyclesSum} efficiently.
 \end{proof}
+
+\subsection{
+\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}
+is polynomial-time solvable on trees, paths and cycles}
+
+Let us observe some properties of the matrix $D$ from \deltaExact, when the underlying graph $G$ of $D$ is a cycle $C_n = \{v_1, v_2, \dots, v_n\}$  on $n$ vertices.
+By the definition, each vertex is on distance $0$ from itself. This corresponds with all diagonal entries of $D$ being $0$.
+Now, let us observe that each vertex $v_i$ has exactly two neighbours in $C_n$, namely $v{i-1}$ and $v_{i+1}$,
+therefore for all $i\in [n]$ we set $D_{i,i-1} = D_{i, i+1} = 1$, where indices are taken modulo $n$.
+This results in the upper and lower diagonal of $D$ having all $1$'s, with $D_{1,n} = D_{n,1} = 1$.
+The matrix $D$ is of the following form
+\begin{equation*}
+  D = 
+  \begin{bmatrix}
+    0 & 1 &  &  &  & 1\\
+    1 & 0 & 1 &  &  & \\
+    & 1 & 0 & 1 & & \\
+    & & \ddots & \ddots & \ddots &   \\
+    &   & &1 &  0 & 1\\ 
+    1 &  &  &  &1 &  0 
+  \end{bmatrix},
+\end{equation*}
+where the empty entries consists of positive integers different than $1$.
+
+Let $v_i$ be an arbitrary vertex in $C_n$.
+Vertex $v_i$ can reach an arbitrary vertex $v_k \in C_n$ using a positive side of the cycle (\ie going from $v_i$ to $v_{i+1},  v_{i+2}$, etc.), 
+and using the negative side of the cycle (\ie going from $v_i$ to $v_{i-1}, v_{i-2}$, etc.).
+Let us denote with the $d^+(i,k)$ the duration of the temporal path from $v_i$ to $v_k$ using the positive side of the cycle,
+and with $d^-(i,k)$, the duration of the temporal path from $v_i$ to $v_k$ using the negative side of the cycle.
+Since these two are the only possible paths from $v_i$ to $v_k$ in $C_n$ we know that $D_{i,k} = min \{d^+(i,k), d^-(i,k)\}$.
+
+\begin{claim} \label{claim:poly-delta-cycle-monotonicity}
+    If vertex $v_i$ reaches vertex $v_j$ the fastest, using the positive (resp.~negative) side of the cycle, \ie $v_i, v_{i+1}, \dots, v_{j-1}, v_j$ (resp. $v_i, v_{i-1}, \dots, v_{j+1}, v_j$),
+    then $v_i$ reaches all other vertices $v_k$, where $k \in \{i+1, i+2, \dots, j-1\}$ (resp.~ $k \in \{i-1, i-2, \dots, j+1\}$)
+    using the same, positive side  (resp.~negative), side of the cycle,
+    where the indices are taken modulo $n$.
+\end{claim}
+\begin{proof}
+    Let $v_i, v_j$ be two arbitrary vertices in $C_n$ and suppose that $D_{i,j} = d^+(i,j)$,
+    but there exists a vertex $v_k$ from $C_n$, where $k \in \{i+1, i+2, \dots, j-1\}$,
+    for which $D_{i,k} \neq d^+(i,k)$.
+    Then $d^-(i,k)$ passes through the vertex $v_j$, and we can split the path from $v_i$ to $v_k$ into two pieces, 
+    first from $v_i$ to $v_j$ and the second one from $v_k$ to $v_j$.
+    So 
+    \begin{equation} \label{eq:poly-delta-cycle-monotonicity}
+        d^-(i,k) = d^-(i,j) + d^-(j,k)^*,
+    \end{equation} where $d^-(j,k)^*$ is the duration of the path from $v_j$ to $v_k$, using the negative side of the cycle, with consideration that we come to the vertex $v_j$ at time $d^-(i,j)$ and we potentially have to wait there for some positive amount of time, before we continue to $v_j$
+    (\ie $d^-(j,k)^* \geq d^-(i,j) \geq D_{j,k}$ includes some waiting time at vertex $v_j$).
+    By the assumption we know that $d^+(i,j) \leq d^-(i,j)$, so we can rewrite \cref{eq:poly-delta-cycle-monotonicity} as
+    $d^-(i,k) \leq d^+(i,j) + d^-(j,k)^*$. This means that we can reach $v_k$ from $v_j$ by going from $v_i$ to $v_j$ using the positive side of the cycle, wait some time at $v_j$, before we continue back to $v_j$.
+    In the above construction vertex $v_k$ is visited twice. By the definition, the fastest temporal path from $v_i$ to $v_k$ visits $v_k$ exactly once. Therefore we can stop at $v_k$ already when traveling from $v_i$ to $v_j$ the first time, using the positive side of the cycle.
+    It follows that $D_{i,j} = d^+(i,j) \leq d^-(i,j)$, which contradicts with our assumption.
+\end{proof}
+
+Let $v_i$ be an arbitrary vertex of $C_n$. Let us look at the row $i$ of the matrix $D$, which corresponds to the duration of fastest temporal paths from $v_i$ to any other vertex $v_j \in C_n$.
+Using \cref{claim:poly-delta-cycle-monotonicity} we know that $v_i$ will reach some consecutive vertices $v_{i+1}, v_{i+2}, \dots, v_j$ the fastest, using the positive side of the cycle 
+and $v_{i-1}, v_{i-2}, \dots, v_{j+1}$ the fastest, using the negative side of the cycle.
+Suppose $v_j \in C_n$ is the last vertex $v_i$ reaches using the positive side of the cycle, and $v_{j+1}$ the last vertex that is reached using the negative side of the cycle.
+Then we know that $D_{i,i+1} < D_{i,i+2} < \cdots< D_{i,j-1} < D_{i,j}$ and 
+$D_{i,i-1} < D_{i,i-2} < \cdots < D_{i,j+2} < D_{i,j+1}$.
+Note that it can happen that $v_j = v_{j+1}$, \ie to reach vertex $v_j$ from $v_i$ the fastest, we can use either positive or negative side of the cycle.
+Using the above observations, every row $i$ ($i \in [n]$) of matrix $D$ has two (or one) maximum elements, one at position $j$ and the other at position $j+1$, where $j, j+1 \in [n]$ and the indices are considered modulo $n$.
+Let us denote these two values as $m_i^1$ and $m_i^2$.
+The row $i$ of $D$ is of the following form, it has a $0$ at the entry $i$, it has a $1$ at entries $i-1, i+1$,
+the values increase on the positions $i+1, i+2, i+3, \dots, j-1, j$ for some $j$ with value $m_i^1$, 
+and on the other side, values increase on the positions $i-1, i-2, i-3, \dots, j+2, j+1$ for some $j+1$ with value $m_i^2$,
+where indices are taken modulo $n$.
+
+\begin{theorem}
+    \deltaExact\ can be solved in polynomial time on cycles.
+\end{theorem}
+
     
 \section{Hardness of Exact Realization}
 
@@ -278,7 +487,11 @@ We construct a satisfying assignment for $\phi$ as follows. For each variable $x
 To show that this yields a satisfying assignment, we need to show some following properties of $\lambda$.
 First, observe that adding some integer $t$ to all time labels does not change the duration of any temporal path. Second, observe that if for two vertices $u,w$ we have that $d(u,w)$ equals the distance between $u$ and $w$ in $G$, then there is a shortest path from $u$ to $w$ in $G$ such that $\lambda$ puts consecutive time labels on the edges of that shortest path. 
 
-Assume that for some variable $x$ we have that $\lambda(\{x,x^T\})=t$ and $\lambda(\{x,x^F\})=t'$. We can deduce that $\lambda(\{x^T,v\})=t+1$ or $\lambda(\{x^F,v\})=t'+1$ (or both), otherwise we have that $d(x,v)>2$.
+Assume that for some variable $x$ we have that $\lambda(\{x,x^T\})=t$ and $\lambda(\{x,x^F\})=t'$. 
+We can deduce that $\lambda(\{x^T,v\})=t+1$ or $\lambda(\{x^F,v\})=t'+1$, otherwise we have that $d(x,v)>2$.
+Note that, if both $\lambda(\{x^T,v\})=t+1$ and $\lambda(\{x^F,v\})=t'+1$, then 
+
+
 In particular, this means that if $\lambda(\{x,x^F\})=\lambda(\{x^F,v\})$, then we set $x$ to \texttt{false}, since in this case $\lambda(\{x,x^T\})\neq\lambda(\{x^T,v\})$.
 
 %Furthermore, we have that if $x$ appears non-negated in clause $c$, then $\lambda(\{c,x^T\})=t-1$, otherwise we have $d(c,x^T)>2$. Symmetrically, we have that if $x$ appears negated in clause $c$, then $\lambda(\{c,x^F\})=t'-1$, otherwise we have $d(c,x^F)>2$.
@@ -320,19 +533,25 @@ Next, we verify that all distances are realized.
     Let $y$ be a variable that appears non-negated in $c$ (the case where $y$ appears negated is symmetrical). Then there is a temporal path from $c$ to $x^T$ via $y^T$ and also a temporal path from $c$ to $x^F$ via $y^T$ such that $\lambda(\{c,y^T\})=1$ and $\lambda(\{y^T,x^T\})=\lambda(\{y^T,x^F\})=2$.
 \end{itemize}
 Lastly, we show that all non-adjacent vertex pairs $u,w$ with $d(u,w)=\infty$ are not temporally connected in $(G,\lambda)$.
-\todo[inline]{HM: this part is unfinished}
 \begin{itemize}
 \item For all pairs of clause vertices $c,c'$ we have $d(c,c')=\infty$: 
 
 Since all edges incident with clause vertices have label one and clause vertices are pairwise non-adjacent, there cannot be a temporal path from one clause vertex to another.
 \item For all variable vertices $x$ and clause vertices $c$ we have $d(x,c)=\infty$:
 
-Since all edges incident with variable vertices have label two and all edges incident with clause vertices have label one, there cannot be a temporal path from a variable vertex to a clause vertex.
+Since all edges incident with variable vertices $x$ have label two and all edges incident with clause vertices $c$ have label one, there cannot be a temporal path from a variable vertex $x$ to a clause vertex $c$.
 \item For all pairs of variable vertices $x,y$ we have $d(x,y)=\infty$:
 
-Since all edges incident with variable vertices have label two and variable vertices are pairwise non-adjacent, there cannot be a temporal path from one variable vertex to another.
-\item $d(x,y^T)=d(x,y^F)=d(y^T,x)=d(y^F,x)=\infty$
-\item $d(v,x)=d(v,c)=\infty$
+Since all edges incident with variable vertices $x$ have label two and variable vertices $x$ are pairwise non-adjacent, there cannot be a temporal path from one variable vertex to another.
+\item For all pairs of variable vertices $x,y$ we have $d(y^T,x)=d(y^F,x)=\infty$:
+
+Since all edges incident with variable vertices $x$ have label two and all edges incident with variable vertices $y^T, y^F$ have labels two or three and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from a variable vertex $y^T$ or $y^F$ to variable vertex $x$.
+\item For all pairs of variable vertices $x,y$ we have $d(x,y^T)=d(x,y^F)=\infty$:
+
+Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the unlabelled graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
+\item For all variable vertices $x$ and clause vertices $c$ we have $d(v,x)=d(v,c)=\infty$:
+
+All edges incident with $v$ have labels two or three. All edges incident with $x$ have label two and all edges incident with $c$ have label one. We immediately have that there is no temporal path from $v$ to $c$. Furthermore, since $x$ and $v$ are non-adjacent, we also have that there is no temporal path from $v$ to $x$.
 \end{itemize}
 \end{proof}
 
