@@ -120,6 +120,15 @@
 \begin{document}
 	\maketitle
 
+\section{Ideas}
+\begin{itemize}
+    \item Symmetric distance matrix $D$: polytime?
+    \item Use $|D|_\infty$ (maximum value in $D$) + max degree $\Delta$ as parameter $\rightarrow$ should give FPT
+    \item FPT with feedback edge number
+    \item use as parameter $\max_{i,j} |D_{i,j}-D_{j,i}|$
+    \item approximation (additive or multiplicative), maybe with graph as input
+\end{itemize}
+
 \section{Preliminaries}
 
 Let $G=(V,E)$ and $k,\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ be an edge-labeling function that assigns to every edge of $G$ exactly $k$ different labels from $\{1,\ldots,\Delta\}$. 
@@ -151,17 +160,22 @@ and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k
 for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is equal to $D_{i,j}$.}
 
 \problemdef{\kDeltaUpperBoundLong}
-{An $n \times n$ matrix $D$ of positive integers.}
-{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
-and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ such that, 
+{An $n \times n$ matrix $D$ of positive integers and an integer $k\in \mathbb{N}$.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ with $n+k-1$ edges 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{i,j}$.}
 
 \problemdef{\kDeltaLowerBoundLong}
-{An $n \times n$ matrix $D$ of positive integers.}
-{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
-and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ such that, 
+{An $n \times n$ matrix $D$ of positive integers and an integer $k\in \mathbb{N}$.}
+{Does there exist a graph $G=(V,E)$ on the vertices $\{v_1,\ldots,v_{n}\}$ with $n+k-1$ edges 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at least} $D_{i,j}$.}
+\todo[inline]{NOT TEMPORALLY INTERESTING: the difficulty is to find a static graph with equal labels}
 
+\todo[inline]{The matrix $D$ is m x m, and capturing the distances from an edge e to an edge f (zoom 14 Nov 22, GH).}
+\todo[inline]{Check if the reduction works for the UPPER BOUNDED version (seems to work)}
+\todo[inline]{how to extend the poly algorithms of cycles? Easy candidate: FES, FVS, series-parallel graphs, or tw=2 graphs}
+\todo[inline]{FVS, $c$-factor approximation, hardness of approximation for $c<1.5$}
 
 Let $v_1,v_2,\ldots,v_n$ be the $n$ vertices of the graph $G$ that we are looking for in the above problems. 
 For simplicity of the presentation (and with a slight abuse of notation), we may refer during the paper to the entry $D_{i,j}$ of the matrix $D$ as 
@@ -189,7 +203,448 @@ Then, for every pair $u,v$ of vertices of $G$, every fastest temporal path from 
 %\section{Results}
 
 \section{
-\texorpdfstring{\deltaExact\ is polynomial-time solvable}
+\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}}
+
+In this section we study the hardness of \deltaExact. We first start with defining certain notions, that will be of use when solving the problem.
+
+\todo[inline]{NK:Following definition and observation are copied from the previous section (need to delete from one part).}
+
+    \begin{definition}[Travel delays]
+    Let $(G, \lambda, \Delta)$ be a temporal graph satisfying conditions of problem \deltaExact.
+    Let $e_1=uv$ and $e_2=vz$ be two incident edges in $G$ with $e_1 \cap e_2 = v$.
+    We define the \emph{travel delay} from $u$ to $z$ at vertex $v$, denoted with $\tau_v^{uz}$,
+    as the difference of the labels of $e_2$ and $e_1$, where we subtract the value of the label of $e_1$ from the label of $e_2$,  modulo~$\Delta$.
+    More specifically:
+    \begin{equation}\label{eq:def-VertexWaitingTime}
+       \tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta.
+    \end{equation}
+    Similarly, $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
+    \end{definition}
+    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal path waits at vertex $v$ when first taking the edge $e_1=uv$ and then the edge $e_2 = vz$.
+    
+    \begin{observation}\label{obs:travel-delays-both-directions}
+    Let $(G, \lambda, \Delta)$ be a temporal graph satisfying conditions of problem \deltaExact.
+    For any two incident edges $e_1 = uv$ and $e_2 = vz$ on vertices $u,v,z \in V$, with $e_1 \cap e_2 = v$, we have $\tau_v^{zu} = \Delta - \tau_v^{uz} \pmod \Delta$.
+    \end{observation}
+    
+    \begin{proof}
+        Let $e_1 = uv$ and $e_2 = vz$ be two edges in $G$ for which $e_1 \cap e_2 = v$. 
+        By the definition $\tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta$ and $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
+        Summing now both equations we get $\tau_v^{uz} + \tau_v^{zu} \equiv \lambda(e_2) - \lambda(e_1) + \lambda (e_1) - \lambda(e_2) \pmod \Delta$, and therefore $\tau_v^{uz} + \tau_v^{zu} \equiv 0 \pmod \Delta$, which is equivalent as saying $\tau_v^{uz} \equiv - \tau_v^{zu} \pmod \Delta$ or $\tau_v^{zu} = \Delta - \tau_v^{uz} \pmod \Delta$.
+    \end{proof}
+
+\begin{claim} \label{claim:unique-fastest-path-allDelays}
+    Let $(G, \lambda, \Delta)$ be a temporal graph satisfying conditions of problem \deltaExact,
+    and let $P=P_{1,k}$ be a fastest temporal path from $u=v_1$ to $v=v_k$ on $k$ vertices $v_1,v_2,\dots,v_k$.
+    Let us denote with $P_{1,i}$ the sub-path of temporal path $P_{1,k}$, that starts at $v_1$ and finishes at $v_i$.
+    Suppose that $P_{1,i}$ is also the fastest temporal path from $u=v_1$ to any other vertex $v_i$ in $P$.
+    Then we can determine travel delays on $P$ using the following equation
+    \begin{equation}\label{eq:trav-delays-paths}
+        \tau_{v_i}^{v_{i-1},v_{i+1}} = D_{1,i+1} - D_{1,i},
+    \end{equation}
+    for all $i \in \{2,3, \dots, k-1\}$.
+\end{claim}
+
+\begin{proof}
+    Let $P$ be a fastest temporal path from $v_1$ to $v_k$ with the properties from the claim, and let $v_i$ be an arbitrary vertex in $P \setminus \{v_1,v_k\}$.
+    Using the properties of fastest paths and the definition of duration, we can rewrite \cref{eq:trav-delays-paths} as follows
+    \begin{align*}
+        \tau_{v_i}^{v_{i-1},v_{i+1}} & = D_{1,i+1} - D_{1,i} =  d(P_{1,i+1}) - d(P_{1,i}) \\
+        & = 
+        \left(\lambda(v_{i}v_{i+1} - \lambda(v_1v_2) + 1\right) -  
+        \left(\lambda(v_{i-1}v_{i} - \lambda(v_1v_2) + 1\right) \\
+        & = \lambda(v_{i}v_{i+1}) - \lambda(v_{i-1}v_{i}),
+        \end{align*}
+    which is exactly the definition of $\tau_{v_i}^{v_{i-1},v_{i+1}}$.
+\end{proof}
+
+\subsection{
+\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}
+is polynomial-time solvable on trees and paths}
+
+Let $D$ be a matrix from \deltaExact, when the underlying graph $G$ of $D$ is a tree on $n$ vertices $\{v_1, v_2, \dots, v_n\}$.
+Let $v_i,v_j$ be two arbitrary vertices in $G$. Then we know that there exists a unique (static) path $P$ among them.
+Consequently, it follows that the temporal paths $P_{i,j}$ from $v_i$ to $v_j$ and $P_{j,i}$ from $v_j$ to $v_i$ are also unique, up to modulo of the period $\Delta$ of the labeling $\lambda$,
+and therefore are the fastest.
+Then $D$ is of the following form:
+\begin{equation*}
+    D_{i,j} =
+    \begin{cases}
+    0 & \text{if $i = j$}, \\
+    1 & \text{if $v_i$ and $v_j$ are neighbours in G}\\
+    d(P_{i,j}) & \text{else}
+    \end{cases},
+\end{equation*}
+where $d(P_{i,j})$ is the duration of the (unique) temporal path $P_{i,j}$ from $v_i$ to $v_j$.
+
+\begin{observation}\label{obs:travel-delays-in-trees}
+    Let $v_i,v_j$  be arbitrary two vertices in a tree $G$. 
+    Since there is a unique temporal path $P_{i,j}$ from $v_i$ to $v_j$, it is also the fastest one, therefore $d(P_{i,j}) = D_{i,j}$. 
+    Note, all other vertices $v' \in P_{i,j} \setminus \{v_i,v_j\}$ are reached form $v_i$ using a part of the path $P_{i,j}$.
+    Now using \cref{claim:unique-fastest-path-allDelays}, we can determine the waiting times for all \emph{inner} vertices of the path $P_{i,j}$.
+\end{observation}
+
+\begin{theorem}
+    \deltaExact\ can be solved in polynomial time on trees.
+\end{theorem}
+
+\begin{proof}
+    Let $D$ be an input matrix for problem \deltaExact of dimension $n \times n$.
+    Let us fix the vertices of the corresponding graph $G$ of $D$ as $v_1, v_2, \dots, v_n$, where vertex $v_i$ corresponds to the row and column $i$ of matrix $D$.
+    This can be done in polynomial time as we need to read through the matrix $D$ once and connect vertices $v_i, v_j$ for which $D_{i,j} = 1$. At the same time we also check if $D_{i,i} = 0$, for all $i \in [n]$.
+    When $G$ is constructed we run DFS algorithm on it and check if it has no cycles.
+    If at any step we encounter a problem, our algorithm stops and returns a negative answer.
+    
+    From now on we can assume that we know that the underlying graph $G$ is a tree and we know how it looks like.
+    For the next part of the algorithm we use \cref{obs:travel-delays-in-trees}.
+    
+    For a vertex $v_i$ we check which vertex $v_j \in G$ is furthest away from it, \ie for which vertex $v_j$ the entry $D_{i,j}$ is maximum.
+    We now take the unique (fastest) temporal path $P_{i,j}$ and using \cref{obs:travel-delays-in-trees} calculate waiting times at all inner vertices.
+    We save those values in a matrix $T$ and mark vertices of the path  $P_{i,j}$ as visited.
+    Matrix $T$ stores at the position $(i,i-1,i+1)$ the value corresponding to the travel delay at vertex $v_i$ when traveling from $v_{i-1}$ to $v_{i}$, \ie $\tau_{v_i}^{v_{i-1}, v_i}$, whenever $v_{i-1}v_i, v_iv_{i+1} \in E(G)$. All other values of $T$ are set to \textsc{Null}.
+    Now we repeat procedure, from vertex $v_i$, for vertices that are not marked as visited yet, \ie vertices in $V \setminus P_{i,j}$.
+    We find a vertex in $V \setminus P_{i,j}$ that is furthest away from $v_i$ and repeat the procedure.
+    When we have exhausted the $i$-th row of $D$, corresponding to the vertex $v_i$,
+    we continue and repeat the procedure for all other vertices.
+    If at any point we get two different values for the same travel delay at a specific vertex, then we stop with the algorithm and return the negative answer.
+    If the above procedure finishes successfully we get the matrix $T$ with travel delays for all vertices $v_i$ in the tree, of degree at least $2$.
+    The above calculation is performed in polynomial time, as for every vertex $v_i$ we inspect the whole graph once.
+    \begin{claim}\label{claim:matrixT-travelDelays-tree}
+        Matrix $T$ consists of travel delays of all vertices of degree at least $2$ in $G$.
+    \end{claim}
+    \begin{proof}[Proof of \cref{claim:matrixT-travelDelays-tree}]
+        Note, by the definition of travel delays, a vertex of degree $1$ cannot have a travel delay.
+        Suppose now that there is a vertex $v_i \in V(G)$ of degree at least $2$, for which our algorithm did not calculate its travel delay.
+        Let $v_a, v_b$ be two arbitrary neighbors of $v_i$, \ie $v_a v_i, v_i v_b \in E(G)$.
+        Since $G$ is a tree, the unique (and fastest) temporal path from $v_a$ to $v_b$ passes through $v_i$.
+        When our algorithm was inspecting the row of $D$ corresponding to the vertex $v_a$, it had to consider the temporal path from $v_a$ to $v_b$. 
+        At this point, it calculated $\tau_{v_i}^{v_a,v_b}$. 
+        Since this is true for any two $v_a, v_b \in N(v_i)$, it cannot happen that some travel delay at $v_i$ is not calculated.
+        Since $v_i$ was an arbitrary vertex in $G$ of degree at least $2$, the claim holds.
+    \end{proof}
+    
+    Now, given the matrix of travel delays $T$, we can find a labeling $\lambda$ that satisfies $D$.
+    We start by fixing a label of one edge as $a$, where $a \in [\Delta]$.
+    Knowing the label of the edge $v_1v_2$ and all waiting times in $T$, we can uniquely determine the labels of all other edges.
+    More specifically, if we know that $\lambda(v_i v_j) = a$, then for all $v_k \in N(v_i)$ (resp.~$v_{k'} \in N(v_j)$)
+    the value $\lambda(v_iv_k) \equiv a + \tau_{v_i}^{v_j,v_k} \pmod \Delta $ (resp.~$\lambda(v_j v_{k'}) \equiv a + \tau_{v_j}^{v_i,v_{k'}} \pmod \Delta $).
+    Since there are $\Delta$ options to fix the first label, we can find $\Delta$ different labelings satisfying $D$.
+    Note, w.l.o.g we can start determining the labeling $\lambda$ by setting $\lambda(v_1v_2) = 1$.
+    It is not hard to see, that also the calculation of the labeling $\lambda$ takes polynomial time, as we have to traverse the graph exactly once, to successfully fix the labeling. Therefore all together the whole algorithm is performed in polynomial time.
+\end{proof}
+
+\subsection{
+\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}
+is polynomial-time solvable on cycles}
+
+Let us observe some properties of the matrix $D$ from \deltaExact, when the underlying graph $G$ of $D$ is a cycle $C_n = \{v_1, v_2, \dots, v_n\}$  on $n$ vertices.
+By the definition, each vertex is on distance $0$ from itself. This corresponds with all diagonal entries of $D$ being $0$.
+Now, let us observe that each vertex $v_i$ has exactly two neighbours in $C_n$, namely $v_{i-1}$ and $v_{i+1}$,
+therefore for all $i\in [n]$ we set $D_{i,i-1} = D_{i, i+1} = 1$, where indices are taken modulo $n$.
+This results in the upper and lower diagonal of $D$ having all $1$'s, together with $D_{1,n} = D_{n,1} = 1$.
+The matrix $D$ is of the following form
+\begin{equation*}
+  D = 
+  \begin{bmatrix}
+    0 & 1 &  &  &  & 1\\
+    1 & 0 & 1 &  &  & \\
+    & 1 & 0 & 1 & & \\
+    & & \ddots & \ddots & \ddots &   \\
+    &   & &1 &  0 & 1\\ 
+    1 &  &  &  &1 &  0 
+  \end{bmatrix},
+\end{equation*}
+where the empty entries consists of positive integers different than $1$.
+
+Given a matrix in the input of \deltaExact\ we can check in $O(n^2)$ time if it is of correct form, by traversing it once. If it is not of correct for, our algorithm stops and returns the negative answer.
+From now on, we will assume, that the input matrix is of correct form.
+
+Let $v_i$ be an arbitrary vertex in the cycle $C_n =\{v_1, v_2, \dots, v_n\}$.
+Vertex $v_i$ can reach an arbitrary vertex $v_k \in C_n$ using a positive side of the cycle (\ie going from $v_i$ to $v_{i+1},  v_{i+2}$, etc.), 
+and using the negative side of the cycle (\ie going from $v_i$ to $v_{i-1}, v_{i-2}$, etc.).
+Let us denote with the $d^+(i,k)$ the duration of the temporal path from $v_i$ to $v_k$ using the positive side of the cycle,
+and with $d^-(i,k)$, the duration of the temporal path from $v_i$ to $v_k$ using the negative side of the cycle.
+Since these two are the only possible paths from $v_i$ to $v_k$ in $C_n$ we know that $D_{i,k} = min \{d^+(i,k), d^-(i,k)\}$.
+
+\begin{claim} \label{claim:poly-delta-cycle-monotonicity}
+    If vertex $v_i$ reaches vertex $v_j$ the fastest, using the positive (resp.~negative) side of the cycle, \ie $v_i, v_{i+1}, \dots, v_{j-1}, v_j$ (resp. $v_i, v_{i-1}, \dots, v_{j+1}, v_j$),
+    then $v_i$ reaches all other vertices $v_k$, where $k \in \{i+1, i+2, \dots, j-1\}$ (resp.~ $k \in \{i-1, i-2, \dots, j+1\}$)
+    using the same, positive (resp.~negative) side of the cycle,
+    where the indices are taken modulo $n$.
+\end{claim}
+\begin{proof}
+    Let $v_i, v_j$ be two arbitrary vertices in $C_n$ and suppose that $D_{i,j} = d^+(i,j)$,
+    but there exists a vertex $v_k$ from $C_n$, where $k \in \{i+1, i+2, \dots, j-1\}$,
+    for which $D_{i,k} \neq d^+(i,k)$.
+    Then $d^-(i,k)$ passes through the vertex $v_j$, and we can split the path from $v_i$ to $v_k$ into two pieces, 
+    first from $v_i$ to $v_j$ and the second one from $v_k$ to $v_j$.
+    So 
+    \begin{equation} \label{eq:poly-delta-cycle-monotonicity}
+        d^-(i,k) = d^-(i,j) + d^-(j,k)^*,
+    \end{equation} where $d^-(j,k)^*$ is the duration of the path from $v_j$ to $v_k$, using the negative side of the cycle, with consideration that we come to the vertex $v_j$ at time $d^-(i,j)$ and we potentially have to wait there for some positive amount of time, before we continue to $v_j$
+    (\ie $d^-(j,k)^* \geq d^-(i,j) \geq D_{j,k}$ includes some waiting time at vertex $v_j$).
+    By the assumption we know that $d^+(i,j) \leq d^-(i,j)$, so we can rewrite \cref{eq:poly-delta-cycle-monotonicity} as
+    $d^-(i,k) \leq d^+(i,j) + d^-(j,k)^*$. This means that we can reach $v_k$ from $v_j$ by going from $v_i$ to $v_j$ using the positive side of the cycle, wait some time at $v_j$, before we continue back to $v_j$.
+    In the above construction vertex $v_k$ is visited twice. By the definition, the fastest temporal path from $v_i$ to $v_k$ visits $v_k$ exactly once. Therefore we can stop at $v_k$ already when traveling from $v_i$ to $v_j$ the first time, using the positive side of the cycle.
+    It follows that $D_{i,j} = d^+(i,j) \leq d^-(i,j)$, which contradicts with our assumption.
+\end{proof}
+
+Let $v_i$ and $v_j$ be two arbitrary vertices in the cycle $C_n$, for which $v_i v_j \notin E(C_n)$.
+Suppose that $P^+_{i,j}$ (resp.~$P^-_{i,j})$ is the fastest temporal path from $v_i$ to $v_j$, using the positive (resp.~negative) side of the cycle, 
+\ie $v_i, v_{i+1}, \dots, v_{j-1}, v_j$ (resp. $v_i, v_{i-1}, \dots, v_{j+1}, v_j$).
+Then by \cref{claim:poly-delta-cycle-monotonicity} and \cref{claim:unique-fastest-path-allDelays},
+we get that we can determine all travel delays at vertices of $P^+_{i,j} \setminus \{v_i, v_j\}$ (resp.~$P^-_{i,j} \setminus \{v_i, v_j\}$).
+
+
+Let $v_i$ be an arbitrary vertex of $C_n$. Let us look at the row $i$ of the matrix $D$, which corresponds to the durations of fastest temporal paths from $v_i$ to all other vertices $v_j \in C_n$.
+Using \cref{claim:poly-delta-cycle-monotonicity} we know that $v_i$ will reach some consecutive vertices $v_{i+1}, v_{i+2}, \dots, v_j$ the fastest, using the positive side of the cycle 
+and $v_{i-1}, v_{i-2}, \dots, v_{j+1}$ the fastest, using the negative side of the cycle.
+Suppose $v_j \in C_n$ is the last vertex $v_i$ reaches using the positive side of the cycle, and $v_{j+1}$ the last vertex that is reached using the negative side of the cycle.
+Then we know that $D_{i,i+1} < D_{i,i+2} < \cdots< D_{i,j-1} < D_{i,j}$ and 
+$D_{i,i-1} < D_{i,i-2} < \cdots < D_{i,j+2} < D_{i,j+1}$.
+Note that it can happen that $v_j = v_{j+1}$, \ie to reach vertex $v_j$ from $v_i$ the fastest, we can use either positive or negative side of the cycle.
+Using the above observations, every row $i$ ($i \in [n]$) of matrix $D$ has two (or one) maximum elements, one at position $j$ and the other at position $j+1$, where $j, j+1 \in [n]$ and the indices are considered modulo $n$.
+Let us denote these two values as $m_i^1$ and $m_i^2$.
+The row $i$ of $D$ is of the following form, it has a $0$ at the entry $i$, it has $1$ at entries $i-1, i+1$,
+the values increase on the positions $i+1, i+2, i+3, \dots, j-1, j$ for some $j$ with value $m_i^1$, 
+and on the other side, values increase on the positions $i-1, i-2, i-3, \dots, j+2, j+1$ for some $j+1$ with value $m_i^2$,
+where indices are taken modulo $n$.
+
+Knowing this, we can split the vertices $v_j \in V(C_n) \setminus \{v_i\}$ into two parts, ones that are reached from $v_i$ the fastest using the positive side of the cycle and ones that are reached using the negative side of the cycle.
+To determine these two sets we do the following.
+We fix a vertex $v_i \in C_n$ and check its corresponding row in the matrix $D$. 
+We determine two max values $m_i^1$ and $m_i^2$ at positions $j$ and $j+1$ (modulo $n$), respectively,
+for which it has to hold that
+$D_{i,i+1} < D_{i,i+2} < \cdots< D_{i,j-1} < D_{i,j}=m_i^1$ and 
+$D_{i,i-1} < D_{i,i-2} < \cdots < D_{i,j+2} < D_{i,j+1}=m_i^2$.
+Note, it can also happen that $m_i^1 = m_i^2$. 
+Now denote the path that uses the positive side of the cycle, from $v_i$ to $v_j$, as $P^+_i$ and
+the path that uses the negative side of the cycle, from $v_i$ to $v_{j+1}$, as $P^-_i$.
+By \cref{claim:poly-delta-cycle-monotonicity} and \cref{claim:unique-fastest-path-allDelays} we can calculate travel delays at every vertex $v_k \in C_n \setminus \{v_i, v_j, v_{j+1}\}$,
+which we store in a list $T$ of length $n$,
+where the entry at the position $k$ corresponds to the travel delay at vertex $v_k$ when traveling from $v_{k-1}$ to $v_{k+1}$.
+Note, from \cref{obs:travel-delays-both-directions} it follows, that it is enough to store the value of the travel delay in one direction (\ie knowing $\tau_v^{u,w}$ we know also $\tau_v^{w,u}$).
+We repeat the above procedure for all rows in the matrix $D$, \ie for all vertices $v_i \in C_n$.
+Calculation in one row is performed in $O(n)$ time, repeating it for all rows we need $O(n^2)$ time.
+
+To determine the labeling $\lambda$ satisfying the matrix $D$, we have to make sure that we have calculated travel delays for all vertices.
+
+\begin{claim}
+List $T$ of travel delays has non-empty values at all positions, \ie we have successfully calculated travel delays for all vertices.
+\end{claim}
+\begin{proof}
+    Throughout the proof we
+    denote with $d^+(i,j)$ the duration of the temporal path that starts at $v_i$ and finishes at $v_j$, that uses the positive side of the cycle $C_n$,
+    and similarly with $d^-(i,j)$ the duration of the temporal path that starts at $v_i$ and finishes at $v_j$, that uses the negative side of the cycle $C_n$,
+    where indices are taken modulo $n$.
+    
+    Suppose for the contradiction that the statement of the claim does not hold. Then there exists a vertex $v_i \in C_n$, for which we did not calculate its travel delay.
+    Let $v_j \in C_n \setminus \{v_i\}$ be an arbitrary vertex. 
+    Note that the only time we cannot calculate the travel delay at vertex $v_i$, when considering vertex $v_j$, is in this case when $v_i$ is one of the maximum elements in $D_j$, \ie $v_i$ is a vertex that is on a maximum duration from $v_j$.
+    This has to hold for all vertices $v_j$, therefore $v_i$ has to be on the maximum distance from every vertex $v_j \in C_n \setminus \{v_i\}$.
+    It then also has to hold for vertices $v_{i-1}, v_{i+1}$, that are neighbours of $v_i$.
+    We know that in this case $d^+(i-1,i) = 1, d^-(i+1,i) = 1$.
+    Since $v_i$ has to be on the maximum duration from both of them 
+    (\ie is one of the two maximum values $m^1_{i-1}, m^2_{i-1}$ for vertex $v_{i-1}$ and one of the two maximum values $m^1_{i+1}, m^2_{i+1}$ for vertex $v_{i+1}$),
+    we know that 
+    \begin{align}\label{eq:cycle-travel-delays-all}
+        & d^+(i+1,i-1) < d^-(i+1,i-1) & \text{and}\\
+        & d^-(i-1,i+1) < d^+(i-1,i+1).
+    \end{align}
+    If this would not hold, the fastest path would go through $v_i$ and we would be able to calculate the travel delay at $v_i$.
+    
+    Denote the labels $\lambda(v_{i-1}v_i) = a, \lambda(v_{i}v_{i+1})=a'$, and $\lambda(v_{i-2}v_{i-1} = b, \lambda (v_{i+1}v_{i+2})=b'$, where $a,a',b,b' \in [\Delta]$.
+    W.l.o.g. we can suppose that $a \geq a'$.
+    Therefore, using the definition for the duration of temporal paths, we get that
+    $d^+(i+1,i-1) = (k \delta + b) - b' + 1$, where $k$ is some non-negative integer, and $d^-(i+1,i-1) = a - a' + 1$.
+    Using the first inequality from \cref{eq:cycle-travel-delays-all} we get that 
+    $(k \delta + b) - b' +1 < a - a' + 1$ which is equivalent to $(k \delta + b) - b' < a - a'$, which can be true only when $k = 0$, but because the duration is positive we get that $b > b'$ and
+    $b - b' < a - a'$.
+    Now again using the definition of the duration, we get
+    $d^+(i-1,i+1)= (k\delta + a') - a + 1$, where $k$ is some non-negative integer, but since $v_{i-1}v_i$ and $v_iv_{i+1}$ are incident edges, we know also that $k=1$, therefore $d^+(i-1,i+1)= \delta + a - a + 1$. 
+    Again by the definition, $d^-(i-1,i+1) = (k' \delta + b') -b + 1$, for some non-negative integer $k'$.
+    Using the second inequality from \cref{eq:cycle-travel-delays-all} we get that 
+    $(k' \delta + b') -b + 1 < \delta + a - a + 1$.
+    Which is equivalent to  $(k' \delta + b') -b < \delta + a' - a $. This can hold only when $k' = 1$, in that case we get $ \delta + b' -b < \delta + a' - a $ which is equivalent to $b' -b < a' - a$.
+    This is in the contradiction with the inequality  $b - b' < a - a'$ as this is equivalent to $b'-b > a'-a$.
+    
+    Therefore it cannot happen that there is a vertex $v_i$ for which we cannot calculate its travel delay in $C_n$.
+\end{proof}
+
+All of the above observations imply the following result.
+\begin{theorem}
+    \deltaExact\ can be solved in polynomial time on cycles.
+\end{theorem}
+
+\begin{proof}
+As stated above, we can determine travel delays at every vertex in $O(n^2)$ time. 
+Once all of the delays are calculated, we have to only construct the labeling $\lambda$ that satisfies the matrix $D$. 
+We start by fixing a label of one edge as $a$, where $a \in [\Delta]$.
+Knowing the label of the edge $v_1v_2$ and all waiting times in $T$, we can uniquely determine the labels of all other edges.
+More specifically, if we know that $\lambda(v_i v_j) = a$, then for all $v_k \in N(v_i)$ (resp.~$v_{k'} \in N(v_j)$)
+the value $\lambda(v_iv_k) \equiv a + \tau_{v_i}^{v_j,v_k} \pmod \Delta $ (resp.~$\lambda(v_j v_{k'}) \equiv a + \tau_{v_j}^{v_i,v_{k'}} \pmod \Delta $).
+Since there are $\Delta$ options to fix the first label, we can find $\Delta$ different labelings satisfying $D$.
+Note, w.l.o.g we can start determining the labeling $\lambda$ by setting $\lambda(v_1v_2) = 1$.
+\end{proof}
+
+    
+\section{Hardness of Exact Realization}
+
+\todo[inline]{HM: For the following hardness I assume that we only consider strict temporal paths. (NK: Yes you are right, all paths are strict, sorry forgot to specify). \\
+Furthermore, I can currently only make it work if we do not have periods ($\Delta=\infty$). I am not sure the idea also works if we have periods.}
+
+\begin{theorem}
+	\textsc{Exact Realization $(\infty)$} is \NP-hard.
+\end{theorem}
+
+\begin{proof}
+	We present a polynomial-time reduction from the NP-hard problem 3-SAT~\cite{Karp1972Reducibility}. Here, we are given a formula $\phi$ in conjunctive normal form, where each clause contains exactly 3 literals (with three distinct variables). We construct an instance of \textsc{Exact Realization $(\infty)$} as follows.
+
+ We start by describing the vertex set of the underlying graph $G$.
+\begin{itemize}
+\item For each variable $x$ in $\phi$, we create three variable vertices $x, x^T, x^F$.
+\item For each clause $c$ in $\phi$, we create one clause vertex $c$.
+\item We add one additional super vertex $v$.
+\end{itemize}
+Next, we describe the edge set of $G$.
+\begin{itemize}
+\item For each variable $x$ in $\phi$ we add the following five edges: 
+
+$\{x, x^T\}, \{x, x^F\}, \{x^T, x^F\}, \{x^T, v\}, \{x^F,v\}$.
+\item For each pair of variables $x,y$ in $\phi$ with $x\neq y$ we add the following four edges 
+
+$\{x^T,y^T\},\{x^T,y^F\}, \{x^F,y^T\},\{x^F,y^F\}$.
+\item For each clause $c$ in $\phi$ we add one edge for each literal. Let $x$ appear in $c$. If $X$ appears non-negated in $c$ we add edge $\{c,x^T\}$. If $x$ appears negated in $c$ we add edge $\{c, x^F\}$.
+\end{itemize}
+This finishes the construction of $G$.
+
+Now we specify the distances between all vertex pairs. Naturally, the distance between all pairs of adjacent vertices is one.
+\begin{itemize}
+    %\item For each variable $x$ in $\phi$ we specify the following distances between the non-adjacent variable vertices:
+    
+    %$d(x_1,x_2)=2$. 
+    %\item For pair of variable $x,y$ in $\phi$ with $x\neq y$ we specify the following distances:
+
+    %$d(x_1,y^T)=d(x_1,y^F)=3$, $d(x_2,y^T)=d(x_2,y^F)=2$.
+    \item For each variable $x$ in $\phi$ we specify the following distances to the super vertex $v$:
+
+    $d(x,v)=2$. %, $d(x_2,v)=3$.
+
+    \item For each clause $c$ in $\phi$ we specify the following distances to the super vertex $v$:
+
+    $d(c,v)=2$
+    \item Let $x$ be a variable that appears in clause $c$, then  we specify the following distances:
+
+    $d(c,x)=2$.
+    
+    If $x$ appears non-negated in $c$ we specify the following distances:
+
+    $d(c,x_F)=2$.
+
+    If $x$ appears negated in $c$ we specify the following distances:
+
+    $d(c,x_T)=2$.
+    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we specify the following distances:
+
+    $d(c,x^T)=d(c,x^F)=2$.
+\end{itemize}
+All distances between non-adjacent vertex pairs that are not defined above are set to $\infty$.
+
+This finishes the construction of the \textsc{Exact Realization $(\infty)$} which can clearly be done in polynomial time. In the remainder we show that it is a yes-instance if and only if $\phi$ is satisfiable.
+
+$(\Rightarrow)$: Assume the constructed \textsc{Exact Realization $(\infty)$} is a yes-instance. Then there exist a label $\lambda(e)$ for each edge $e\in E(G)$ such that for each vertex pair $u,w$ in the temporal graph $(G,\lambda)$ we have that a fastest temporal path between from $u$ to $w$ has exactly duration $d(u,w)$. In particular, for any two vertices $u,w$ with $d(u,w)=\infty$ we have that there does not exist a temporal path from $u$ to $w$ in $(G,\lambda)$.
+
+We construct a satisfying assignment for $\phi$ as follows. For each variable $x$, if $\lambda(\{x,x^T\})=\lambda(\{x^T,v\})$, then we set $x$ to \texttt{true}, otherwise we set $x$ to \texttt{false}.
+
+To show that this yields a satisfying assignment, we need to show some following properties of $\lambda$.
+First, observe that adding some integer $t$ to all time labels does not change the duration of any temporal path. Second, observe that if for two vertices $u,w$ we have that $d(u,w)$ equals the distance between $u$ and $w$ in $G$, then there is a shortest path from $u$ to $w$ in $G$ such that $\lambda$ puts consecutive time labels on the edges of that shortest path. 
+
+
+Let $\lambda(\{x,x^T\})=t$ and $\lambda(\{x,x^F\})=t'$, for an arbitrary variable $x$. 
+If both $\lambda(\{x^T,v\})\neq t+1$ and $\lambda(\{x^F,v\})\neq t'+1$, then $d(x,v)>2$, which is a contradiction. 
+Thus, for every variable $x$, we have that $\lambda(\{x^T,v\})= t+1$ or $\lambda(\{x^F,v\})= t'+1$ (or both). 
+In particular, this means that if $\lambda(\{x,x^F\})=\lambda(\{x^F,v\})$, then we set $x$ to \texttt{false}, since in this case $\lambda(\{x,x^T\})\neq\lambda(\{x^T,v\})$.
+
+%Furthermore, we have that if $x$ appears non-negated in clause $c$, then $\lambda(\{c,x^T\})=t-1$, otherwise we have $d(c,x^T)>2$. Symmetrically, we have that if $x$ appears negated in clause $c$, then $\lambda(\{c,x^F\})=t'-1$, otherwise we have $d(c,x^F)>2$.
+
+Now assume for contradiction that the described assignment is not satisfying. Then there exists a clause $c$ that is not satisfied. Recall that we require $d(c,v)=2$. Hence, we must have a temporal path consisting of two edges from $c$ to $v$ such that the two edges have consecutive labels. By construction of $G$ there are three candidates for such a path, one for each literal of $c$. 
+Assume w.l.o.g\ that $x$ appears in $c$ non-negated (the case of a negated appearance of $x$ is symmetrical) and that the temporal path realizing $d(c,v)=2$ goes through vertex $x^T$. 
+Then we have that $\lambda(\{c,x^T\})=\lambda(\{x^T,v\})-1$. Furthermore, since $d(c,x)=2$ we also have that $\lambda(\{c,x^T\})=\lambda(\{x,x^T\})-1$. It follows that $\lambda(\{x,x^T\})=\lambda(\{x^T,v\})$. However, this implies that $x$ is set to \texttt{true} in the satisfying assignment and thus the clause $c$ is satisfied, a contradiction. 
+
+
+%Assume w.l.o.g.\ that variable $x$ appears non-negated in clause $c$. Then we have that $\{c,x^T\}\in E(G)$. Assume that $\lambda(\{c,x^T\})=t$. Recall that we have specified $d(c,x_2)=2$. Hence we have that $\lambda(\{x_2,x^T\})=t+1$.
+
+$(\Leftarrow)$: Assume that $\phi$ is satisfiable. Then there exists a satisfying assignment for the variables in $\phi$.
+
+We construct a labelling $\lambda$ as follows.
+\begin{itemize}
+    \item All edges incident with a clause vertex $c$ obtain label one.
+    %\item For each variable $x$, we set $\lambda(\{x^T,x^F\})=1$.
+    \item If variable $x$ is set to \texttt{true}, we set $\lambda(\{x^F,v\})=3$.
+    \item If variable $x$ is set to \texttt{false}, we set $\lambda(\{x^T,v\})=3$.
+    \item We set the labels of all other edges to two.
+\end{itemize}
+
+Next, we verify that all distances are realized.
+\begin{itemize}
+    \item For each variable $x$ in $\phi$ we have $d(x,v)=2$: 
+    
+    If $x$ is set to \texttt{true}, then there is a temporal path from $x$ to $v$ via $x^F$ such that $\lambda(\{x,x^F\})=2$ and $\lambda(\{x^F,v\})=3$. If $x$ is set to \texttt{false}, then there is a temporal path from $x$ to $v$ via $x^T$ such that $\lambda(\{x,x^T\})=2$ and $\lambda(\{x^T,v\})=3$.
+
+    \item For each clause $c$ in $\phi$ we have that $d(c,v)=2$:
+
+    Since we have a satisfying assignment there is a variable $x$ appearing in $c$ that is set to a truth-value that satisfies $c$. If $x$ appears non-negated in $c$ (and hence is set to \texttt{true}), then there is a temporal path from $c$ to $v$ through $x^T$ such that $\lambda(\{c,x^T\})=1$ and $\lambda(\{x^T,v\})=2$. If $x$ appears negated in $c$ (and hence is set to \texttt{false}), then there is a temporal path from $c$ to $v$ through $x^F$ such that $\lambda(\{c,x^F\})=1$ and $\lambda(\{x^F,v\})=2$.
+    \item Let $x$ be a variable that appears in clause $c$.
+    If $x$ appears non-negated in $c$ we have $d(c,x)=d(c,x_F)=2$:
+
+    There is a temporal path from $c$ to $x$ via $x^T$ and also a temporal path from $c$ to $x^F$ via $x^T$ such that $\lambda(\{c,x^T\})=1$ and $\lambda(\{x,x^T\})=\lambda(\{x^T,x^F\})=2$.
+
+    If $x$ appears negated in $c$ we have $d(c,x)=d(c,x_T)=2$:
+
+    There is a temporal path from $c$ to $x$ via $x^F$ and also a temporal path from $c$ to $x^T$ via $x^F$ such that $\lambda(\{c,x^F\})=1$ and $\lambda(\{x,x^F\})=\lambda(\{x^T,x^F\})=2$.
+    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we have $d(c,x^T)=d(c,x^F)=2$:
+
+    Let $y$ be a variable that appears non-negated in $c$ (the case where $y$ appears negated is symmetrical). Then there is a temporal path from $c$ to $x^T$ via $y^T$ and also a temporal path from $c$ to $x^F$ via $y^T$ such that $\lambda(\{c,y^T\})=1$ and $\lambda(\{y^T,x^T\})=\lambda(\{y^T,x^F\})=2$.
+\end{itemize}
+Lastly, we show that all non-adjacent vertex pairs $u,w$ with $d(u,w)=\infty$ are not temporally connected in $(G,\lambda)$.
+\begin{itemize}
+\item For all pairs of clause vertices $c,c'$ we have $d(c,c')=\infty$: 
+\todo[inline]{New matrix entries D for period Delta: d(c,c')=Delta+1 (using three edges, with labels L, L+1, L).}
+
+Since all edges incident with clause vertices have label one and clause vertices are pairwise non-adjacent, there cannot be a temporal path from one clause vertex to another.
+\item For all variable vertices $x$ and clause vertices $c$ we have $d(x,c)=\infty$:
+\todo[inline]{New matrix entries D for period Delta: if x appears (negated or not) in c, then d(x,c)=Delta (using two edges, with label L+1, L). Otherwise D(x,c)=2Delta (using three edges, with labels L, L, L-1).}
+
+Since all edges incident with variable vertices $x$ have label two and all edges incident with clause vertices $c$ have label one, there cannot be a temporal path from a variable vertex $x$ to a clause vertex $c$.
+\item For all pairs of variable vertices $x,y$ we have $d(x,y)=\infty$:
+\todo[inline]{New matrix entries D for period Delta: d(x,y)=2Delta+1 (using three edges, each with the same label).}
+
+Since all edges incident with variable vertices $x$ have label two and variable vertices $x$ are pairwise non-adjacent, there cannot be a temporal path from one variable vertex to another.
+\item For all pairs of variable vertices $x,y$ we have $d(y^T,x)=d(y^F,x)=\infty$:
+\todo[inline]{New matrix entries D for period Delta: $d(y^T,x)=d(y^F,x)=Delta+1$ (using two edges, with equal labels).}
+
+Since all edges incident with variable vertices $x$ have label two and all edges incident with variable vertices $y^T, y^F$ have labels two or three and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from a variable vertex $y^T$ or $y^F$ to variable vertex $x$.
+\item For all pairs of variable vertices $x,y$ we have $d(x,y^T)=d(x,y^F)=\infty$:
+\todo[inline]{New matrix entries D for period Delta: $d(x,y^T)=d(x,y^F)=Delta+1$ (using two edges, with equal labels).}
+
+Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the unlabelled graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
+\item For all variable vertices $x$ and clause vertices $c$ we have $d(v,x)=d(v,c)=\infty$:
+\todo[inline]{New matrix entries D for period Delta: d(v,x)=Delta (using two edges, with labels L+1,L). 
+New matrix entries D for period Delta: d(v,c)=Delta (using two edges, with labels L,L-1).}
+
+All edges incident with $v$ have labels two or three. All edges incident with $x$ have label two and all edges incident with $c$ have label one. We immediately have that there is no temporal path from $v$ to $c$. Furthermore, since $x$ and $v$ are non-adjacent, we also have that there is no temporal path from $v$ to $x$.
+\end{itemize}
+\end{proof}
+
+\bibliography{bibliography}	
+
+
+\clearpage
+
+\appendix
+
+\section{
+\texorpdfstring{\deltaExact\ is (NOT) polynomial-time solvable}
 {\textsc{Simple Delta-TGR} is polynomial-time solvable}
 }\
 
@@ -273,7 +728,7 @@ $(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2
     We define the \emph{travel delay} from $u$ to $z$ at vertex $v$, denoted with $\tau_v^{uz}$,
     as the difference of the labels of $e_2$ and $e_1$, where we subtract the value of the label of $e_1$ from the label of $e_2$,  modulo~$\Delta$.
     More specifically:
-    \begin{equation}\label{eq:def-VertexWaitingTime}
+    \begin{equation}\label{eq:def-VertexWaitingTimes}
        \tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta.
     \end{equation}
     Similarly, $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
@@ -291,7 +746,7 @@ $(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2
     \end{proof}
 
     \begin{observation} \label{obs:exact-VertexSum}
-    Let $v$ be a vertex of $G$, and let $N(v)=\{u_1, u_2, \ldots, u_k\}$, Then 
+    Let $v$ be a vertex of $G$, and let $N(v)=\{u_1, u_2, \ldots, u_k\}$. Then 
     \begin{equation*}
         \sum_{i = 1}^k \tau_{v}^{u_{i}v_{i+1}} \equiv  0 \pmod \Delta,
     \end{equation*}
@@ -314,7 +769,7 @@ $(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2
     
     
     \begin{proof}
-        Using \cref{eq:def-VertexWaitingTime} and the fact that the indices of vertices $v_i$ are taken modulo $k$, we get the following:
+        Using \cref{eq:def-VertexWaitingTimes} and the fact that the indices of vertices $v_i$ are taken modulo $k$, we get the following:
         \begin{align*}
             &\sum_{i = 1}^k \tau_{v_i}^{v_{i-1}v_{i+1}}  \equiv  
             \sum_{i = 1}^k  ( \lambda(v_i v_{i+1}) - \lambda (v_{i-1} v_i) ) \pmod \Delta \equiv \\
@@ -344,216 +799,5 @@ $(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2
     We believe we can create some ``base of cycles'' over $G$ that would help us use \cref{obs:exact-CyclesSum} efficiently.
 \end{proof}
 
-\subsection{
-\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}
-is polynomial-time solvable on trees, paths and cycles}
 
-Let us observe some properties of the matrix $D$ from \deltaExact, when the underlying graph $G$ of $D$ is a cycle $C_n = \{v_1, v_2, \dots, v_n\}$  on $n$ vertices.
-By the definition, each vertex is on distance $0$ from itself. This corresponds with all diagonal entries of $D$ being $0$.
-Now, let us observe that each vertex $v_i$ has exactly two neighbours in $C_n$, namely $v{i-1}$ and $v_{i+1}$,
-therefore for all $i\in [n]$ we set $D_{i,i-1} = D_{i, i+1} = 1$, where indices are taken modulo $n$.
-This results in the upper and lower diagonal of $D$ having all $1$'s, with $D_{1,n} = D_{n,1} = 1$.
-The matrix $D$ is of the following form
-\begin{equation*}
-  D = 
-  \begin{bmatrix}
-    0 & 1 &  &  &  & 1\\
-    1 & 0 & 1 &  &  & \\
-    & 1 & 0 & 1 & & \\
-    & & \ddots & \ddots & \ddots &   \\
-    &   & &1 &  0 & 1\\ 
-    1 &  &  &  &1 &  0 
-  \end{bmatrix},
-\end{equation*}
-where the empty entries consists of positive integers different than $1$.
-
-Let $v_i$ be an arbitrary vertex in $C_n$.
-Vertex $v_i$ can reach an arbitrary vertex $v_k \in C_n$ using a positive side of the cycle (\ie going from $v_i$ to $v_{i+1},  v_{i+2}$, etc.), 
-and using the negative side of the cycle (\ie going from $v_i$ to $v_{i-1}, v_{i-2}$, etc.).
-Let us denote with the $d^+(i,k)$ the duration of the temporal path from $v_i$ to $v_k$ using the positive side of the cycle,
-and with $d^-(i,k)$, the duration of the temporal path from $v_i$ to $v_k$ using the negative side of the cycle.
-Since these two are the only possible paths from $v_i$ to $v_k$ in $C_n$ we know that $D_{i,k} = min \{d^+(i,k), d^-(i,k)\}$.
-
-\begin{claim} \label{claim:poly-delta-cycle-monotonicity}
-    If vertex $v_i$ reaches vertex $v_j$ the fastest, using the positive (resp.~negative) side of the cycle, \ie $v_i, v_{i+1}, \dots, v_{j-1}, v_j$ (resp. $v_i, v_{i-1}, \dots, v_{j+1}, v_j$),
-    then $v_i$ reaches all other vertices $v_k$, where $k \in \{i+1, i+2, \dots, j-1\}$ (resp.~ $k \in \{i-1, i-2, \dots, j+1\}$)
-    using the same, positive side  (resp.~negative), side of the cycle,
-    where the indices are taken modulo $n$.
-\end{claim}
-\begin{proof}
-    Let $v_i, v_j$ be two arbitrary vertices in $C_n$ and suppose that $D_{i,j} = d^+(i,j)$,
-    but there exists a vertex $v_k$ from $C_n$, where $k \in \{i+1, i+2, \dots, j-1\}$,
-    for which $D_{i,k} \neq d^+(i,k)$.
-    Then $d^-(i,k)$ passes through the vertex $v_j$, and we can split the path from $v_i$ to $v_k$ into two pieces, 
-    first from $v_i$ to $v_j$ and the second one from $v_k$ to $v_j$.
-    So 
-    \begin{equation} \label{eq:poly-delta-cycle-monotonicity}
-        d^-(i,k) = d^-(i,j) + d^-(j,k)^*,
-    \end{equation} where $d^-(j,k)^*$ is the duration of the path from $v_j$ to $v_k$, using the negative side of the cycle, with consideration that we come to the vertex $v_j$ at time $d^-(i,j)$ and we potentially have to wait there for some positive amount of time, before we continue to $v_j$
-    (\ie $d^-(j,k)^* \geq d^-(i,j) \geq D_{j,k}$ includes some waiting time at vertex $v_j$).
-    By the assumption we know that $d^+(i,j) \leq d^-(i,j)$, so we can rewrite \cref{eq:poly-delta-cycle-monotonicity} as
-    $d^-(i,k) \leq d^+(i,j) + d^-(j,k)^*$. This means that we can reach $v_k$ from $v_j$ by going from $v_i$ to $v_j$ using the positive side of the cycle, wait some time at $v_j$, before we continue back to $v_j$.
-    In the above construction vertex $v_k$ is visited twice. By the definition, the fastest temporal path from $v_i$ to $v_k$ visits $v_k$ exactly once. Therefore we can stop at $v_k$ already when traveling from $v_i$ to $v_j$ the first time, using the positive side of the cycle.
-    It follows that $D_{i,j} = d^+(i,j) \leq d^-(i,j)$, which contradicts with our assumption.
-\end{proof}
-
-Let $v_i$ be an arbitrary vertex of $C_n$. Let us look at the row $i$ of the matrix $D$, which corresponds to the duration of fastest temporal paths from $v_i$ to any other vertex $v_j \in C_n$.
-Using \cref{claim:poly-delta-cycle-monotonicity} we know that $v_i$ will reach some consecutive vertices $v_{i+1}, v_{i+2}, \dots, v_j$ the fastest, using the positive side of the cycle 
-and $v_{i-1}, v_{i-2}, \dots, v_{j+1}$ the fastest, using the negative side of the cycle.
-Suppose $v_j \in C_n$ is the last vertex $v_i$ reaches using the positive side of the cycle, and $v_{j+1}$ the last vertex that is reached using the negative side of the cycle.
-Then we know that $D_{i,i+1} < D_{i,i+2} < \cdots< D_{i,j-1} < D_{i,j}$ and 
-$D_{i,i-1} < D_{i,i-2} < \cdots < D_{i,j+2} < D_{i,j+1}$.
-Note that it can happen that $v_j = v_{j+1}$, \ie to reach vertex $v_j$ from $v_i$ the fastest, we can use either positive or negative side of the cycle.
-Using the above observations, every row $i$ ($i \in [n]$) of matrix $D$ has two (or one) maximum elements, one at position $j$ and the other at position $j+1$, where $j, j+1 \in [n]$ and the indices are considered modulo $n$.
-Let us denote these two values as $m_i^1$ and $m_i^2$.
-The row $i$ of $D$ is of the following form, it has a $0$ at the entry $i$, it has a $1$ at entries $i-1, i+1$,
-the values increase on the positions $i+1, i+2, i+3, \dots, j-1, j$ for some $j$ with value $m_i^1$, 
-and on the other side, values increase on the positions $i-1, i-2, i-3, \dots, j+2, j+1$ for some $j+1$ with value $m_i^2$,
-where indices are taken modulo $n$.
-
-\begin{theorem}
-    \deltaExact\ can be solved in polynomial time on cycles.
-\end{theorem}
-
-    
-\section{Hardness of Exact Realization}
-
-\todo[inline]{HM: For the following hardness I assume that we only consider strict temporal paths. (NK: Yes you are right, all paths are strict, sorry forgot to specify). \\
-Furthermore, I can currently only make it work if we do not have periods ($\Delta=\infty$). I am not sure the idea also works if we have periods.}
-
-\begin{theorem}
-	\textsc{Exact Realization $(\infty)$} is \NP-hard.
-\end{theorem}
-
-\begin{proof}
-	We present a polynomial-time reduction from the NP-hard problem 3-SAT~\cite{Karp1972Reducibility}. Here, we are given a formula $\phi$ in conjunctive normal form, where each clause contains exactly 3 literals (with three distinct variables). We construct an instance of \textsc{Exact Realization $(\infty)$} as follows.
-
- We start by describing the vertex set of the underlying graph $G$.
-\begin{itemize}
-\item For each variable $x$ in $\phi$, we create three variable vertices $x, x^T, x^F$.
-\item For each clause $c$ in $\phi$, we create one clause vertex $c$.
-\item We add one additional super vertex $v$.
-\end{itemize}
-Next, we describe the edge set of $G$.
-\begin{itemize}
-\item For each variable $x$ in $\phi$ we add the following five edges: 
-
-$\{x, x^T\}, \{x, x^F\}, \{x^T, x^F\}, \{x^T, v\}, \{x^F,v\}$.
-\item For each pair of variables $x,y$ in $\phi$ with $x\neq y$ we add the following four edges 
-
-$\{x^T,y^T\},\{x^T,y^F\}, \{x^F,y^T\},\{x^F,y^F\}$.
-\item For each clause $c$ in $\phi$ we add one edge for each literal. Let $x$ appear in $c$. If $X$ appears non-negated in $c$ we add edge $\{c,x^T\}$. If $x$ appears negated in $c$ we add edge $\{c, x^F\}$.
-\end{itemize}
-This finishes the construction of $G$.
-
-Now we specify the distances between all vertex pairs. Naturally, the distance between all pairs of adjacent vertices is one.
-\begin{itemize}
-    %\item For each variable $x$ in $\phi$ we specify the following distances between the non-adjacent variable vertices:
-    
-    %$d(x_1,x_2)=2$. 
-    %\item For pair of variable $x,y$ in $\phi$ with $x\neq y$ we specify the following distances:
-
-    %$d(x_1,y^T)=d(x_1,y^F)=3$, $d(x_2,y^T)=d(x_2,y^F)=2$.
-    \item For each variable $x$ in $\phi$ we specify the following distances to the super vertex $v$:
-
-    $d(x,v)=2$. %, $d(x_2,v)=3$.
-
-    \item For each clause $c$ in $\phi$ we specify the following distances to the super vertex $v$:
-
-    $d(c,v)=2$
-    \item Let $x$ be a variable that appears in clause $c$, then  we specify the following distances:
-
-    $d(c,x)=2$.
-    
-    If $x$ appears non-negated in $c$ we specify the following distances:
-
-    $d(c,x_F)=2$.
-
-    If $x$ appears negated in $c$ we specify the following distances:
-
-    $d(c,x_T)=2$.
-    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we specify the following distances:
-
-    $d(c,x^T)=d(c,x^F)=2$.
-\end{itemize}
-All distances between non-adjacent vertex pairs that are not defined above are set to $\infty$.
-
-This finishes the construction of the \textsc{Exact Realization $(\infty)$} which can clearly be done in polynomial time. In the remainder we show that it is a yes-instance if and only if $\phi$ is satisfiable.
-
-$(\Rightarrow)$: Assume the constructed \textsc{Exact Realization $(\infty)$} is a yes-instance. Then there exist a label $\lambda(e)$ for each edge $e\in E(G)$ such that for each vertex pair $u,w$ in the temporal graph $(G,\lambda)$ we have that a fastest temporal path between from $u$ to $w$ has exactly duration $d(u,w)$. In particular, for any two vertices $u,w$ with $d(u,w)=\infty$ we have that there does not exist a temporal path from $u$ to $w$ in $(G,\lambda)$.
-
-We construct a satisfying assignment for $\phi$ as follows. For each variable $x$, if $\lambda(\{x,x^T\})=\lambda(\{x^T,v\})$, then we set $x$ to \texttt{true}, otherwise we set $x$ to \texttt{false}.
-
-To show that this yields a satisfying assignment, we need to show some following properties of $\lambda$.
-First, observe that adding some integer $t$ to all time labels does not change the duration of any temporal path. Second, observe that if for two vertices $u,w$ we have that $d(u,w)$ equals the distance between $u$ and $w$ in $G$, then there is a shortest path from $u$ to $w$ in $G$ such that $\lambda$ puts consecutive time labels on the edges of that shortest path. 
-
-Assume that for some variable $x$ we have that $\lambda(\{x,x^T\})=t$ and $\lambda(\{x,x^F\})=t'$. 
-We can deduce that $\lambda(\{x^T,v\})=t+1$ or $\lambda(\{x^F,v\})=t'+1$, otherwise we have that $d(x,v)>2$.
-Note that, if both $\lambda(\{x^T,v\})=t+1$ and $\lambda(\{x^F,v\})=t'+1$, then 
-
-
-In particular, this means that if $\lambda(\{x,x^F\})=\lambda(\{x^F,v\})$, then we set $x$ to \texttt{false}, since in this case $\lambda(\{x,x^T\})\neq\lambda(\{x^T,v\})$.
-
-%Furthermore, we have that if $x$ appears non-negated in clause $c$, then $\lambda(\{c,x^T\})=t-1$, otherwise we have $d(c,x^T)>2$. Symmetrically, we have that if $x$ appears negated in clause $c$, then $\lambda(\{c,x^F\})=t'-1$, otherwise we have $d(c,x^F)>2$.
-
-Now assume for contradiction that the described assignment is not satisfying. Then there exists a clause $c$ that is not satisfied. Recall that we require $d(c,v)=2$. Hence, we must have a temporal path consisting of two edges from $c$ to $v$ such that the two edges have consecutive labels. By construction of $G$ there are three candidates for such a path, one for each literal of $c$. Assume w.l.o.g.\ that $x$ appears in $c$ non-negated (the case of negated is symmetrical) and the temporal path realizing $d(c,v)=2$ goes through vertex $x^T$. Then we have that $\lambda(\{c,x^T\})=\lambda(\{x^T,v\})-1$. Furthermore, since $d(c,x)=2$ we also have that $\lambda(\{c,x^T\})=\lambda(\{x,x^T\})-1$. It follows that $\lambda(\{x,x^T\})=\lambda(\{x^T,v\})$. However, this implies that $x$ is set to \texttt{true} in the satisfying assignment and the clause $c$ is satisfied, a contradiction.
-
-%Assume w.l.o.g.\ that variable $x$ appears non-negated in clause $c$. Then we have that $\{c,x^T\}\in E(G)$. Assume that $\lambda(\{c,x^T\})=t$. Recall that we have specified $d(c,x_2)=2$. Hence we have that $\lambda(\{x_2,x^T\})=t+1$.
-
-$(\Leftarrow)$: Assume that $\phi$ is satisfiable. Then there exists a satisfying assignment for the variables in $\phi$.
-
-We construct a labelling $\lambda$ as follows.
-\begin{itemize}
-    \item All edges incident with a clause vertex $c$ obtain label one.
-    %\item For each variable $x$, we set $\lambda(\{x^T,x^F\})=1$.
-    \item If variable $x$ is set to \texttt{true}, we set $\lambda(\{x^F,v\})=3$.
-    \item If variable $x$ is set to \texttt{false}, we set $\lambda(\{x^T,v\})=3$.
-    \item We set the labels of all other edges to two.
-\end{itemize}
-
-Next, we verify that all distances are realized.
-\begin{itemize}
-    \item For each variable $x$ in $\phi$ we have $d(x,v)=2$: 
-    
-    If $x$ is set to \texttt{true}, then there is a temporal path from $x$ to $v$ via $x^F$ such that $\lambda(\{x,x^F\})=2$ and $\lambda(\{x^F,v\})=3$. If $x$ is set to \texttt{false}, then there is a temporal path from $x$ to $v$ via $x^T$ such that $\lambda(\{x,x^T\})=2$ and $\lambda(\{x^T,v\})=3$.
-
-    \item For each clause $c$ in $\phi$ we have that $d(c,v)=2$:
-
-    Since we have a satisfying assignment there is a variable $x$ appearing in $c$ that is set to a truth-value that satisfies $c$. If $x$ appears non-negated in $c$ (and hence is set to \texttt{true}), then there is a temporal path from $c$ to $v$ through $x^T$ such that $\lambda(\{c,x^T\})=1$ and $\lambda(\{x^T,v\})=2$. If $x$ appears negated in $c$ (and hence is set to \texttt{false}), then there is a temporal path from $c$ to $v$ through $x^F$ such that $\lambda(\{c,x^F\})=1$ and $\lambda(\{x^F,v\})=2$.
-    \item Let $x$ be a variable that appears in clause $c$.
-    If $x$ appears non-negated in $c$ we have $d(c,x)=d(c,x_F)=2$:
-
-    There is a temporal path from $c$ to $x$ via $x^T$ and also a temporal path from $c$ to $x^F$ via $x^T$ such that $\lambda(\{c,x^T\})=1$ and $\lambda(\{x,x^T\})=\lambda(\{x^T,x^F\})=2$.
-
-    If $x$ appears non-negated in $c$ we have $d(c,x)=d(c,x_T)=2$:
-
-    There is a temporal path from $c$ to $x$ via $x^F$ and also a temporal path from $c$ to $x^T$ via $x^F$ such that $\lambda(\{c,x^F\})=1$ and $\lambda(\{x,x^F\})=\lambda(\{x^T,x^F\})=2$.
-    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we have $d(c,x^T)=d(c,x^F)=2$:
-
-    Let $y$ be a variable that appears non-negated in $c$ (the case where $y$ appears negated is symmetrical). Then there is a temporal path from $c$ to $x^T$ via $y^T$ and also a temporal path from $c$ to $x^F$ via $y^T$ such that $\lambda(\{c,y^T\})=1$ and $\lambda(\{y^T,x^T\})=\lambda(\{y^T,x^F\})=2$.
-\end{itemize}
-Lastly, we show that all non-adjacent vertex pairs $u,w$ with $d(u,w)=\infty$ are not temporally connected in $(G,\lambda)$.
-\begin{itemize}
-\item For all pairs of clause vertices $c,c'$ we have $d(c,c')=\infty$: 
-
-Since all edges incident with clause vertices have label one and clause vertices are pairwise non-adjacent, there cannot be a temporal path from one clause vertex to another.
-\item For all variable vertices $x$ and clause vertices $c$ we have $d(x,c)=\infty$:
-
-Since all edges incident with variable vertices $x$ have label two and all edges incident with clause vertices $c$ have label one, there cannot be a temporal path from a variable vertex $x$ to a clause vertex $c$.
-\item For all pairs of variable vertices $x,y$ we have $d(x,y)=\infty$:
-
-Since all edges incident with variable vertices $x$ have label two and variable vertices $x$ are pairwise non-adjacent, there cannot be a temporal path from one variable vertex to another.
-\item For all pairs of variable vertices $x,y$ we have $d(y^T,x)=d(y^F,x)=\infty$:
-
-Since all edges incident with variable vertices $x$ have label two and all edges incident with variable vertices $y^T, y^F$ have labels two or three and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from a variable vertex $y^T$ or $y^F$ to variable vertex $x$.
-\item For all pairs of variable vertices $x,y$ we have $d(x,y^T)=d(x,y^F)=\infty$:
-
-Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the unlabelled graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
-\item For all variable vertices $x$ and clause vertices $c$ we have $d(v,x)=d(v,c)=\infty$:
-
-All edges incident with $v$ have labels two or three. All edges incident with $x$ have label two and all edges incident with $c$ have label one. We immediately have that there is no temporal path from $v$ to $c$. Furthermore, since $x$ and $v$ are non-adjacent, we also have that there is no temporal path from $v$ to $x$.
-\end{itemize}
-\end{proof}
-
-\bibliography{bibliography}	
 \end{document}
