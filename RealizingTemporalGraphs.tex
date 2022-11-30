@@ -636,6 +636,28 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
 \end{itemize}
 \end{proof}
 
+\section{FPT and W[1]-hardness of exact realization}
+In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subset E(G)$ is a subset of edges, such that each cycle in $G$ has at least one edge in $F$.
+The minimum such set $F$ is called a  \emph{minimum feedback edge set} and its size, $k = |F|$, is called the \emph{feedback edge number} of graph $G$.
+Note that one can find a minimum feedback edge set in linear time, by calculating a spanning tree (or forest) $T$ of the given graph $G$ and then removing all of the edges $T$ from $G$, \ie $F = E(G) \setminus E(T)$.
+
+\begin{theorem}
+    \deltaExactLong\ is FPT parameterized by the feedback edge number.
+\end{theorem}
+
+Let $D$ be an instance of \deltaExact, with $G$ being its underlying graph.
+We solve the problem using the following steps.
+\begin{enumerate}
+    \item Create $G'$ and $D'$ from $G$ and $D$ respectively, by removing all degree $1$ vertices from $G$ and $D$.
+    \item Compute a minimum feedback edge set $F$ in $G'$.
+    \item Determine $O(k)$ vertices of interest $U$ of $G'$, where $k = |F|$.
+    \item Find the (partial) labelling of $G'$, that connects all pairs of vertices from $U$, satisfying their respective values in $D'$.
+    \item Fill in the labeling for whole $G'$.
+    \item Fill in the labeling for $G$, respecting $D$.
+\end{enumerate}
+
+
+
 \bibliography{bibliography}	
 
 
