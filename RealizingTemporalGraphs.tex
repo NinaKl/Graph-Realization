@@ -142,9 +142,6 @@ A \emph{fastest} temporal path $P$ from $u$ to $v$ in $(G,\lambda)$ is a tempora
 The duration of the \emph{fastest} temporal path from $u$ to $v$ is denoted by $d(u,v)$.
 \end{definition}
 
-
-
-
 	
 	
 \problemdef{\deltaExactLong\ (\deltaExact)}
@@ -195,10 +192,23 @@ $(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2
 Then, for every pair $u,v$ of vertices of $G$, every fastest temporal path from $u$ to $v$ is $D$-increasing.
 \end{observation}
 
+Let $(G,\lambda)$ be a temporal graph with  $n = |V(G)|$ and  $m=|E(G)|$.
+Let $v \in V(G)$ be an arbitrary vertex of $G$, denote with $deg_{max}$ the maximum degree of all vertices in $V(G)$ and let $S_v$ be the set of time edges in $(G,\lambda)$, incident to $v$, \ie $S_v = \{(uv, \lambda(uv)) | uv \in E(G)\}$.
+In their work Wo et.~al. \cite{Wu2016Efficient} provide an algorithm that computes the duration of the fastest temporal path from a source vertex $v$ to all other vertices in $G$ in
+$O(n + m \log c)$ time, where $c = \min \{|S_v|, deg_{max}\}$.
+From this result, we can deduce the following. 
+\begin{lemma} \label{lemma:calculatingD}
+Let $(G, \lambda, \Delta)$ be a $\Delta$-periodic temporal graph, where $\lambda$ assigns exactly $k$ labels to every edge of $G$. 
+Denote with $deg_{max}$ the maximum degree of vertices in $G$, let $deg(v_i)$ be the degree of vertex $v_i \in V(G)$,
+and let $c_{v_i} = \min \{ k \cdot deg(v_i), deg_{max}\}$.\\
+To calculate the durations of all fastest temporal paths from a fixed vertex $v \in V(G)$ to all other vertices, it takes $O(n + m \log c_v)$ time. \\
+To calculate the durations of the fastest temporal paths among all pairs of vertices we then need $O(n^2 + m \sum_{v \in V(G)} \log c_v)$ time.
+\end{lemma}
 
-
-
-
+Observe that $O(n + m \log c_v) = O(n + m \log deg_{max}) = O(n + m \log n) = O(n^2 \log n)$ and similarly
+$O(n^2 + m \sum_{v \in V(G)} \log c_v) = O(n^2 + mn \log deg_{max}) = O(n + mn \log n) = O(n^3 \log n)$.
+Since an instance $I$ of \kDeltaExact\ problem is an $n \times n$ matrix $D$, the running time of calculating one row of $D$ (\ie the fastest temporal paths from a single vertex to all others) takes $O(|I|\log \sqrt{|I|})$-time and calculating the whole matrix $D$ (\ie the fastest temporal paths among all pairs of vertices) takes $O(|I|^{3/2} \log \sqrt{|I|})$ time.
+Therefore, from now on we say that calculating (a row of) $D$ takes polynomial time.
 
 %\section{Results}
 
@@ -284,7 +294,7 @@ where $d(P_{i,j})$ is the duration of the (unique) temporal path $P_{i,j}$ from 
     Now using \cref{claim:unique-fastest-path-allDelays}, we can determine the waiting times for all \emph{inner} vertices of the path $P_{i,j}$.
 \end{observation}
 
-\begin{theorem}
+\begin{theorem} \label{thm:deltaExact-PolyTimeTrees}
     \deltaExact\ can be solved in polynomial time on trees.
 \end{theorem}
 
@@ -641,21 +651,78 @@ In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subset E(G)$ is a subset of
 The minimum such set $F$ is called a  \emph{minimum feedback edge set} and its size, $k = |F|$, is called the \emph{feedback edge number} of graph $G$.
 Note that one can find a minimum feedback edge set in linear time, by calculating a spanning tree (or forest) $T$ of the given graph $G$ and then removing all of the edges $T$ from $G$, \ie $F = E(G) \setminus E(T)$.
 
-\begin{theorem}
+\begin{theorem}\label{thm:FPTwrtFES}
     \deltaExactLong\ is FPT parameterized by the feedback edge number.
 \end{theorem}
 
-Let $D$ be an instance of \deltaExact, with $G$ being its underlying graph.
-We solve the problem using the following steps.
+Before we start with the proof we fix the following notation. 
+Let $D$ be the input matrix of \deltaExact\ \ie
+the matrix of the fastest temporal paths among $n$ vertices, and let $G$ be its underlying graph, on $n$ vertices and $m$ edges.
+Let $F$ be a minimum feedback edge set of $G$ and let $k$ be the feedback edge number of $G$.
+
+We now introduce an algorithm that determines the labeling of $G$, satisfying $D$, that runs in $f(k) \cdot \text{poly}(n)$ time.
+Our algorithm performs the following steps.
 \begin{enumerate}
     \item Create $G'$ and $D'$ from $G$ and $D$ respectively, by removing all degree $1$ vertices from $G$ and $D$.
-    \item Compute a minimum feedback edge set $F$ in $G'$.
-    \item Determine $O(k)$ vertices of interest $U$ of $G'$, where $k = |F|$.
-    \item Find the (partial) labelling of $G'$, that connects all pairs of vertices from $U$, satisfying their respective values in $D'$.
-    \item Fill in the labeling for whole $G'$.
-    \item Fill in the labeling for $G$, respecting $D$.
+    \item Compute a minimum feedback edge set $F$ in $G'$ (note $F$ is also a minimum feedback edge set of $G$).
+    \item Determine vertices of interest $U$ of the graph $G'$.
+    \item Find the (partial) labelling $\lambda$ of $G'$, that connects all pairs of vertices from $U$, satisfying their respective values in $D'$.
+    \item Extend the partial labelling $\lambda$ to the labeling of the whole $G'$, respecting $D'$.
+    \item Extend the labelling $\lambda$ of $G'$ to the labeling of $G$, respecting $D$.
 \end{enumerate}
+For each of the steps we now argue its correctness and time complexity.
 
+\paragraph{Step 1.}
+In the first step of the algorithm we create an instance $D'$, with the underlying graph $G'$, from $D$ and $G$, by simply removing all the vertices of degree one from $G$ and their corresponding rows and columns from the matrix $D$. 
+This step is executed in $O(n+m)$ time.
+Since we determine the labels of edges in $G \setminus G'$ in the last step, the the whole solution is not affected by performing this step.
+
+\paragraph{Step 2.}
+To find a minimum feedback edge set $F$ of $G'$ we find a spanning tree $T$ of $G'$ and get $F = E(G) \setminus E(T)$. 
+Clearly we perform this step in linear time.
+
+\paragraph{Step 3.}
+Let $T$ be a spanning tree of $G'$, with $F$ being the corresponding feedback edge set of $G'$.
+Let $V_1 \subset V(G')$ be the set of leaves in $T$, $V_2 \subset V(G')$ be the set of vertices of degree two in $T$, that are incident to some edges in $F$, and let $V_3 \subset V(G')$ be the set of vertices of degree at least $3$ in $T$. 
+Then $|V_1| + |V_2| \leq 2k$, since every leaf in $T$ and every vertex in $V_2$ is incident to at least one edge in $F$,
+and $|V_3| \leq |V_1|$ by the properties of trees.
+We denote with $U = V_1 \cup V_2 \cup V_3$ the set of \emph{vertices of interest}. It follows that $|U| \leq 4k$.
+Clearly we perform this step in linear time.
+
+\paragraph{Step 4}
+In this step we want to determine the labeling of fastest temporal paths among all vertices in $U$.
+For a pair $u,v$ of vertices in $U$, there are $2^{O(k)}$ possible paths in $G'$ between them, where each one could be the fastest temporal path from $u$ to $v$ and $v$ to $u$. Therefore we get $2^{O(k)}$ partial (different) labelings of $G'$. \todo{NK: How??}
+This is true for any pair of vertices in $U$. 
+We then try to join the labelings of different pairs of vertices and end up with $(2^{O(k)})^{k^2} = 2^{O(k^3)}$ different labelings.
+Some of them we can reject immediately, namely if two different labellings label the same edge with the different label.
+At the end we end up with $22^{O(k^3)}$ partial labelings $\lambda$ of $G'$, where $(G',\lambda)$ has labels on all fastest paths among any pair of vertices in $U$,  and the duration of the fastest temporal path from $u$, to $v$, where $u,v \in U$ satisfies the value $D_{u,v}$. 
+\todo[inline]{Missing details.}
+
+\paragraph{Step 5.}
+In the partially labeled temporal graph $(G',\lambda)$ the durations of the fastest temporal paths among vertices in $U$ satisfy the conditions of $D'$,
+but there are still some labels without labels.
+Let $e=(uv)$ be one such edge.
+\todo[inline]{TBD}
+
+\paragraph{Step 6.}
+Let $\lambda$ be the labelling of $G'$, that satisfies $D'$.
+Let $s \in V(G) \setminus V(G')$, be a vertex of degree one, that was removed from $G$ in Step 1,
+and let $u$ be its neighbor in $G$.
+First, we can easily assume that $|N_{G'}(u)|\geq 1$, if this is not true, then either $G$ is a star or $G'$ is disconnected and therefore also $G$ is disconnected, where $u$ is in a part of $G$ that forms a star.
+We can solve the problem for stars in polynomial time (see \cref{thm:deltaExact-PolyTimeTrees}).
+
+To determine the correct label of edge $su$ we do the following.
+We find the vertex $v_i \in N_{G'}(u)$ that is the closest to $v$, regarding the values of $D$, \ie  $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$.
+We claim, that the path $P=(s,u,v_i)$ has to be the fastest temporal path from $s$ to $v_i$ in $(G, \lambda'')$.
+Suppose that is not true, then there exists a faster path $P^*$ from $s$ to $v_i$, that goes through $u$ (as this is the only neighbor of $s$), through some other vertex $v_j \in N_{G'}(u) \setminus \{v_i \}$, and through some other path $P'$ in $G$, before it finishes it $v_i$, where $P'$ is at least an edge (from $v_j$ to $v_i$). 
+Therefore $P^* = (s,u,v_j,P',v_i)$, where $d(P^*) \leq d(P)$, now since $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$, the first part of path $P^*$ from $s$ to $v_j$ takes at least $D_{s,v_i}$ time,
+since $v_i \neq v_j$, we need at least one more time-step (one more edge) to traverse from $v_i$ to reach $v_j$, so $d(P^) \geq D_{s,v_i} + 1$, and so $P^*$ cannot be faster than $P$.
+Since $P=(s,u,v_i)$ is the fastest temporal path from $s$ to $v_i$ we calculate the label of the edge $su$ as $\lambda (s,v_i) \equiv \lambda(u v_i) + 1 - D_{s,v_i} \pmod \Delta$.
+
+We repeat the above procedure for all degree one vertices in $G$, that we removed in Step 1, and we end up with the labeling $\lambda$ of the whole graph.
+Now we have to make sure that all the new labels satisfy $D$, to do this we calculate the matrix $D'$ of fastest temporal paths among all pairs of vertices in $(G, \lambda)$ and compare the results with $D$, if any values differ, we stop and return a \textit{NO} answer, if $D = D'$ we return the labeling $\lambda$.
+
+To calculate $\lambda (s,v_i)$ we need $O(|N_{G'}(u)|) = O(n)$ time, therefore to calculate all labels of edges incident to vertices of degree one in $G$, we need $O(n^2)$ time, calculating $D'$ takes $O(n^3\log n)$ time (see \cref{lemma:calculatingD}), therefore the whole step is performed in polynomial time.
 
 
 \bibliography{bibliography}	
