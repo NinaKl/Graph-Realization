@@ -1,0 +1,58 @@
+<ipe version="60032" creator="Ipe 6.0 preview 32">
+<info created="D:20230101144911" modified="D:20230108182312" bbox="cropbox"/>
+<ipestyle>
+</ipestyle>
+<ipestyle>
+</ipestyle>
+<page gridsize="16">
+<layer name="alpha"/>
+<view layers="alpha" active="alpha"/>
+<mark layer="alpha" stroke="black" pos="80 176" shape="1" size="large" fill="black" pen="normal"/>
+<mark stroke="black" pos="112 176" shape="1" size="large" fill="black" pen="normal"/>
+<mark stroke="black" pos="208 176" shape="1" size="large" fill="black" pen="normal"/>
+<mark stroke="black" pos="240 176" shape="1" size="large" fill="black" pen="normal"/>
+<mark stroke="black" pos="224 208" shape="1" size="large" fill="black" pen="normal"/>
+<mark stroke="black" pos="112 208" shape="1" size="large" fill="black" pen="normal"/>
+<mark stroke="black" pos="272 176" shape="1" size="large" fill="black" pen="normal"/>
+<mark stroke="black" pos="384 176" shape="1" size="large" fill="black" pen="normal"/>
+<path stroke="black" pen="normal">
+80 176 m
+384 176 l
+</path>
+<path stroke="black" pen="normal">
+112 208 m
+80 176 l
+</path>
+<path stroke="black" pen="normal">
+224 208 m
+240 176 l
+</path>
+<path stroke="black" matrix="1.198758 0 0 1 -22.161491 0" pen="normal">
+112 208 m
+160 240
+208 208 s
+</path>
+<text stroke="black" matrix="1 0 0 1 -5.91716 0.910332" pos="80 160" type="label" valign="baseline" size="Large">$u_0$</text>
+<text stroke="black" matrix="1 0 0 1 -5.91716 0.910332" pos="112 160" type="label" valign="baseline" size="Large">$u_1$</text>
+<text stroke="black" matrix="1 0 0 1 -14.565316 0.455166" pos="208 160" type="label" valign="baseline" size="Large">$u_{i-1}$</text>
+<text stroke="black" matrix="1 0 0 1 -5.91716 0.910332" pos="240 160" type="label" valign="baseline" size="Large">$u_i$</text>
+<text stroke="black" matrix="1 0 0 1 -14.565316 0.455166" pos="272 160" type="label" valign="baseline" size="Large">$u_{i+1}$</text>
+<text stroke="black" matrix="1 0 0 1 -5.91716 0.910332" pos="384 160" type="label" valign="baseline" size="Large">$u_k$</text>
+<text stroke="black" matrix="1 0 0 1 -9.558489 0" pos="240 208" type="label" valign="baseline" size="Large">$v_{j-1}$</text>
+<text stroke="black" matrix="1 0 0 1 -3.641329 -0.455166" pos="96 208" type="label" valign="baseline" size="Large">$v_1$</text>
+<text stroke="blue" pos="163.939463 238.323623" type="label" valign="baseline" size="Large">$P$</text>
+<text stroke="blue" matrix="1 0 0 1 -10.468821 0.910332" pos="148.463814 156.393719" type="label" valign="baseline" size="Large">$Q$</text>
+<text stroke="blue" pos="318.240783 160.490214" type="label" valign="baseline" size="Large">$R$</text>
+<text stroke="blue" pos="262.255348 273.371416" type="label" valign="baseline" size="Large">$P=(u_0,v_1,\ldots,v_{j-1},u_i)$</text>
+<text stroke="blue" pos="261.345016 260.626764" type="label" valign="baseline" size="Large">$Q=(u_0,u_1,\ldots,u_{j-1},u_i)$</text>
+<text stroke="blue" matrix="1 0 0 1 0 -2.275831" pos="261.345016 246.97178" type="label" valign="baseline" size="Large">$R=(u_i,u_{i+1},\ldots,u_k)$</text>
+<text stroke="red" matrix="1.272727 0 0 1.164481 -64.076013 -32.485595" pos="234.94538 192.351843" type="label" valign="baseline" size="large">$g$</text>
+<text stroke="red" pos="218.559399 179.607192" type="label" valign="baseline" size="large">$e$</text>
+<text stroke="red" pos="252.241693 180.062358" type="label" valign="baseline" size="large">$f$</text>
+<text stroke="white" matrix="1 0 0 1 0 -2.275831" pos="190.339099 181.883022" type="label" valign="baseline" size="large">$h$</text>
+<mark stroke="black" pos="176 176" shape="1" size="large" fill="black" pen="normal"/>
+<text stroke="black" matrix="1 0 0 1 -5.91716 -5.006827" pos="168.035958 165.497041" type="label" valign="baseline" size="Large">$u_{i-2}$</text>
+<text stroke="red" pos="83.830223 195.538006" type="label" valign="baseline" size="large">$t_{v_1}$</text>
+<text stroke="red" pos="92.933546 180.062358" type="label" valign="baseline" size="large">$t_{u_1}$</text>
+</page>
+</ipe>
