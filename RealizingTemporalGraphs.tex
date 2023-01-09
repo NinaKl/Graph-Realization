@@ -182,13 +182,13 @@ $D_{a,b}$, where $a=v_i$ and $b=v_j$. That is, we might put as indices of the ma
 \begin{definition}[$D$-increasing temporal path]
 Let $(G,\lambda,\Delta)$ be a $\Delta$-periodic temporal graph on $n$ vertices, and let $D$ be an $n\times n $ matrix of positive integers. 
 Let $P$ be a temporal path from $u_0$ to $u_k$ on the vertices $u_0,u_1,\ldots,u_k$, and let $P^\textsc{ST}=(u_0,u_1,\ldots,u_k)$ be the underlying \emph{static} path in $G$.
-Then $P$ is \emph{$D$-increasing} in $G$ if $0=D_{u_0,u_0}<D_{u_0,u_1}<D_{u_0,u_2}<\ldots,D_{u_0,u_k}$.
+Then $P$ is \emph{$D$-increasing} in $G$ if $0=D_{u_0,u_0}<D_{u_0,u_1}<D_{u_0,u_2}< \ldots < D_{u_0,u_k}$.
 \end{definition}
 
 
 \begin{observation}
-Let $D$ be \textsc{YES}-instance of \textsc{$(k,\Delta)$-TGR}, and let 
-$(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2,\ldots,\Delta\}^k$ a $\Delta$-periodic labeling of $G$.
+Let $D$ be a \textsc{YES}-instance of \textsc{$(k,\Delta)$-TGR}, and let 
+$(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2,\ldots,\Delta\}^k$ is a $\Delta$-periodic labeling of $G$.
 Then, for every pair $u,v$ of vertices of $G$, every fastest temporal path from $u$ to $v$ is $D$-increasing.
 \end{observation}
 
@@ -258,10 +258,10 @@ In this section we study the hardness of \deltaExact. We first start with defini
     Using the properties of fastest paths and the definition of duration, we can rewrite \cref{eq:trav-delays-paths} as follows
     \begin{align*}
         \tau_{v_i}^{v_{i-1},v_{i+1}} & = D_{1,i+1} - D_{1,i} =  d(P_{1,i+1}) - d(P_{1,i}) \\
-        & = 
-        \left(\lambda(v_{i}v_{i+1} - \lambda(v_1v_2) + 1\right) -  
-        \left(\lambda(v_{i-1}v_{i} - \lambda(v_1v_2) + 1\right) \\
-        & = \lambda(v_{i}v_{i+1}) - \lambda(v_{i-1}v_{i}),
+        & \equiv 
+        \left(\lambda(v_{i}v_{i+1}) - \lambda(v_1v_2) + 1\right) -  
+        \left(\lambda(v_{i-1}v_{i}) - \lambda(v_1v_2) + 1\right) \pmod \Delta \\
+        & \equiv \lambda(v_{i}v_{i+1}) - \lambda(v_{i-1}v_{i}) \pmod \Delta,
         \end{align*}
     which is exactly the definition of $\tau_{v_i}^{v_{i-1},v_{i+1}}$.
 \end{proof}
@@ -299,23 +299,24 @@ where $d(P_{i,j})$ is the duration of the (unique) temporal path $P_{i,j}$ from 
 \begin{proof}
     Let $D$ be an input matrix for problem \deltaExact of dimension $n \times n$.
     Let us fix the vertices of the corresponding graph $G$ of $D$ as $v_1, v_2, \dots, v_n$, where vertex $v_i$ corresponds to the row and column $i$ of matrix $D$.
-    This can be done in polynomial time as we need to read through the matrix $D$ once and connect vertices $v_i, v_j$ for which $D_{i,j} = 1$. At the same time we also check if $D_{i,i} = 0$, for all $i \in [n]$.
+    This can be done in polynomial time as we need to loop through the matrix $D$ once and connect vertices $v_i, v_j$ for which $D_{i,j} = 1$. At the same time we also check if $D_{i,i} = 0$, for all $i \in [n]$.
     When $G$ is constructed we run DFS algorithm on it and check if it has no cycles.
     If at any step we encounter a problem, our algorithm stops and returns a negative answer.
     
-    From now on we can assume that we know that the underlying graph $G$ is a tree and we know how it looks like.
+    From now on we can assume that we know that the underlying graph $G$ of $D$ is a tree and we know how it looks like.
     For the next part of the algorithm we use \cref{obs:travel-delays-in-trees}.
     
-    For a vertex $v_i$ we check which vertex $v_j \in G$ is furthest away from it, \ie for which vertex $v_j$ the entry $D_{i,j}$ is maximum.
-    We now take the unique (fastest) temporal path $P_{i,j}$ and using \cref{obs:travel-delays-in-trees} calculate waiting times at all inner vertices.
-    We save those values in a matrix $T$ and mark vertices of the path  $P_{i,j}$ as visited.
-    Matrix $T$ stores at the position $(i,i-1,i+1)$ the value corresponding to the travel delay at vertex $v_i$ when traveling from $v_{i-1}$ to $v_{i}$, \ie $\tau_{v_i}^{v_{i-1}, v_i}$, whenever $v_{i-1}v_i, v_iv_{i+1} \in E(G)$. All other values of $T$ are set to \textsc{Null}.
+    We pick an arbitrary vertex $v_i \in V(G)$ and check which vertex $v_j \in V(G)$ is furthest away from it, \ie we find a maximum element in the $i$-th row of the matrix $D$.
+    We now take the unique path $P_{i,j}$ in $G$, which has to also be the fastest temporal path from $v_i$ to $v_j$, and using \cref{obs:travel-delays-in-trees} calculate waiting times at all inner vertices.
+    We save those values in a matrix $T$, of size $n \times n \times n$, and mark vertices of the path  $P_{i,j}$ as visited.
+    Matrix $T$ stores at the position $(k,j,\ell)$ the value corresponding to the travel delay at vertex $v_k$ when traveling from $v_{j}$ to $v_{\ell}$, \ie it stores the value $\tau_{v_k}^{v_{j}, v_\ell}$, where $v_j,v_\ell \in N(v_k)$. All other values of $T$ are set to \textsc{Null}.
     Now we repeat procedure, from vertex $v_i$, for vertices that are not marked as visited yet, \ie vertices in $V \setminus P_{i,j}$.
     We find a vertex in $V \setminus P_{i,j}$ that is furthest away from $v_i$ and repeat the procedure.
-    When we have exhausted the $i$-th row of $D$, corresponding to the vertex $v_i$,
+    When we have exhausted the $i$-th row of $D$,
+    \ie vertex $v_i$ now reaches every vertex of $G$,
     we continue and repeat the procedure for all other vertices.
     If at any point we get two different values for the same travel delay at a specific vertex, then we stop with the algorithm and return the negative answer.
-    If the above procedure finishes successfully we get the matrix $T$ with travel delays for all vertices $v_i$ in the tree, of degree at least $2$.
+    If the above procedure finishes successfully we get the matrix $T$ with travel delays for all vertices in $G$, of degree at least $2$.
     The above calculation is performed in polynomial time, as for every vertex $v_i$ we inspect the whole graph once.
     \begin{claim}\label{claim:matrixT-travelDelays-tree}
         Matrix $T$ consists of travel delays of all vertices of degree at least $2$ in $G$.
@@ -332,13 +333,13 @@ where $d(P_{i,j})$ is the duration of the (unique) temporal path $P_{i,j}$ from 
     \end{proof}
     
     Now, given the matrix of travel delays $T$, we can find a labeling $\lambda$ that satisfies $D$.
-    We start by fixing a label of one edge as $a$, where $a \in [\Delta]$.
-    Knowing the label of the edge $v_1v_2$ and all waiting times in $T$, we can uniquely determine the labels of all other edges.
+    We start by fixing a label of one arbitrary edge as $a$, where $a \in [\Delta]$.
+    Knowing the label of one edge, and all waiting times in $T$, we can uniquely determine the labels of all other edges.
     More specifically, if we know that $\lambda(v_i v_j) = a$, then for all $v_k \in N(v_i)$ (resp.~$v_{k'} \in N(v_j)$)
     the value $\lambda(v_iv_k) \equiv a + \tau_{v_i}^{v_j,v_k} \pmod \Delta $ (resp.~$\lambda(v_j v_{k'}) \equiv a + \tau_{v_j}^{v_i,v_{k'}} \pmod \Delta $).
     Since there are $\Delta$ options to fix the first label, we can find $\Delta$ different labelings satisfying $D$.
     Note, w.l.o.g we can start determining the labeling $\lambda$ by setting $\lambda(v_1v_2) = 1$.
-    It is not hard to see, that also the calculation of the labeling $\lambda$ takes polynomial time, as we have to traverse the graph exactly once, to successfully fix the labeling. Therefore all together the whole algorithm is performed in polynomial time.
+    It is not hard to see, that also the calculation of the labeling $\lambda$ takes polynomial time, as we have to traverse the graph exactly once, to successfully fix the labeling. Therefore, all together the whole algorithm is performed in polynomial time.
 \end{proof}
 
 \subsection{
@@ -671,8 +672,9 @@ Our algorithm performs the following steps.
 It is important to point out, that in step~\ref{enum:FPT-labelingVerticesOfInterest}, our algorithm does not build a labeling satisfying conditions in this step,
 and then tries to extend it in steps~\ref{enum:FPT-labelingraphNoLeafs} and \ref{enum:FPT-labelingWholeGraph},
 but it
-builds an integer linear program (ILP) problem with $O(k)$ variables,
+builds (many different instances of) integer linear program (ILP) problem with $O(k)$ variables,
 with restrictions satisfying condition from steps~\ref{enum:FPT-labelingVerticesOfInterest}--\ref{enum:FPT-labelingWholeGraph}.
+At the end we solve the ILP problem on all instances and if there is a positive solution, it gives rise to the desired labeling $\lambda$ of $G$.
 For each of the steps we now argue its correctness and time complexity.
 
 \subsection{Steps 1 -- 3 of the FPT algorithm}
