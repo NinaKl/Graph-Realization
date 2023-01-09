@@ -217,8 +217,6 @@ Therefore, from now on we say that calculating (a row of) $D$ takes polynomial t
 
 In this section we study the hardness of \deltaExact. We first start with defining certain notions, that will be of use when solving the problem.
 
-\todo[inline]{NK:Following definition and observation are copied from the previous section (need to delete from one part).}
-
     \begin{definition}[Travel delays]
     Let $(G, \lambda, \Delta)$ be a temporal graph satisfying conditions of problem \deltaExact.
     Let $e_1=uv$ and $e_2=vz$ be two incident edges in $G$ with $e_1 \cap e_2 = v$.
@@ -586,7 +584,7 @@ Then we have that $\lambda(\{c,x^T\})=\lambda(\{x^T,v\})-1$. Furthermore, since 
 
 $(\Leftarrow)$: Assume that $\phi$ is satisfiable. Then there exists a satisfying assignment for the variables in $\phi$.
 
-We construct a labelling $\lambda$ as follows.
+We construct a labeling $\lambda$ as follows.
 \begin{itemize}
     \item All edges incident with a clause vertex $c$ obtain label one.
     %\item For each variable $x$, we set $\lambda(\{x^T,x^F\})=1$.
@@ -637,7 +635,7 @@ Since all edges incident with variable vertices $x$ have label two and all edges
 \item For all pairs of variable vertices $x,y$ we have $d(x,y^T)=d(x,y^F)=\infty$:
 \todo[inline]{New matrix entries D for period Delta: $d(x,y^T)=d(x,y^F)=Delta+1$ (using two edges, with equal labels).}
 
-Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the unlabelled graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
+Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the unlabeled graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
 \item For all variable vertices $x$ and clause vertices $c$ we have $d(v,x)=d(v,c)=\infty$:
 \todo[inline]{New matrix entries D for period Delta: d(v,x)=Delta (using two edges, with labels L+1,L). 
 New matrix entries D for period Delta: d(v,c)=Delta (using two edges, with labels L,L-1).}
@@ -664,48 +662,103 @@ We now introduce an algorithm that determines the labeling of $G$, satisfying $D
 Our algorithm performs the following steps.
 \begin{enumerate}
     \item Create $G'$ and $D'$ from $G$ and $D$ respectively, by removing all degree $1$ vertices from $G$ and $D$.
-    \item Compute a minimum feedback edge set $F$ in $G'$ (note $F$ is also a minimum feedback edge set of $G$).
+    \item Compute a minimum feedback edge set $F$ in $G'$ (note, $F$ is also a minimum feedback edge set of $G$).
     \item Determine vertices of interest $U$ of the graph $G'$.
-    \item Find the (partial) labelling $\lambda$ of $G'$, that connects all pairs of vertices from $U$, satisfying their respective values in $D'$.
-    \item Extend the partial labelling $\lambda$ to the labeling of the whole $G'$, respecting $D'$.
-    \item Extend the labelling $\lambda$ of $G'$ to the labeling of $G$, respecting $D$.
+    \item \label{enum:FPT-labelingVerticesOfInterest} Guess the (partial) labeling $\lambda$ of $G'$, that connects all pairs of vertices from $U$, satisfying their respective values in $D'$.
+    \item \label{enum:FPT-labelingraphNoLeafs} Extend the partial labeling $\lambda$ to the labeling of the whole $G'$, respecting $D'$.
+    \item \label{enum:FPT-labelingWholeGraph} Extend the labeling $\lambda$ of $G'$ to the labeling of $G$, respecting $D$.
 \end{enumerate}
+It is important to point out, that in step~\ref{enum:FPT-labelingVerticesOfInterest}, our algorithm does not build a labeling satisfying conditions in this step,
+and then tries to extend it in steps~\ref{enum:FPT-labelingraphNoLeafs} and \ref{enum:FPT-labelingWholeGraph},
+but it
+builds an integer linear program (ILP) problem with $O(k)$ variables,
+with restrictions satisfying condition from steps~\ref{enum:FPT-labelingVerticesOfInterest}--\ref{enum:FPT-labelingWholeGraph}.
 For each of the steps we now argue its correctness and time complexity.
 
-\paragraph{Step 1.}
+\subsection{Steps 1 -- 3 of the FPT algorithm}
 In the first step of the algorithm we create an instance $D'$, with the underlying graph $G'$, from $D$ and $G$, by simply removing all the vertices of degree one from $G$ and their corresponding rows and columns from the matrix $D$. 
 This step is executed in $O(n+m)$ time.
-Since we determine the labels of edges in $G \setminus G'$ in the last step, the the whole solution is not affected by performing this step.
+Since we determine the labels of edges in $G \setminus G'$ in the last step, the whole solution is not affected by performing this step.
 
-\paragraph{Step 2.}
-To find a minimum feedback edge set $F$ of $G'$ we find a spanning tree $T$ of $G'$ and get $F = E(G) \setminus E(T)$. 
-Clearly we perform this step in linear time.
+In the second step,
+we determine a minimum feedback edge set $F$ of $G'$ by finding a spanning tree $T$ of $G'$ and set $F = E(G) \setminus E(T)$. 
+We can perform this step in linear time.
 
-\paragraph{Step 3.}
+In the third step we determine the set $U$ of \emph{vertices of interest}.
 Let $T$ be a spanning tree of $G'$, with $F$ being the corresponding feedback edge set of $G'$.
 Let $V_1 \subset V(G')$ be the set of leaves in $T$, $V_2 \subset V(G')$ be the set of vertices of degree two in $T$, that are incident to some edges in $F$, and let $V_3 \subset V(G')$ be the set of vertices of degree at least $3$ in $T$. 
-Then $|V_1| + |V_2| \leq 2k$, since every leaf in $T$ and every vertex in $V_2$ is incident to at least one edge in $F$,
+Then $|V_1| + |V_2| \leq 2k$, since every leaf in $T$ and every vertex in $V_2$ are incident to at least one edge in $F$,
 and $|V_3| \leq |V_1|$ by the properties of trees.
-We denote with $U = V_1 \cup V_2 \cup V_3$ the set of \emph{vertices of interest}. It follows that $|U| \leq 4k$.
-Clearly we perform this step in linear time.
+We denote with $U = V_1 \cup V_2 \cup V_3$ the set of vertices of interest. It follows that $|U| \leq 4k$.
+We can determine vertices of $U$ in linear time.
 
-\paragraph{Step 4}
-In this step we want to determine the labeling of fastest temporal paths among all vertices in $U$.
-For a pair $u,v$ of vertices in $U$, there are $2^{O(k)}$ possible paths in $G'$ between them, where each one could be the fastest temporal path from $u$ to $v$ and $v$ to $u$. Therefore we get $2^{O(k)}$ partial (different) labelings of $G'$. \todo{NK: How??}
-This is true for any pair of vertices in $U$. 
-We then try to join the labelings of different pairs of vertices and end up with $(2^{O(k)})^{k^2} = 2^{O(k^3)}$ different labelings.
-Some of them we can reject immediately, namely if two different labellings label the same edge with the different label.
-At the end we end up with $22^{O(k^3)}$ partial labelings $\lambda$ of $G'$, where $(G',\lambda)$ has labels on all fastest paths among any pair of vertices in $U$,  and the duration of the fastest temporal path from $u$, to $v$, where $u,v \in U$ satisfies the value $D_{u,v}$. 
-\todo[inline]{Missing details.}
+\subsection{Step 4 of the FPT algorithm}
+In this step we want to guess the structure of the fastest paths among all pairs of vertices of $U$. %and then determine their labeling.
+For a pair $u,v$ of vertices in $U$, there are $2^{O(k)}$\todo{NK: why? \\ Isn't $k!$} possible paths in $G'$ between them, where each one could be the fastest temporal path from $u$ to $v$ and $v$ to $u$. 
 
-\paragraph{Step 5.}
+We claim that knowing the structure of the fastest temporal path among two vertices, determines the labeling of such path, up to the label of the first edge.
+To prove this we use the following observation, that follows from the definition of the duration of the fastest temporal path.
+\begin{observation}\label{obs:FirstLabelAndDuration}
+    Let $P$ be the fastest temporal path from $u$ to $v$, where $e_1, e_p \in P$ are its first and last edge, respectively.
+    Then knowing the label of the first (last) edge and the duration of $P$, one can uniquely determine the label of the last (first) edge of $P$.
+\end{observation}
+This is true as, by the definition the duration of $P$ is calculated as the difference of labels of last and first edge plus $1$,
+where the label of last edge is considered with some delta periods,
+\ie $d(P) = p_i \Delta + \lambda(e_p) - \lambda (e_1) + 1$.
+Therefore $d(P) \pmod \Delta \equiv  (\lambda(e_p) - \lambda (e_1) + 1) \pmod \Delta$.
+We can now state and prove the following claim.
+\begin{claim}
+    Suppose $P = (u=v_1, v_2, \dots, v_p = v)$, where $p \geq 2$, is a $u,v$ path in $G'$, which is also the underlying path of the fastest temporal path from $u$ to $v$.
+    One can determine the labelling $\lambda$ of $P$, up to the constant $c_{uv} = \lambda(uv_2)$,
+    such that the labelling $\lambda$ respects $D'$.
+\end{claim}
+\begin{proof}
+Let $P$ be the fastest temporal path from $u$ to $v$.
+We have the following two options:
+\begin{enumerate}
+\item no other vertex from $P$ is a vertex of interest, \ie $P \setminus \{u,v\} \cap U = \emptyset $,
+\item there are at least $3$ vertices of interest in $P$.
+\end{enumerate}
+
+In the first case we get that all other vertices in $P$ are reached from $u$ using a (sub)path of $P$.
+To prove this suppose for the contradiction, that there is a vertex $v_i \in P \setminus \{u,v\}$, that is reached from $v$ on a path different than $P_i = (u, v_2, v_3, \dots, v_i)$.
+Since only $u$ and $v$ are the vertices of interest, it follows that all other vertices on $P$ are of degree $2$. 
+Then, the only way to reach $v_i$ from $v$, that differs from $P$, would be to go from $v$ to $u$ using a differnt path $P_2$,
+and then go from $u$ to $v_{p-1}, v_{p-2}, \dots, v_i$.
+But since $P$ is the fastest temporal path from $u$ to $v$, we get that $d(P_2) \geq d(P)$ and $d(P_2 + (u,v_i) > d(P) > d(P_i)$.
+
+Now to label $P$ we use the fact that the fastest temporal path from $u$ to any $v_i \in P$ is a subpath of $P$, 
+therefore we can label each edge using the \cref{obs:FirstLabelAndDuration},
+where the duration from $u$ to $v_i$ equals to $D_{u,v_i}$ and 
+we set the first label of $P$ to be a constant $c_{uv}$.
+This gives us a condition on the label of each edge of $P$, that depends on the value $c_{u,v}$.
+
+Let us now prove the correctness of the second case.
+We denote with $v_i \in U$ a vertex of interest in $P \setminus \{u,v\}$.
+There are two options, either $v_i$ is reached from $u$ using the subpath $P_i = (u, v_2, v_3, \dots, v_i)$ of $P$,
+or there exists a fastest temporal path $P' = (u, w_2, w_3, \dots, w_{p'} = v_i)$, for which $P \cap P' = \{u, v_i\}$.
+If the temporal path from $u$ to $v_i$ is a subpath of $P$, then we determine the labeling the same as in previous case.
+So we can suppose that the fastest temporal path from $u$ to $v_i$ is of form $P'$.\todo{TBD}
+\end{proof}
+
+Therefore, knowing the structure of the exact temporal path $P$ from $u$ to $v$, labeling the path equals to creating a variable $c_{u,v} \in [\Delta]$ that represents the label of the first edge of $P$, 
+and $O(len(P))$ constraints, that uniquely determine the labels of all other edges of $P$.
+This holds for all pairs of vertices in $U$, therefore
+knowing the structure of fastest temporal paths among all pairs of vertices in $U$ creates $k^2$ variables of form $c_{u,v}$.
+
+There are $(2^{O(k)})^{k^2} = 2^{O(k^3)}$ different possible fastest temporal paths among all pairs of vertices in $U$. 
+Therefore we have to build $2^{O(k^3)}$ different ILP problems.
+
+
+\subsection{Step 5 of the FPT algorithm}
 In the partially labeled temporal graph $(G',\lambda)$ the durations of the fastest temporal paths among vertices in $U$ satisfy the conditions of $D'$,
 but there are still some labels without labels.
 Let $e=(uv)$ be one such edge.
 \todo[inline]{TBD}
 
-\paragraph{Step 6.}
-Let $\lambda$ be the labelling of $G'$, that satisfies $D'$.
+\subsection{Step 6 of the FPT algorithm}
+\todo[inline]{This section is wrong, we keep this here as we will use some of the ideas.}
+Let $\lambda$ be the labeling of $G'$, that satisfies $D'$.
 Let $s \in V(G) \setminus V(G')$, be a vertex of degree one, that was removed from $G$ in Step 1,
 and let $u$ be its neighbor in $G$.
 First, we can easily assume that $|N_{G'}(u)|\geq 1$, if this is not true, then either $G$ is a star or $G'$ is disconnected and therefore also $G$ is disconnected, where $u$ is in a part of $G$ that forms a star.
@@ -867,7 +920,7 @@ $(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2
     \end{proof}
     
     \begin{claim}
-    Labelling $\lambda$ is a solution for the \textsc{Exact Realization $(\Delta)$} if and only if
+    labeling $\lambda$ is a solution for the \textsc{Exact Realization $(\Delta)$} if and only if
     for every cycle $C$ of $(G,\lambda)$ it holds that the sum of the travel delays along $C$ is $0$ modulo $\Delta$.
     \end{claim}
     
