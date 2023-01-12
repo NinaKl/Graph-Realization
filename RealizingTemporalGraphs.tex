@@ -135,7 +135,7 @@ Let $G=(V,E)$ and $k,\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,
 Then we denote by $(G,\lambda,\Delta)$ the \emph{$\Delta$-periodic temporal graph} $(G,\lambda_{\Delta})$, where for every edge $e\in E$ we have $\lambda_{\Delta}(e)=\{i\Delta + x : i\geq 0, x\in \lambda(e)\}$. 
 In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of $G$. If $k=1$, we call $\lambda$ a \emph{simple $\Delta$-periodic labeling} of $G$.
 
-\begin{definition}[temporal path]
+\begin{definition}[temporal path] \label{def:temporalPath+Duration}
 Let $(G,\lambda)$ be a temporal graph. A \emph{temporal path} $P$ from $u=u_0$ to $v=u_k$ in $(G,\lambda)$ is a sequence $(u_0 u_1,t_1),(u_1 u_2,t_2),\ldots,(u_{k-1} u_k,t_k)$, where $(u_0,u_1,\ldots,u_k)$ is a path in the underlying static graph $G$, $t_i\in \lambda(u_{i-1}u_i)$ for every $i=1,\ldots,k$, and $t_1<t_2<\ldots<t_k$. 
 The \emph{duration} of this temporal path $P$ from $u$ to $v$ is $d(P)=t_k - t_1 + 1$.
 A \emph{fastest} temporal path $P$ from $u$ to $v$ in $(G,\lambda)$ is a temporal path from $u$ to $v$ with the smallest possible duration.
@@ -228,7 +228,7 @@ In this section we study the hardness of \deltaExact. We first start with defini
     \end{equation}
     Similarly, $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
     \end{definition}
-    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal path waits at vertex $v$ when first taking the edge $e_1=uv$ and then the edge $e_2 = vz$.
+    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal path waits at vertex $v$ when first taking edge $e_1=uv$ and then edge $e_2 = vz$.
     
     \begin{observation}\label{obs:travel-delays-both-directions}
     Let $(G, \lambda, \Delta)$ be a temporal graph satisfying conditions of problem \deltaExact.
@@ -326,7 +326,7 @@ where $d(P_{i,j})$ is the duration of the (unique) temporal path $P_{i,j}$ from 
         Suppose now that there is a vertex $v_i \in V(G)$ of degree at least $2$, for which our algorithm did not calculate its travel delay.
         Let $v_a, v_b$ be two arbitrary neighbors of $v_i$, \ie $v_a v_i, v_i v_b \in E(G)$.
         Since $G$ is a tree, the unique (and fastest) temporal path from $v_a$ to $v_b$ passes through $v_i$.
-        When our algorithm was inspecting the row of $D$ corresponding to the vertex $v_a$, it had to consider the temporal path from $v_a$ to $v_b$. 
+        When our algorithm was inspecting the row of $D$ corresponding to vertex $v_a$, it had to consider the temporal path from $v_a$ to $v_b$. 
         At this point, it calculated $\tau_{v_i}^{v_a,v_b}$. 
         Since this is true for any two $v_a, v_b \in N(v_i)$, it cannot happen that some travel delay at $v_i$ is not calculated.
         Since $v_i$ was an arbitrary vertex in $G$ of degree at least $2$, the claim holds.
@@ -352,7 +352,7 @@ Now, let us observe that each vertex $v_i$ has exactly two neighbours in $C_n$, 
 therefore for all $i\in [n]$ we set $D_{i,i-1} = D_{i, i+1} = 1$, where indices are taken modulo $n$.
 This results in the upper and lower diagonal of $D$ having all $1$'s, together with $D_{1,n} = D_{n,1} = 1$.
 The matrix $D$ is of the following form
-\begin{equation*}
+\begin{equation} \label{eq:D-matrixForCycles}
   D = 
   \begin{bmatrix}
     0 & 1 &  &  &  & 1\\
@@ -362,11 +362,11 @@ The matrix $D$ is of the following form
     &   & &1 &  0 & 1\\ 
     1 &  &  &  &1 &  0 
   \end{bmatrix},
-\end{equation*}
+\end{equation}
 where the empty entries consists of positive integers different than $1$.
 
-Given a matrix in the input of \deltaExact\ we can check in $O(n^2)$ time if it is of correct form, by traversing it once. If it is not of correct for, our algorithm stops and returns the negative answer.
-From now on, we will assume, that the input matrix is of correct form.
+Given a matrix in the input of \deltaExact\ we can check in $O(n^2)$ time if it is of correct form, by traversing it once. If it is not of correct form, our algorithm stops and returns the negative answer.
+From now on, we assume, that the input matrix has the same form as $D$ from \cref{eq:D-matrixForCycles}.
 
 Let $v_i$ be an arbitrary vertex in the cycle $C_n =\{v_1, v_2, \dots, v_n\}$.
 Vertex $v_i$ can reach an arbitrary vertex $v_k \in C_n$ using a positive side of the cycle (\ie going from $v_i$ to $v_{i+1},  v_{i+2}$, etc.), 
@@ -385,12 +385,12 @@ Since these two are the only possible paths from $v_i$ to $v_k$ in $C_n$ we know
     Let $v_i, v_j$ be two arbitrary vertices in $C_n$ and suppose that $D_{i,j} = d^+(i,j)$,
     but there exists a vertex $v_k$ from $C_n$, where $k \in \{i+1, i+2, \dots, j-1\}$,
     for which $D_{i,k} \neq d^+(i,k)$.
-    Then $d^-(i,k)$ passes through the vertex $v_j$, and we can split the path from $v_i$ to $v_k$ into two pieces, 
+    Then $d^-(i,k)$ passes through vertex $v_j$, and we can split the path from $v_i$ to $v_k$ into two pieces, 
     first from $v_i$ to $v_j$ and the second one from $v_k$ to $v_j$.
     So 
     \begin{equation} \label{eq:poly-delta-cycle-monotonicity}
         d^-(i,k) = d^-(i,j) + d^-(j,k)^*,
-    \end{equation} where $d^-(j,k)^*$ is the duration of the path from $v_j$ to $v_k$, using the negative side of the cycle, with consideration that we come to the vertex $v_j$ at time $d^-(i,j)$ and we potentially have to wait there for some positive amount of time, before we continue to $v_j$
+    \end{equation} where $d^-(j,k)^*$ is the duration of the path from $v_j$ to $v_k$, using the negative side of the cycle, with consideration that we come to vertex $v_j$ at time $d^-(i,j)$ and we potentially have to wait there for some positive amount of time, before we continue to $v_j$
     (\ie $d^-(j,k)^* \geq d^-(i,j) \geq D_{j,k}$ includes some waiting time at vertex $v_j$).
     By the assumption we know that $d^+(i,j) \leq d^-(i,j)$, so we can rewrite \cref{eq:poly-delta-cycle-monotonicity} as
     $d^-(i,k) \leq d^+(i,j) + d^-(j,k)^*$. This means that we can reach $v_k$ from $v_j$ by going from $v_i$ to $v_j$ using the positive side of the cycle, wait some time at $v_j$, before we continue back to $v_j$.
@@ -489,7 +489,7 @@ All of the above observations imply the following result.
 As stated above, we can determine travel delays at every vertex in $O(n^2)$ time. 
 Once all of the delays are calculated, we have to only construct the labeling $\lambda$ that satisfies the matrix $D$. 
 We start by fixing a label of one edge as $a$, where $a \in [\Delta]$.
-Knowing the label of the edge $v_1v_2$ and all waiting times in $T$, we can uniquely determine the labels of all other edges.
+Knowing the label of edge $v_1v_2$ and all waiting times in $T$, we can uniquely determine the labels of all other edges.
 More specifically, if we know that $\lambda(v_i v_j) = a$, then for all $v_k \in N(v_i)$ (resp.~$v_{k'} \in N(v_j)$)
 the value $\lambda(v_iv_k) \equiv a + \tau_{v_i}^{v_j,v_k} \pmod \Delta $ (resp.~$\lambda(v_j v_{k'}) \equiv a + \tau_{v_j}^{v_i,v_{k'}} \pmod \Delta $).
 Since there are $\Delta$ options to fix the first label, we can find $\Delta$ different labelings satisfying $D$.
@@ -662,6 +662,17 @@ Let $F$ be a minimum feedback edge set of $G$ and let $k$ be the feedback edge n
 We now introduce an algorithm that determines the labeling of $G$, satisfying $D$, that runs in $f(k) \cdot \text{poly}(n)$ time.
 Our algorithm performs the following steps.
 \begin{enumerate}
+    \item Preprocessing on graph $G$. Determine the set $E$ of feedback edges and the set $U$ of vertices of interest, where $|E|, |U| \in O(k)$.
+    \item Guess the fastest temporal paths among vertices in $U$, for each guess create an ILP with variables corresponding to fastest temporal paths.
+    All in total create $f(k)$ partial ILP instances, each with $f(k)$ variables
+    \item For each partial ILP instance I:
+    \begin{enumerate}
+        \item create $f(k)$ final instances $I_I$,
+        \item check if $I_I$ has a solution.
+    \end{enumerate}
+\end{enumerate}
+\begin{comment}
+\begin{enumerate}
     \item Create $G'$ and $D'$ from $G$ and $D$ respectively, by removing all degree $1$ vertices from $G$ and $D$.
     \item Compute a minimum feedback edge set $F$ in $G'$ (note, $F$ is also a minimum feedback edge set of $G$).
     \item Determine vertices of interest $U$ of the graph $G'$.
@@ -669,6 +680,7 @@ Our algorithm performs the following steps.
     \item \label{enum:FPT-labelingraphNoLeafs} Extend the partial labeling $\lambda$ to the labeling of the whole $G'$, respecting $D'$.
     \item \label{enum:FPT-labelingWholeGraph} Extend the labeling $\lambda$ of $G'$ to the labeling of $G$, respecting $D$.
 \end{enumerate}
+
 It is important to point out, that in step~\ref{enum:FPT-labelingVerticesOfInterest}, our algorithm does not build a labeling satisfying conditions in this step,
 and then tries to extend it in steps~\ref{enum:FPT-labelingraphNoLeafs} and \ref{enum:FPT-labelingWholeGraph},
 but it
@@ -676,87 +688,206 @@ builds (many different instances of) integer linear program (ILP) problem with $
 with restrictions satisfying condition from steps~\ref{enum:FPT-labelingVerticesOfInterest}--\ref{enum:FPT-labelingWholeGraph}.
 At the end we solve the ILP problem on all instances and if there is a positive solution, it gives rise to the desired labeling $\lambda$ of $G$.
 For each of the steps we now argue its correctness and time complexity.
+\end{comment}
 
-\subsection{Steps 1 -- 3 of the FPT algorithm}
+
+\subsection{Step 1 of the FPT algorithm}
 In the first step of the algorithm we create an instance $D'$, with the underlying graph $G'$, from $D$ and $G$, by simply removing all the vertices of degree one from $G$ and their corresponding rows and columns from the matrix $D$. 
-This step is executed in $O(n+m)$ time.
-Since we determine the labels of edges in $G \setminus G'$ in the last step, the whole solution is not affected by performing this step.
+This part is executed in $O(n+m)$ time.
 
-In the second step,
-we determine a minimum feedback edge set $F$ of $G'$ by finding a spanning tree $T$ of $G'$ and set $F = E(G) \setminus E(T)$. 
-We can perform this step in linear time.
-
-In the third step we determine the set $U$ of \emph{vertices of interest}.
+Then we determine a minimum feedback edge set $F$ of $G'$ by finding a spanning tree $T$ of $G'$ and set $F = E(G) \setminus E(T)$. 
+Lastly, we determine the set $U$ of \emph{vertices of interest}.
 Let $T$ be a spanning tree of $G'$, with $F$ being the corresponding feedback edge set of $G'$.
 Let $V_1 \subset V(G')$ be the set of leaves in $T$, $V_2 \subset V(G')$ be the set of vertices of degree two in $T$, that are incident to some edges in $F$, and let $V_3 \subset V(G')$ be the set of vertices of degree at least $3$ in $T$. 
 Then $|V_1| + |V_2| \leq 2k$, since every leaf in $T$ and every vertex in $V_2$ are incident to at least one edge in $F$,
 and $|V_3| \leq |V_1|$ by the properties of trees.
 We denote with $U = V_1 \cup V_2 \cup V_3$ the set of vertices of interest. It follows that $|U| \leq 4k$.
-We can determine vertices of $U$ in linear time.
+We determine $F$ and $U$ in linear time.
 
-\subsection{Step 4 of the FPT algorithm}
-In this step we want to guess the structure of the fastest paths among all pairs of vertices of $U$. %and then determine their labeling.
-For a pair $u,v$ of vertices in $U$, there are $2^{O(k)}$\todo{NK: why? \\ Isn't $k!$} possible paths in $G'$ between them, where each one could be the fastest temporal path from $u$ to $v$ and $v$ to $u$. 
+\subsection{Step 2 of the FPT algorithm}
+In this step we want to guess the structure of fastest paths (underlying paths) among all pairs of vertices of $U$. %and then determine their labeling.
+For a pair $u,v$ of vertices in $U$, there are $k!$ possible paths in $G'$ between them. 
+Therefore, we have to try all $O(k^k)$ possible paths, where at least one of them will be a fastest temporal path from $u$ to $v$.
+Repeating this for all pairs of vertices $u,v \in U$ we get $O((k^k)^{k^2})=O(k^{k^3})$ different variations of fastest temporal paths among all vertices.
 
-We claim that knowing the structure of the fastest temporal path among two vertices, determines the labeling of such path, up to the label of the first edge.
-To prove this we use the following observation, that follows from the definition of the duration of the fastest temporal path.
+Each partial ILP instance is connected to one list of specific fastest temporal paths among the vertices from $U$.
+From now on, for every par of vertices $u,v \in U$ we assume that we know exactly what is the underlying path of a fastest temporal path from $u$ to $v$.
+We describe now how to build a specific partial ILP instance from a specific list of fastest temporal paths.
+While building the ILP instances we exploit the following property greatly, that is why we state it as a separate observation.
+
 \begin{observation}\label{obs:FirstLabelAndDuration}
-    Let $P$ be the fastest temporal path from $u$ to $v$, where $e_1, e_p \in P$ are its first and last edge, respectively.
-    Then knowing the label of the first (last) edge and the duration of $P$, one can uniquely determine the label of the last (first) edge of $P$.
+    Let $P$ be the underlying path of a fastest temporal path from $u$ to $v$, where $e_1, e_p \in P$ are its first and last edge, respectively.
+    Then, knowing the label $\lambda (e_1)$ of the first edge and the duration $d(P)$ of $P$, we can uniquely determine the label $\lambda (e_p)$ of the last edge of $P$.
+    Symmetrically, knowing $\lambda(e_p)$ and $d(P)$, we can uniquely determine $\lambda(e_1)$.
 \end{observation}
-This is true as, by the definition the duration of $P$ is calculated as the difference of labels of last and first edge plus $1$,
+The correctness of the above statement follows directly from \cref{def:temporalPath+Duration}. Since the duration of $P$ is calculated as the difference of labels of last and first edge plus $1$,
 where the label of last edge is considered with some delta periods,
-\ie $d(P) = p_i \Delta + \lambda(e_p) - \lambda (e_1) + 1$.
+\ie $d(P) = p_i \Delta + \lambda(e_p) - \lambda (e_1) + 1$, for some $p_i \geq 0$.
 Therefore $d(P) \pmod \Delta \equiv  (\lambda(e_p) - \lambda (e_1) + 1) \pmod \Delta$.
-We can now state and prove the following claim.
-\begin{claim}
-    Suppose $P = (u=v_1, v_2, \dots, v_p = v)$, where $p \geq 2$, is a $u,v$ path in $G'$, which is also the underlying path of the fastest temporal path from $u$ to $v$.
-    One can determine the labelling $\lambda$ of $P$, up to the constant $c_{uv} = \lambda(uv_2)$,
-    such that the labelling $\lambda$ respects $D'$.
-\end{claim}
-\begin{proof}
-Let $P$ be the fastest temporal path from $u$ to $v$.
-We have the following two options:
-\begin{enumerate}
-\item no other vertex from $P$ is a vertex of interest, \ie $P \setminus \{u,v\} \cap U = \emptyset $,
-\item there are at least $3$ vertices of interest in $P$.
-\end{enumerate}
 
-In the first case we get that all other vertices in $P$ are reached from $u$ using a (sub)path of $P$.
-To prove this suppose for the contradiction, that there is a vertex $v_i \in P \setminus \{u,v\}$, that is reached from $v$ on a path different than $P_i = (u, v_2, v_3, \dots, v_i)$.
-Since only $u$ and $v$ are the vertices of interest, it follows that all other vertices on $P$ are of degree $2$. 
-Then, the only way to reach $v_i$ from $v$, that differs from $P$, would be to go from $v$ to $u$ using a differnt path $P_2$,
-and then go from $u$ to $v_{p-1}, v_{p-2}, \dots, v_i$.
-But since $P$ is the fastest temporal path from $u$ to $v$, we get that $d(P_2) \geq d(P)$ and $d(P_2 + (u,v_i) > d(P) > d(P_i)$.
+
+In the following we prove that knowing the structure (the exact underlying path) of a fastest temporal path $P$, among two vertices of interest $u,v \in U$,
+results in determining the labeling of each edge in the fastest temporal path from $u$ to $v$ (with the exception of some constant number of edges), up to the label of the first edge.
+
+\begin{claim}
+    Let $u, v \in U$ be two arbitrary vertices of interest and suppose that $P = (u=v_1,v_2, \dots, v_p = v)$, where $p \geq 2$, 
+    is a $u,v$ path in $G'$, which is also the underlying path of a fastest temporal path from $u$ to $v$.
+    Suppose also that no other vertex from $P$ is a vertex of interest, \ie $P \setminus \{u,v\} \cap U = \emptyset$.
+    We can determine the labeling $\lambda$ of every edge in $P$, up to the constant $c_{uv} = \lambda(uv_2)$,
+    such that the labeling $\lambda$ respects $D'$.
+\end{claim}
+
+\begin{proof}
+In this case we get that all other vertices in $P$ are reached from $u$ using a (sub)path of $P$.
+To prove this suppose for the contradiction that there is a vertex $v_i \in P \setminus \{u,v\}$, that is reached from $v$ on a path different than $P_i = (u, v_2, v_3, \dots, v_i)$.
+Since the only vertices of interest of $P$ are $u$ and $v$, it follows that all other vertices on $P$ are of degree $2$. 
+Then the only way to reach $v_i$ from $u$, that differs from $P$, would be to go from $u$ to $v$ using a different path $P_2$,
+and then go from $v$ to $v_{p-1}, v_{p-2}, \dots, v_i$.
+But since $P$ is the fastest temporal path from $u$ to $v$, we get that $d(P_2) \geq d(P)$ and $d(P_2 + (v,v_{p-1}, \dots, v_i) > d(P) > d(P_i)$.
 
 Now to label $P$ we use the fact that the fastest temporal path from $u$ to any $v_i \in P$ is a subpath of $P$, 
-therefore we can label each edge using the \cref{obs:FirstLabelAndDuration},
+therefore we can label each edge using \cref{obs:FirstLabelAndDuration},
 where the duration from $u$ to $v_i$ equals to $D_{u,v_i}$ and 
 we set the first label of $P$ to be a constant $c_{uv}$.
-This gives us a condition on the label of each edge of $P$, that depends on the value $c_{u,v}$.
+This gives us a unique label for each edge of $P$, that depends on the value $c_{u,v}$.
+\end{proof}
 
-Let us now prove the correctness of the second case.
+\begin{claim}
+    Let $u, v \in U$ be two arbitrary vertices of interest and suppose that $P = (u=v_1, v_2, \dots, v_p = v)$, where $p \geq 2$, 
+    is a $u,v$ path in $G'$, which is also the underlying path of a fastest temporal path from $u$ to $v$.
+    Let $\ell_{u,v} \geq 1$ be the number of vertices of interest in $P$ different to $u,v$, namely $\ell_{u,v} = | v_i \in \{P \setminus \{u,v \} \} \cap U |$.
+    We can determine the labeling $\lambda$ of all but $\ell_{u,v}$ edges of $P$, up to the constant $c_{uv} = \lambda(uv_2)$,
+    such that the labeling $\lambda$ respects $D'$.
+    Moreover, for the labels of edges that cannot be determined precisely, we can get some extra restrictions.
+\end{claim}
+
+\begin{proof}
 We denote with $v_i \in U$ a vertex of interest in $P \setminus \{u,v\}$.
 There are two options, either $v_i$ is reached from $u$ using the subpath $P_i = (u, v_2, v_3, \dots, v_i)$ of $P$,
 or there exists a fastest temporal path $P' = (u, w_2, w_3, \dots, w_{p'} = v_i)$, for which $P \cap P' = \{u, v_i\}$.
 If the temporal path from $u$ to $v_i$ is a subpath of $P$, then we determine the labeling the same as in previous case.
-So we can suppose that the fastest temporal path from $u$ to $v_i$ is of form $P'$.\todo{TBD}
+So we can suppose that the fastest temporal path from $u$ to $v_i$ is of form $P'$.\todo{TBD - George prooved it}
+\end{proof}
+ 
+We use the above results in the following way.
+For all vertices of interest $u \in U$ and $v \in U \setminus \{v\}$, we know the underlying path $P_{u,v}$ of a fastest temporal path from $u$ to $v$. 
+We create a variable $c_{u,v}^{e_1} \in [\Delta]$ that corresponds to the label of the first edge of $P_{u,v}$ in $(G', \lambda')$ and potentially at most $\ell_{u,v}$ variables $c_{u,v}^{e_w} \in [\Delta]$ corresponding to 
+labels of edges $e_w \in P_{u,v}$ that are incident to a vertex of interest $w$, for which the underlying path $P_{u,w}$ of a fastest temporal path from $u$ to $w$ intersects $P_{u,v}$ only in vertices $u$ and $w$.
+Labels on all other edges of $P_{u,v}$ are determined exactly, in relation to the constant $c_{u,v}^{e_1}$.
+Repeating this procedure for all $u,v \in U$ creates at most $|U|^3 = O(k^3)$ new variables.
+
+\todo[inline]{Write example for variables and constrains this part produces.}
+
+\subsection{Step 3 of the FPT algorithm}
+
+After finishing the second step of the FPT algorithm, labels on all edges of fastest temporal paths from $u$ to $v$, where $u,v \in U$, are determined up to the label of the first edge.
+There may still be some edges in the graph, that are unlabeled. Note that these edges are exactly the ones that are not a part of any fastest temporal path.
+Let us first observe some properties of such edges.
+
+\todo[inline]{Fix the following proof, add more details/definitions to the introduction.}
+\begin{claim}
+    Unlabeled edges form disjoint paths in $G'$, where each path $P$ starts and ends in some vertex of interest, 
+    \ie for every unlabeled path $P$ there exist $u,v \in U$, such that $P = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
+\end{claim}
+
+\begin{proof}
+    We prove this claim in two steps.
+    First, all inner vertices of $P$, \ie vertices $v_i \in P \setminus \{u,v\}$ are of degree exactly $2$. They are of degree at least $2$ since they are on a path $P$ and are incident to two unlabeled edges in  $P$.
+    They are of degree at most $2$ as if they were of a higher degree they would be vertices of interest and in this case we could split $P$ into shorter (sub)paths.
+    
+    Second, suppose that $P$ does not start in a vertex of interest, therefore $u \notin U$. As $u$ is the starting vertex of the unlabeled path $P$, there must exist a vertex of interest $u'$ such that a path between $u$ and $u'$ is labeled.
+    Since $u$ is not a vertex of interest, the only reason to label edges between $u'$ and $u$ would be if they were a part of some fastest temporal path among some vertices of interest and $u$ would be an inner vertex on that path.
+    Therefore $u$ would have to be incident to two labeled edges (that are part of some fastest temporal path) and one unlabeled edge, but in this case the degree of $u$ would be at least $3$ and therefore $u$ would be a vertex of interest.
 \end{proof}
 
-Therefore, knowing the structure of the exact temporal path $P$ from $u$ to $v$, labeling the path equals to creating a variable $c_{u,v} \in [\Delta]$ that represents the label of the first edge of $P$, 
-and $O(len(P))$ constraints, that uniquely determine the labels of all other edges of $P$.
-This holds for all pairs of vertices in $U$, therefore
-knowing the structure of fastest temporal paths among all pairs of vertices in $U$ creates $k^2$ variables of form $c_{u,v}$.
+\begin{claim}
+    Among any pair of vertices of interest $u,v \in U$ there can be at most one unlabeled path $P = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
+\end{claim}
+\begin{proof}
+    Suppose for the contradiction that there are two unlabeled paths among $u,v \in U$.
+    Denote them with $P$ and $P'$. 
+    Then $C = P \cup P'$ form a cycle in $G'$. Since $G'$ admits no loops, the cycle $C$ is of length at least $3$.
+   Since $C$ is a cycle, at least one of it's edges $e \in E(C)$ has to be in the feedback edge set $F$, and therefore, by the definition of vertices of interest $U$, 
+   both endpoints of $e$ have to be in $U$.
+   So $P$ and $P'$ cannot be both fully unlabeled.
+\end{proof}
 
-There are $(2^{O(k)})^{k^2} = 2^{O(k^3)}$ different possible fastest temporal paths among all pairs of vertices in $U$. 
-Therefore we have to build $2^{O(k^3)}$ different ILP problems.
+From the above it follows that there are at most $f(k)$ (namely $O(|U|^2$) unlabeled paths in $G'$ after algorithm finishes step 2.
+Now we want to extend the labeling from Step 2 to all unlabeled paths.
+To do this we want to relate the labeling of an unlabeled path to some fully labeled (\ie fastest temporal) path.
+Let us first observe some properties.
 
+Suppose that $Q = (u,v_2,v_3, \dots, v_p, v)$, where $p \geq 2$ is an unlabeled path in $G'$, between vertices of interest $u,v \in U$,
+let $P$ be the underlying path of a fastest temporal path from $u',v' \in U$.
+Let $P$ be such path that there exists a vertex $x \in P \setminus \{u,v\}$ of degree two (\ie $x\notin U$).
 
-\subsection{Step 5 of the FPT algorithm}
-In the partially labeled temporal graph $(G',\lambda)$ the durations of the fastest temporal paths among vertices in $U$ satisfy the conditions of $D'$,
-but there are still some labels without labels.
-Let $e=(uv)$ be one such edge.
-\todo[inline]{TBD}
+Since $x$ is an inner vertex of $P$ and is of degree two, then we know the labels of its two edges incident to it.
+Denote with $\ell_x$ the edge incident to $x$ that is closer to $u'$ on the path $P$, and with $r_x$ the edge that is closer to $v'$ on $P$.
+Let $y$ be an inner vertex on the path $Q$.
+Similarly, denote with $\ell_y$ the edge incident to $y$ that is closer to $u$ on the path $Q$, and with $r_y$ the edge that is closer to $v$ on $Q$.
+Observe the following. 
+To reach $y$ from $x$ there are $4$ different options, at the start path uses either edge $\ell_y$ or $r_y$, 
+and at the end path must use either $\ell_x$ or $y_x$.
+Since this is true for any path (hence any temporal path), it holds also for the fastest temporal pathfrom $x$ to $y$.
+
+\begin{claim}\label{claim:FPT-unlabeldPaths-01}
+    Suppose that the fastest temporal path from $x$ to $y$ uses at the beginning edge $\ell_x$.
+    We now claim that if the fastest temporal path from $x$ to $y$ uses edge $\ell_y$ (resp.~$r_y$) as the last edge,
+    then the fastest temporal path from $x$ to any other vertex of $Q$, that is closer to $u$ (resp.~$v$) 
+    uses the same edge $\ell_y$ (resp.~$r_y$) as the last edge and $\ell_x$ as the first edge.
+    Similarly holds if the first edge of the fastest temporal path is $r_x$.
+\end{claim}
+\begin{proof}
+    Suppose that $y, y'$ are two vertices of $Q$, where the distance from $u$ to $y'$, in $Q$, is shorter than the distance from $u$ to $y$.
+    Suppose also that the fastest temporal path from $x$ to $y$ uses the edges $\ell_x$ and $\ell_y$, and passes through $y'$. Denote this path as $P_{x,y}$.
+    Denote with $P_{x,y}^{y'}$ the subpath of the temporal path $P_{x,y}$ from $x$ to $y'$
+    Now observe the following possibilities. %
+    \\
+    First, suppose that a fastest temporal path from $x$ to $y'$ uses the edges $\ell_x$ and $r_y$, denote it with $P_{x,y'}^1$.
+    Then the duration of $d(P_{x,y}^{y'}) \geq  d(P_{x,y'}^1)$.
+    But since $P_{x,y'}^1$ passes through vertex $y$, the duration from $x$ to $y$ on $P_{x,y'}^1$ is strictly smaller than $d(P_{x,y'}^1)$, and conversely 
+    $d(P_{x,y})$ is strictly greater than $d(P_{x,y}^{y'})$,
+    therefore at vertex $y$ we get that 
+    $d(P_{x,y})$ is strictly bigger than the duration of the subpath of $P_{x,y'}^1$ from $x$ to $y$, which is not possible. %
+    \\
+    Second, suppose that a fastest temporal path from $x$ to $y'$ uses the edges $r_x$ and $\ell_y$, denote it with $P_{x,y'}^2$.
+    Therefore $d(P_{x,y'}^2) \leq d(P_{x,y}^{y'})$.
+    To get the duration of the initial $P_{x,y}$ we can split the problem into calculating the duration from $x$ to $y'$ and the duration from $y'$ to $y$, plus the waiting time at vertex $y'$.
+    Since there is a unique path from $u$ to $y'$ and then to $y$, the waiting time at $y'$ and the duration of the path from $y'$ to $y$ is independent of the choice of path from $x$ to $y'$. 
+    Therefore, from the fact that $P_{x,y}$ is a fastest temporal path from $x$ to $y$ we get that $d(P_{x,y'}^2) \geq d(P_{x,y}^{y'})$.
+    All together we conclude that $d(P_{x,y}^{y'})$ is a fastest temporal path from $x$ to $y'$.%
+    \\
+    Third, suppose that a fastest temporal path from $x$ to $y'$ uses the edges $r_x$ and $r_y$, denote it with $P_{x,y'}^3$.
+    Then the subpath of $P_{x,y'}^3$ from $x$ to $y$ would be strictly faster than $P_{x,y}$, which is not possible.
+\end{proof}
+%
+Using the results from above we can now prove the following.
+\begin{lemma}
+    Suppose that $Q = (u,v_2,v_3, \dots, v_p, v)$, where $p \geq 2$ is an unlabeled path in $G'$, between vertices of interest $u,v \in U$,
+    let $P$ be the underlying path of a fastest temporal path from $u',v' \in U$.
+    Let $P$ be such path that there exists a vertex $x \in P \setminus \{u,v\}$ of degree two (\ie $x \notin U$).
+    Then we can precisely determine the labels on every edge of $Q$, but one, up to the label $c_{u'v'}$ of the first edge of path $P$.
+\end{lemma}
+\begin{proof}
+    %To prove this we use \cref{claim:FPT-unlabeldPaths-01} and \cref{obs:FirstLabelAndDuration}.
+    Let us denote with $y$ the vertex of $Q$, for which the duration from $x$ to $y$ is the biggest, among vertices of $Q$,
+    more precisely $x$ is a vertex corresponding to $max_{v_i \in Q} D_{x,v_i}$.
+    Denote 
+    with $\ell_x$ the edge incident to $x$ that is closer to $u'$ on path $P$, and with $r_x$ the edge that is closer to $v'$ on $P$.
+    Similarly, denote with $\ell_y$ the edge incident to $y$ that is closer to $u$ on the path $Q$, and with $r_y$ the edge that is closer to $v$ on $Q$.
+    Suppose that the fastest temporal path $P$ from $x$ to $y$ uses first edge $\ell_x$ and then edge $\ell_y$.
+    Then it follows from \cref{claim:FPT-unlabeldPaths-01} that all fastest temporal paths from $x$ to vertices between $u$ and $y$ use as a first edge $\ell_x$ and go through vertex $u$. 
+    Now using \cref{obs:FirstLabelAndDuration} it follows that we can determine labels on all edges between $u$ and $y$.
+
+    Denote now with $y'$ the neighbor of $y$ in $Q$, that is closer to $v$ than $u$. 
+    We know that we reach $y'$ starting from $x$ the fastest, when the path passes through vertex $v$.
+    There are two options how the fastest temporal path from $x$ to $y'$ departs from $x$. Either it first uses edge $\ell_x$ or edge $r_x$. 
+    Once we know which of these two options happens, we can determine all the labels on edges between $v$ and $y'$.
+
+    In total we have uniquely determined labels of all edges of $Q$, with respect to the labeling of edges in $P$ (\ie with respect to the label of the first edge on $P$), with the exception of edge $yy'$.
+\end{proof}
+
+\subsubsection*{Step 3(a) of the FPT algorithm}
 
 \subsection{Step 6 of the FPT algorithm}
 \todo[inline]{This section is wrong, we keep this here as we will use some of the ideas.}
@@ -767,12 +898,12 @@ First, we can easily assume that $|N_{G'}(u)|\geq 1$, if this is not true, then 
 We can solve the problem for stars in polynomial time (see \cref{thm:deltaExact-PolyTimeTrees}).
 
 To determine the correct label of edge $su$ we do the following.
-We find the vertex $v_i \in N_{G'}(u)$ that is the closest to $v$, regarding the values of $D$, \ie  $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$.
+We find vertex $v_i \in N_{G'}(u)$ that is the closest to $v$, regarding the values of $D$, \ie  $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$.
 We claim, that the path $P=(s,u,v_i)$ has to be the fastest temporal path from $s$ to $v_i$ in $(G, \lambda'')$.
 Suppose that is not true, then there exists a faster path $P^*$ from $s$ to $v_i$, that goes through $u$ (as this is the only neighbor of $s$), through some other vertex $v_j \in N_{G'}(u) \setminus \{v_i \}$, and through some other path $P'$ in $G$, before it finishes it $v_i$, where $P'$ is at least an edge (from $v_j$ to $v_i$). 
 Therefore $P^* = (s,u,v_j,P',v_i)$, where $d(P^*) \leq d(P)$, now since $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$, the first part of path $P^*$ from $s$ to $v_j$ takes at least $D_{s,v_i}$ time,
 since $v_i \neq v_j$, we need at least one more time-step (one more edge) to traverse from $v_i$ to reach $v_j$, so $d(P^) \geq D_{s,v_i} + 1$, and so $P^*$ cannot be faster than $P$.
-Since $P=(s,u,v_i)$ is the fastest temporal path from $s$ to $v_i$ we calculate the label of the edge $su$ as $\lambda (s,v_i) \equiv \lambda(u v_i) + 1 - D_{s,v_i} \pmod \Delta$.
+Since $P=(s,u,v_i)$ is the fastest temporal path from $s$ to $v_i$ we calculate the label of edge $su$ as $\lambda (s,v_i) \equiv \lambda(u v_i) + 1 - D_{s,v_i} \pmod \Delta$.
 
 We repeat the above procedure for all degree one vertices in $G$, that we removed in Step 1, and we end up with the labeling $\lambda$ of the whole graph.
 Now we have to make sure that all the new labels satisfy $D$, to do this we calculate the matrix $D'$ of fastest temporal paths among all pairs of vertices in $(G, \lambda)$ and compare the results with $D$, if any values differ, we stop and return a \textit{NO} answer, if $D = D'$ we return the labeling $\lambda$.
@@ -801,7 +932,7 @@ $G$ can be deduced easily from $D$.
 	
 	Let $v \in V$ be an arbitrary vertex in $V(G)$ and let $u \in V \setminus \{v\}$ be a vertex, that is at distance at least $2$ from $v$, in the underlying graph $G$.
 	Let $\mathcal{P}_{u}^v$ be a set of all $P_3$ paths on $3$ vertices in $G$, of form $(v_1, v_2, u)$, where $v_1, v_2 \in V(G)$, \st $v_1 v_2, v_2 u \in E(G)$ and $d(v,v_1) < d(v,v_2) < d(v,u)$. 
-	Intuitively, we can imagine the set $\mathcal{P}_{u}^v$ as the set of all incoming temporal $P_3$ paths to the vertex $u$, with respect to starting from the vertex $v$.
+	Intuitively, we can imagine the set $\mathcal{P}_{u}^v$ as the set of all incoming temporal $P_3$ paths to vertex $u$, with respect to starting from vertex $v$.
 	
 	Let $P = (v_1,v_2,u)$ be an arbitrary path from $\mathcal{P}_u^v$, denote with $\lambda_1, \lambda_2$ the labels of edges $(v_1,v_2)$ and $(v_2, u)$, respectively.
 	By the definition of $\mathcal{P}_u^v$ it follows that $v_1, v_2$ are reached by $v$ faster than $u$ is reached by $v$, therefore we get the following inequality:
@@ -877,7 +1008,7 @@ $(G,\lambda,\Delta)$ be a certificate for $D$, where $\lambda:E\rightarrow \{1,2
     \end{equation}
     Similarly, $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
     \end{definition}
-    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal path waits at vertex $v$ when first taking the edge $e_1=uv$ and then the edge $e_2 = vz$.
+    Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal path waits at vertex $v$ when first taking edge $e_1=uv$ and then edge $e_2 = vz$.
     
     \begin{observation}
     For any two incident edges $e_1 = uv$ and $e_2 = vz$ on vertices $u,v,z \in V$, with $e_1 \cap e_2 = v$, we have $\tau_v^{zu} = \Delta - \tau_v^{uz} \pmod \Delta$.
