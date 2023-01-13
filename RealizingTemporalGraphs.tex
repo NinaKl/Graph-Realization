@@ -692,7 +692,7 @@ For each of the steps we now argue its correctness and time complexity.
 
 
 \subsection{Step 1 of the FPT algorithm}
-In the first step of the algorithm we create an instance $D'$, with the underlying graph $G'$, from $D$ and $G$, by simply removing all the vertices of degree one from $G$ and their corresponding rows and columns from the matrix $D$. 
+In the first step of the algorithm we create an instance $D'$, with the underlying graph $G'$, from $D$ and $G$, by iteratively removing vertices of degree one from $G$ and their corresponding rows and columns from the matrix $D$. 
 This part is executed in $O(n+m)$ time.
 
 Then we determine a minimum feedback edge set $F$ of $G'$ by finding a spanning tree $T$ of $G'$ and set $F = E(G) \setminus E(T)$. 
@@ -890,28 +890,35 @@ Using the results from above we can now prove the following.
 Up to now we have determined the labels (the constraints for labels) of edges of $G'$. We will now extend the labeling to the initial graph $G$. 
 Recall, $G'$ was created from $G$ by iteratively removing all vertices of degree $1$ from $G$.
 
-Let $s \in V(G) \setminus V(G')$ be a vertex of degree one that was removed from $G$ at the beginning,
-and let $u$ be its neighbor in $G$.
-First, we can easily assume that $|N_{G'}(u)|\geq 1$. If this is not true then either $G$ is a star or $G'$ is disconnected and therefore also $G$ is disconnected, where $u$ is in a part of $G$ that forms a star.iteratively
-We can solve the problem for stars in polynomial time (see \cref{thm:deltaExact-PolyTimeTrees}).
+Note that vertices from $V(G) \setminus V(G')$ form disjoint paths in $G$. 
+Each such path is incident to exactly one vertex from $G'$.
+ 
+Let $P' = (v_1, v_2, \dots, v_p=s)$ be a path in $G$ on vertices from $V(G) \setminus V(G')$  (\ie path on vertices that were removed from $G$)
+and let $u$ be a neighbor of $s$ in $G$,
+therefore $P=(v_1, v_2, \dots, v_p=s, u)$ is an induced path in $G$.
+First observe that $|N_{G'}(u)|\geq 1$, if not also $u$ would be removed from $G$ and $G$ would be a tree, for which we can solve the problem in polynomial time (see~\cref{thm:deltaExact-PolyTimeTrees}).
 
-To determine the correct label of edge $su$ we use the following properties.
+To determine the correct label of all edges of $P$ we use the following property.
 \begin{claim}
+Let $P = (v_1, v_2, \dots, v_p=s)$ be a path in $G$ on vertices from $V(G) \setminus V(G')$
+and let $u$ be a neighbor of $s$ in $G$.
 Let $v_i \in N_{G'}(u)$ be the closest vertex to $v$, regarding the values of $D$, \ie  $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$.
-Then the path $P=(s,u,v_i)$ has to be the fastest temporal path from $s$ to $v_i$ in $G$.
+Then the path $P^*=(s,u,v_i)$ has to be the fastest temporal path from $s$ to $v_i$ in $G$.
 \end{claim}
 \begin{proof}
 Suppose that this is not true.
-Then there exists a faster path $P^*$ from $s$ to $v_i$, that goes through $u$ (as this is the only neighbor of $s$), through some other vertex $v_j \in N_{G'}(u) \setminus \{v_i \}$, 
+Then there exists a faster path $P^*_2$ from $s$ to $v_i$, that goes through $u$ (as this is the only neighbor of $s$), through some other vertex $v_j \in N_{G'}(u) \setminus \{v_i \}$, 
 and through some other path $P'$ in $G$, before it finishes in $v_i$, where $P'$ is at least an edge (from $v_j$ to $v_i$). 
-Therefore $P^* = (s,u,v_j,P',v_i)$, where $d(P^*) \leq d(P)$.
-Now since $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$ the first part of path $P^*$ from $s$ to $v_j$ takes at least $D_{s,v_i}$ time.
+Therefore $P^*_2= (s,u,v_j,P',v_i)$, where $d(P^*_2) \leq d(P^*)$.
+Now since $D_{s,v_i} \leq D_{s,v_j}$ for all $v_j \in N_{G'}(u)$ the first part of path $P^*_2$ from $s$ to $v_j$ takes at least $D_{s,v_i}$ time.
 Since $v_i \neq v_j$ we need at least one more time-step (one more edge) to traverse from $v_i$ to reach $v_j$. 
-So $d(P^) \geq D_{s,v_i} + 1$, and so $P^*$ cannot be faster than $P$.
+So $d(P^*) \geq D_{s,v_i} + 1$, and so $P^*_2$ cannot be faster than $P^*$.
 \end{proof}
 
-Since $P=(s,u,v_i)$ is the fastest temporal path from $s$ to $v_i$ we calculate the label of edge $su$ as $\lambda (s,v_i) \equiv \lambda(u v_i) + 1 - D_{s,v_i} \pmod \Delta$.
-We repeat the above procedure for all degree one vertices in $G$, that we removed in Step 1, and we end up with the labeling $\lambda$ of the whole graph.
+Because $(s,u,v_i)$ is the fastest temporal path from $s$ to $v_i$ we calculate the label of edge $su$ as $\lambda (s,v_i) \equiv \lambda(u v_i) + 1 - D_{s,v_i} \pmod \Delta$.
+Since $P$ is a path, the fastest temporal path from all vertices of $P$ to $u$ is the temporal path along $P$, therefore using \cref{obs:FirstLabelAndDuration} and the value of the edge $su$, we can determine labels of all edges in $P$.
+
+We repeat the above procedure for paths in $G$ that we removed in Step 1, and we end up with the labeling $\lambda$ of the whole graph.
 
 \begin{comment}
 Now we have to make sure that all the new labels satisfy $D$, to do this we calculate the matrix $D'$ of fastest temporal paths among all pairs of vertices in $(G, \lambda)$ and compare the results with $D$, if any values differ, we stop and return a \textsc{No} answer, if $D = D'$ we return the labeling $\lambda$.
