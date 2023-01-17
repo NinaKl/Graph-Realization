@@ -636,7 +636,7 @@ Since all edges incident with variable vertices $x$ have label two and all edges
 \item For all pairs of variable vertices $x,y$ we have $d(x,y^T)=d(x,y^F)=\infty$:
 \todo[inline]{New matrix entries D for period Delta: $d(x,y^T)=d(x,y^F)=Delta+1$ (using two edges, with equal labels).}
 
-Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the unlabeled graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
+Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the undetermined graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
 \item For all variable vertices $x$ and clause vertices $c$ we have $d(v,x)=d(v,c)=\infty$:
 \todo[inline]{New matrix entries D for period Delta: d(v,x)=Delta (using two edges, with labels L+1,L). 
 New matrix entries D for period Delta: d(v,c)=Delta (using two edges, with labels L,L-1).}
@@ -645,7 +645,7 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
 \end{itemize}
 \end{proof}
 
-\section{FPT and W[1]-hardness of exact realization}
+\section{FPT and W[1]-hardness of exact realization -- new version}
 In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subset E(G)$ is a subset of edges, such that each cycle in $G$ has at least one edge in $F$.
 The minimum such set $F$ is called a  \emph{minimum feedback edge set} and its size, $k = |F|$, is called the \emph{feedback edge number} of graph $G$.
 Note that one can find a minimum feedback edge set in linear time, by calculating a spanning tree (or forest) $T$ of the given graph $G$ and then removing all of the edges $T$ from $G$, \ie $F = E(G) \setminus E(T)$.
@@ -654,65 +654,98 @@ Note that one can find a minimum feedback edge set in linear time, by calculatin
     \deltaExactLong\ is FPT parameterized by the feedback edge number.
 \end{theorem}
 
-Before we start with the proof we fix the following notation. 
+Before we start with the proof of \cref{thm:FPTwrtFES} we fix the following notation. 
 Let $D$ be the input matrix of \deltaExact\ \ie
 the matrix of the fastest temporal paths among $n$ vertices, and let $G$ be its underlying graph, on $n$ vertices and $m$ edges.
 Let $F$ be a minimum feedback edge set of $G$ and let $k$ be the feedback edge number of $G$.
 
-We now introduce an algorithm that determines the labeling of $G$, satisfying $D$, that runs in $f(k) \cdot \text{poly}(n)$ time.
+Throughout the proof, whenever we say \emph{guess} the path/subpath/vertex, etc., we mean that we enumerate all possible solutions.
+For example, let $u$ and $v$ be two vertices in a graph $G$. 
+We say that we \emph{guess} that $P$ is the underlying path of a fastest temporal path $(P, \lambda)$ from $u$ to $v$ in $(G, \lambda)$.
+This means that we iterate over all possible possible $u,v$-paths $P_1, P_2, \dots $ in $G$, 
+and form multiple cases, 
+one in which $(P_1, \lambda)$ is a fastest temporal path from $u$ to $v$ in $(G,\lambda)$,
+one when $(P_2, \lambda)$ is a fastest temporal path from $u$ to $v$ in $(G,\lambda)$, etc.
+To correctly determine if the problem has a valid solution, we must check all cases.
+In each case we perform required calculations, 
+and we either come to the contradiction (meaning that the current guess was wrong) 
+or our assumption holds (meaning that the guessed path is really a fastest path from $u$ to $v$ in $(G, \lambda)$).
+
+Note that we can easily solve the \deltaExact\ by guessing the structure of temporal paths among all pairs of vertices.
+But, this would create $f(n,m)$ guesses, and the running time of the algorithm would be too big.
+Therefore, we approach the problem using some special properties, which allow us to create $f(k)$ different guesses.
+We solve each guess by creating an ILP instance with $f(k)$ variables and $O(n^c)$ constraints, for some $c \in \mathbb{N}$.
+The ILP instance is a \textsc{Yes} instance if and only if $D$ is a \textsc{Yes} instance of \deltaExact.
+Moreover, from a positive solution of the ILP instance we can construct the desired labeling $\lambda$.
+Using results from \cite{Lenstra1983Integer} we know that an ILP instance can be solved in FPT time with respect to the number of variables.
+Therefore we can solve our ILP instance in $f(k)$ time.
+
+We now introduce the algorithm, that determines the labeling of $G$, satisfying $D$, and runs in $f(k) \cdot \text{poly}(n)$ time.
 Our algorithm performs the following steps.
 \begin{enumerate}
-    \item Preprocessing on graph $G$. Determine the set $E$ of feedback edges and the set $U$ of vertices of interest, where $|E|, |U| \in O(k)$.
-    \item Guess the fastest temporal paths among vertices in $U$, for each guess create an ILP with variables corresponding to fastest temporal paths.
-    All in total create $f(k)$ partial ILP instances, each with $f(k)$ variables
-    \item For each partial ILP instance I:
+    \item Preprocessing on graph $G$. Determine the set $E$ of feedback edges, the set $U$ of vertices of interest and the set $U^*$ of neighbors of vertices of interest, where $|E|, |U|, |U^*| \in O(k)$.
+    \item Guess what are the fastest temporal paths among vertices in $U$ and 
+    what are the fastest temporal paths among the vertices in $U^*$, that are of some specific form.
     \begin{enumerate}
-        \item create $f(k)$ final instances $I_I$,
-        \item check if $I_I$ has a solution.
+        \item For each guess create an ILP instance $I$ with $f(k)$ variables.
+        \item Add constraints for all pairs of vertices.
     \end{enumerate}
+    \item Solve the ILP instance $I$ and check if a solution exists. In the positive case create its corresponding labeling $\lambda_I$ and check if it satisfies $D$.
+    All in total we create $f(k)$ partial ILP instances, each with $f(k)$ variables and $f(n)$ constraints.
 \end{enumerate}
-\begin{comment}
-\begin{enumerate}
-    \item Create $G'$ and $D'$ from $G$ and $D$ respectively, by removing all degree $1$ vertices from $G$ and $D$.
-    \item Compute a minimum feedback edge set $F$ in $G'$ (note, $F$ is also a minimum feedback edge set of $G$).
-    \item Determine vertices of interest $U$ of the graph $G'$.
-    \item \label{enum:FPT-labelingVerticesOfInterest} Guess the (partial) labeling $\lambda$ of $G'$, that connects all pairs of vertices from $U$, satisfying their respective values in $D'$.
-    \item \label{enum:FPT-labelingraphNoLeafs} Extend the partial labeling $\lambda$ to the labeling of the whole $G'$, respecting $D'$.
-    \item \label{enum:FPT-labelingWholeGraph} Extend the labeling $\lambda$ of $G'$ to the labeling of $G$, respecting $D$.
-\end{enumerate}
-
-It is important to point out, that in step~\ref{enum:FPT-labelingVerticesOfInterest}, our algorithm does not build a labeling satisfying conditions in this step,
-and then tries to extend it in steps~\ref{enum:FPT-labelingraphNoLeafs} and \ref{enum:FPT-labelingWholeGraph},
-but it
-builds (many different instances of) integer linear program (ILP) problem with $O(k)$ variables,
-with restrictions satisfying condition from steps~\ref{enum:FPT-labelingVerticesOfInterest}--\ref{enum:FPT-labelingWholeGraph}.
-At the end we solve the ILP problem on all instances and if there is a positive solution, it gives rise to the desired labeling $\lambda$ of $G$.
-For each of the steps we now argue its correctness and time complexity.
-\end{comment}
-
 
 \subsection{Step 1 of the FPT algorithm}
-In the first step of the algorithm we create an instance $D'$, with the underlying graph $G'$, from $D$ and $G$, by iteratively removing vertices of degree one from $G$ and their corresponding rows and columns from the matrix $D$. 
-This part is executed in $O(n+m)$ time.
-
+From the underlying graph $G$ of $D$ we first create a graph $G'$ by
+iteratively removing vertices of degree one from $G$.
 Then we determine a minimum feedback edge set $F$ of $G'$ by finding a spanning tree $T$ of $G'$ and set $F = E(G) \setminus E(T)$. 
-Lastly, we determine the set $U$ of \emph{vertices of interest}.
+Note that $F$ is also a minimum feedback edge set of the whole $G$.
+Lastly, we determine sets $U$, of \emph{vertices of interest}, and $U^*$ of the neighbors of vertices of interest, in the following way.
 Let $T$ be a spanning tree of $G'$, with $F$ being the corresponding feedback edge set of $G'$.
-Let $V_1 \subset V(G')$ be the set of leaves in $T$, $V_2 \subset V(G')$ be the set of vertices of degree two in $T$, that are incident to some edges in $F$, and let $V_3 \subset V(G')$ be the set of vertices of degree at least $3$ in $T$. 
-Then $|V_1| + |V_2| \leq 2k$, since every leaf in $T$ and every vertex in $V_2$ are incident to at least one edge in $F$,
+Let $V_1 \subset V(G')$ be the set of leaves in the spanning tree $T$, $V_2 \subset V(G')$ be the set of vertices of degree two in $T$, that are incident to at least one edge in $F$, 
+and let $V_3 \subset V(G')$ be the set of vertices of degree at least $3$ in $T$. 
+Then $|V_1| + |V_2| \leq 2k$, since every leaf in $T$ and every vertex in $V_2$ is incident to at least one edge in $F$,
 and $|V_3| \leq |V_1|$ by the properties of trees.
 We denote with $U = V_1 \cup V_2 \cup V_3$ the set of vertices of interest. It follows that $|U| \leq 4k$.
-We determine $F$ and $U$ in linear time.
+We set $U^*$ to be the set of vertices in $V(G') \setminus U$ that are neighbors of vertices in $U$, \ie $U^* = \{v \in V(G') \setminus U | u \in U, v \in N(u)\}$.
+Again, using the tree structure, we get that for any $u \in U$ its neighborhood is of size $|N(u)| \in O(k)$, therefore $U^* \in O(k^2)$.
+
+The whole Step 1 is performed in $O(n + m)$ time.
 
 \subsection{Step 2 of the FPT algorithm}
-In this step we want to guess the structure of fastest paths (underlying paths) among all pairs of vertices of $U$. %and then determine their labeling.
-For a pair $u,v$ of vertices in $U$, there are $k!$ possible paths in $G'$ between them. 
-Therefore, we have to try all $O(k^k)$ possible paths, where at least one of them will be a fastest temporal path from $u$ to $v$.
-Repeating this for all pairs of vertices $u,v \in U$ we get $O((k^k)^{k^2})=O(k^{k^3})$ different variations of fastest temporal paths among all vertices.
+Let us denote with $Z$ the set of vertices removed from $G$ at the beginning of the algorithm, \ie $Z = V(G) \setminus V(G')$.
+By the construction it follows that $Z$ consists of disjoint trees. 
+Note that the fastest temporal paths among vertices of $G'$ are independent of vertices in $Z$.
+Let us remember the following basic property of the problem \deltaExact.
+A labeling $\lambda$ of $G$ satisfies $D$ if every fastest temporal path from vertex $v_i$ to $v_j$ equals $D_{v_i, v_j}$,
+and none other temporal path from $v_i$ to $v_j$ is faster.
+In order to find a labeling that satisfies this property we split our analysis in nine cases,
+where the first vertex is in one of the sets $U,V(G') \setminus U, Z$,
+and similarly the last vertex is in one of the sets $U,V(G') \setminus U, Z$.
+In each of these cases we guess the underlying path $P$ of the fastest temporal path from the vertex $v_i$ to $v_j$, 
+which results in one equality constraint for the labels on the path $P$. 
+For all other temporal paths from $v_i$ to $v_j$ we know that they cannot be faster, so we introduce inequality constraints for them.
+This results in producing $f(n,m)$ constraints. We have to guarantee only, that the number of guesses, of faster temporal paths, is in $f(k)$ and not in $f(n)$.
 
-Each partial ILP instance is connected to one list of specific fastest temporal paths among the vertices from $U$.
-From now on, for every par of vertices $u,v \in U$ we assume that we know exactly what is the underlying path of a fastest temporal path from $u$ to $v$.
-We describe now how to build a specific partial ILP instance from a specific list of fastest temporal paths.
+
+We start the algorithm by guessing the structure of 
+the fastest temporal paths (we guess the underlying paths) among all pairs of vertices of $U$. 
+For a pair $u,v$ of vertices in $U$, there are $k!$ possible paths in $G'$ between them. 
+Therefore, we have to try all $O(k^k)$ possible paths, where at least one of them will be a fastest temporal path from $u$ to $v$, respecting the values from $D$.
+If this does not happen we conclude that $D$ is a \textsc{No} instance of \deltaExact.
+Repeating this procedure for all pairs of vertices $u,v \in U$ we get $O((k^k)^{k^2})=O(k^{k^3})$ different variations of the fastest temporal paths among all vertices in $U$.
+
+We now create one partial ILP instance for each guess of fastest temporal paths among the vertices from $U$,
+which we later on extend to $f(k)$ final ILP instances, after guessing some extra fastest temporal paths.
+From now on, for every pair of vertices $u,v \in U$ we assume that we know exactly what is the underlying path of a fastest temporal path from $u$ to $v$.
+
+For an easier understanding and the analysis of the algorithm we give the following definition.
+\begin{definition}
+    Let $U \subseteq V(G')$ be a set of vertices of interest and let $u,v \in U$.
+    A path $P = (u=v_1,v_2, \dots, v_p = v)$ in $G'$, where all inner vertices are not in $U$, \ie $v_i \notin U$ for $i \in \{ 2, 3, \dots, p-1\}$,
+    is called a \emph{segment}. Denote it with $S_{u,v}$.
+\end{definition}
+
+We describe now how to build one partial ILP instance from a specific list of fastest temporal paths.
 While building the ILP instances we exploit the following property greatly, that is why we state it as a separate observation.
 
 \begin{observation}\label{obs:FirstLabelAndDuration}
@@ -726,10 +759,14 @@ where the label of last edge is considered with some delta periods,
 Therefore $d(P) \pmod \Delta \equiv  (\lambda(e_p) - \lambda (e_1) + 1) \pmod \Delta$.
 
 
-In the following we prove that knowing the structure (the exact underlying path) of a fastest temporal path $P$, among two vertices of interest $u,v \in U$,
-results in determining the labeling of each edge in the fastest temporal path from $u$ to $v$ (with the exception of some constant number of edges), with respect to the label of the first edge.
+In the following we prove that knowing the structure (the underlying path) of a fastest temporal path $P$, from a vertex of interest $u$ to a vertex of interest $v$,
+results in determining the labeling of each edge in the fastest temporal path from $u$ to $v$ 
+(with the exception of some constant number of edges), with respect to the label of the first edge.
+More precisely, if path $P$ from $u$ to $v$ is a segment, then we can determine labels of all edges,
+and if $P$ consists of $\ell$ segments, then we can determine the labels of all but $\ell -1$ edges.
+For the exact formulation and proofs see \cref{claim:FPT-uv-Labelalledges,claim:FPT-uv-LabelAlmostalledges}.
 
-\begin{claim}
+\begin{claim}\label{claim:FPT-uv-Labelalledges}
     Let $u, v \in U$ be two arbitrary vertices of interest and suppose that $P = (u=v_1,v_2, \dots, v_p = v)$, where $p \geq 2$, 
     is a $u,v$ path in $G'$, which is also the underlying path of a fastest temporal path from $u$ to $v$.
     Suppose also that no other vertex from $P$ is a vertex of interest, \ie $P \setminus \{u,v\} \cap U = \emptyset$.
@@ -752,7 +789,7 @@ we set the first label of $P$ to be a constant $c_{uv}$.
 This gives us a unique label for each edge of $P$, that depends on the value $c_{u,v}$.
 \end{proof}
 
-\begin{claim}
+\begin{claim}\label{claim:FPT-uv-LabelAlmostalledges}
     Let $u, v \in U$ be two arbitrary vertices of interest and suppose that $P = (u=v_1, v_2, \dots, v_p = v)$, where $p \geq 2$, 
     is a $u,v$ path in $G'$, which is also the underlying path of a fastest temporal path from $u$ to $v$.
     Let $\ell_{u,v} \geq 1$ be the number of vertices of interest in $P$ different to $u,v$, namely $\ell_{u,v} = | v_i \in \{P \setminus \{u,v \} \} \cap U |$.
@@ -765,59 +802,98 @@ This gives us a unique label for each edge of $P$, that depends on the value $c_
 We denote with $v_i \in U$ a vertex of interest in $P \setminus \{u,v\}$.
 There are two options, either $v_i$ is reached from $u$ using the subpath $P_i = (u, v_2, v_3, \dots, v_i)$ of $P$,
 or there exists a fastest temporal path $P' = (u, w_2, w_3, \dots, w_{p'} = v_i)$, for which $P \cap P' = \{u, v_i\}$.
-If the temporal path from $u$ to $v_i$ is a subpath of $P$, then we determine the labeling the same as in previous case.
-So we can suppose that the fastest temporal path from $u$ to $v_i$ is of form $P'$.\todo{TBD - George prooved it}
+If the temporal path from $u$ to $v_i$ is a subpath of $P$, then we determine the labeling of $P$ using \cref{claim:FPT-uv-Labelalledges}.
+So we can suppose that the fastest temporal path from $u$ to $v_i$ is of form $P'$.\todo{TBD - George proved it}
 \end{proof}
  
 We use the above results in the following way.
-For all vertices of interest $u \in U$ and $v \in U \setminus \{v\}$, we know the underlying path $P_{u,v}$ of a fastest temporal path from $u$ to $v$. 
+Let $u, v \in U$ be two vertices of interest. 
+We know the underlying path $P_{u,v}$ of a fastest temporal path from $u$ to $v$. 
+Suppose that $P_{u,v}$ consist of $\ell$ segments $S_{u_i,v_i}$.
+Using \cref{claim:FPT-uv-LabelAlmostalledges} we determine the labels of all but $\ell -1$ edges on $P_{u,v}$, with respect to the value of the first edge.
+This equals to creating a constraint by setting the duration of the temporal path along $P_{u,v}$ to equal the value $D_{u,v}$.
+There are $f(k)$ different paths $P^i_{u,v}$ from $u$ to $v$ in $G$.
+We now have to iterate through all of them and add the constraint that the duration of $(P^i_{u,v}, \lambda)$ is greater or equal to $D_{u,v}$.
+We repeat the above procedure for all pairs of vertices in $U$.
+This results in producing $f(k)$ variables and constraints for our partial ILP.
+
+\begin{comment}
 We create a variable $c_{u,v}^{e_1} \in [\Delta]$ that corresponds to the label of the first edge of $P_{u,v}$ in $(G', \lambda')$ and potentially at most $\ell_{u,v}$ variables $c_{u,v}^{e_w} \in [\Delta]$ corresponding to 
 labels of edges $e_w \in P_{u,v}$ that are incident to a vertex of interest $w$, for which the underlying path $P_{u,w}$ of a fastest temporal path from $u$ to $w$ intersects $P_{u,v}$ only in vertices $u$ and $w$.
 Labels on all other edges of $P_{u,v}$ are determined exactly, in relation to the constant $c_{u,v}^{e_1}$.
 Repeating this procedure for all $u,v \in U$ creates at most $|U|^3 = O(k^3)$ new variables.
+\end{comment}
+\todo[inline]{Write examples for variables and constrains this part produces.}
 
-\todo[inline]{Write example for variables and constrains this part produces.}
-
-\subsection{Step 3 of the FPT algorithm}
-
-After finishing the second step of the FPT algorithm labels on all edges of fastest temporal paths from $u$ to $v$, where $u,v \in U$, are determined with respect to the label of the first edge.
-There may still be some edges in the graph, that are unlabeled. Note that these edges are exactly the ones that are not a part of any fastest temporal path.
+After finishing the previous step for all pairs of vertices in $U$,
+the edges of fastest temporal paths from $u$ to $v$, where $u,v \in U$, are determined with respect to the label of the first edge.
+Let us call these edges \emph{determined edges}, and the edges that were not determined with the respect to some other edge label up to now the \emph{undetermined} edges.
+Note that these edges are exactly the ones that are not a part of any fastest temporal path.
 Let us first observe some properties of such edges.
 
 \todo[inline]{Fix the following proof, add more details/definitions to the introduction.}
 \begin{claim}
-    Unlabeled edges form disjoint paths in $G'$, where each path $P$ starts and ends in some vertex of interest, 
-    \ie for every unlabeled path $P$ there exist $u,v \in U$, such that $P = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
+    Undetermined edges form disjoint segments in $G'$, where each segment starts and ends in some vertex of interest, 
+    \ie for every undetermined path $P$ there exist $u,v \in U$, such that $P = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
 \end{claim}
-
 \begin{proof}
     We prove this claim in two steps.
-    First, all inner vertices of $P$, \ie vertices $v_i \in P \setminus \{u,v\}$ are of degree exactly $2$. They are of degree at least $2$ since they are on a path $P$ and are incident to two unlabeled edges in  $P$.
-    They are of degree at most $2$ as if they were of a higher degree they would be vertices of interest and in this case we could split $P$ into shorter (sub)paths.
+    First, all inner vertices of $P$, \ie vertices $v_i \in  S \setminus \{u,v\}$ are of degree exactly $2$. They are of degree at least $2$ since they are on a path $S$ and are incident to two undetermined edges in  $P$.
+    They are of degree at most $2$ as if they were of a higher degree they would be vertices of interest and in this case we could split $P$ into shorter segments (subpaths).
     
-    Second, suppose that $P$ does not start in a vertex of interest, therefore $u \notin U$. As $u$ is the starting vertex of the unlabeled path $P$, there must exist a vertex of interest $u'$ such that a path between $u$ and $u'$ is labeled.
+    Second, suppose that $P$ does not start in a vertex of interest, therefore $u \notin U$. As $u$ is the starting vertex of the undetermined path $P$, there must exist a vertex of interest $u'$ such that a path between $u$ and $u'$ is labeled.
     Since $u$ is not a vertex of interest, the only reason to label edges between $u'$ and $u$ would be if they were a part of some fastest temporal path among some vertices of interest and $u$ would be an inner vertex on that path.
-    Therefore $u$ would have to be incident to two labeled edges (that are part of some fastest temporal path) and one unlabeled edge, but in this case the degree of $u$ would be at least $3$ and therefore $u$ would be a vertex of interest.
+    Therefore $u$ would have to be incident to two labeled edges (that are part of some fastest temporal path) and one undetermined edge, but in this case the degree of $u$ would be at least $3$ and therefore $u$ would be a vertex of interest.
+
+    It follows that $P$ is a segment.
 \end{proof}
 
 \begin{claim}
-    Among any pair of vertices of interest $u,v \in U$ there can be at most one unlabeled path $P = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
+    Among any pair of vertices of interest $u,v \in U$ there can be at most one undetermined segment $S = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
 \end{claim}
 \begin{proof}
-    Suppose for the contradiction that there are two unlabeled paths among $u,v \in U$.
-    Denote them with $P$ and $P'$. 
-    Then $C = P \cup P'$ form a cycle in $G'$. Since $G'$ admits no loops, the cycle $C$ is of length at least $3$.
-   Since $C$ is a cycle, at least one of it's edges $e \in E(C)$ has to be in the feedback edge set $F$, and therefore, by the definition of vertices of interest $U$, 
+   Suppose for the contradiction that there are two undetermined segments among $u,v \in U$.
+   Denote them with $S_{u,v}$ and $S'_{u,v}$. 
+   Then $C = S_{u,v} \cup S_{u,v}'$ form a cycle in $G'$. Since $G'$ admits no loops, the cycle $C$ is of length at least $3$.
+   Since $C$ is a cycle, at least one of its edges $e \in E(C)$ has to be in the feedback edge set $F$, and therefore, by the definition of vertices of interest $U$, 
    both endpoints of $e$ have to be in $U$.
-   So $P$ and $P'$ cannot be both fully unlabeled.
+   So $S_{u,v}$ and $S_{u,v}'$ cannot be both fully undetermined.
 \end{proof}
 
-From the above it follows that there are at most $f(k)$ (namely $O(|U|^2$) unlabeled paths in $G'$ after algorithm finishes Step 2.
-Now we want to extend the labeling from Step 2 to all unlabeled paths.
-To do this we want to relate the labeling of an unlabeled path to some labeled (\ie fastest temporal) path.
+From the above it follows that there are at most $f(k)$ (namely $O(|U|^2$) undetermined segments in $G'$ after algorithm finishes going through fastest temporal paths among vertices of interest.
+
+We now continue with guessing fastest temporal paths among all vertices in $U^*$, 
+which by similar arguing as for vertices in $U$, gives us $O(k^{k^6})$ guesses.
+Besides that we also guess fastest temporal paths of the following form.
+Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be two segments,
+first one between vertices $u,v \in U$, second one between vertices $w, z \in U$, 
+where the first one includes $v_2, v_{p-1} \in U^*$, 
+and the second one includes $z_2, z_{p-1} \in U^*$.
+We want to guess the underlying paths of the fastest temporal paths from $v_2$ to $z_2$,
+where the first path goes 
+from $v_2$, through $u$, through $w$ and then to $z_2$,
+and the second one goes
+from $v_2$, through $u$, through $z$ and then to $z_2$.
+And two similar paths from $v_2$ to $z_{p-1}$.
+We repeat this procedure for all pairs of segments and all vertices from $U^*$ in those segments.
+There are $f(k)$ possible paths of this form, since there are $f(k)$ segments in $G'$.
+All together we made $f(k)$ new guesses for the structure of the fastest temporal paths.
+Each of the previous partial ILP instances is therefore extended into $f(k)$ new ILP instances.
+
+We now do the following.
+Let $S^i_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$, let us
+fix a vertex $v_i \in S^i_{u,v} \setminus \{u,v\}$.
+Let 
+$S^j_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be another segments in $G'$.
+Now we check the matrix $D$ and determine which vertex $z_j \in S^j_{w,z} \setminus \{w,z\}$ 
+has the biggest value $D_{v_i,z_j}$.
+Let us call this vertex a \emph{split vertex of $v_i$ in the segment $S_{wz}$}.
+Denote with $z_{j-1}$ and $z_{j-1}$
+
+
 Let us first observe some properties.
 
-Suppose that $Q = (u,v_2,v_3, \dots, v_p, v)$, where $p \geq 2$ is an unlabeled path in $G'$, between vertices of interest $u,v \in U$,
+Suppose that $Q = (u,v_2,v_3, \dots, v_p, v)$, where $p \geq 2$ is an undetermined segment in $G'$, between vertices of interest $u,v \in U$,
 let $P$ be the underlying path of a fastest temporal path from $u',v' \in U$.
 Let $P$ be such path that there exists a vertex $x \in P \setminus \{u,v\}$ of degree two (\ie $x\notin U$).
 
@@ -863,7 +939,7 @@ Since this is true for any path (hence any temporal path), it holds also for the
 %
 Using the results from above we can now prove the following.
 \begin{lemma}\label{lem:FPT-DetermineLabelsOnUnlabeledNonFastestPaths}
-    Suppose that $Q = (u,v_2,v_3, \dots, v_p, v)$, where $p \geq 2$ is an unlabeled path in $G'$, between vertices of interest $u,v \in U$,
+    Suppose that $Q = (u,v_2,v_3, \dots, v_p, v)$, where $p \geq 2$ is an undetermined segment in $G'$, between vertices of interest $u,v \in U$,
     let $P$ be the underlying path of a fastest temporal path from $u',v' \in U$.
     Let $P$ be such path that there exists a vertex $x \in P \setminus \{u,v\}$ of degree two (\ie $x \notin U$).
     Then we can precisely determine the labels on every edge of $Q$, but one, with respect to the label $c_{u'v'}$ of the first edge of path $P$.
@@ -931,16 +1007,16 @@ To calculate $\lambda (s,v_i)$ we need $O(|N_{G'}(u)|) = O(n)$ time, therefore t
 Using all of the above results we proceed in the following way.
 For a partial ILP instance $I$ we 
 select an inner vertex $x$ of every fastest temporal path among vertices of interest $u'$ and $v'$,
-and for every unlabeled path among vertices of interest $u$ and $v$ we find such $y$ and $y_1, y_2$ from this path, that $y$ is furthest away from $x$ and $y_1, y_2$ are its neighbors.
+and for every endetermined path among vertices of interest $u$ and $v$ we find such $y$ and $y_1, y_2$ from this path, that $y$ is furthest away from $x$ and $y_1, y_2$ are its neighbors.
 We then enumerate $4$ possible ways that a fastest temporal path starts from $x$ and reaches $y$, 
 and then $2$ additional ways, how a fastest temporal path starts from $x$ to $y_1$ (resp.~$y_2$).
-For each of the possibilities we then precisely determine labels of the unlabeled path, up to the constant of the fastest $u',v'$ temporal path.
+For each of the possibilities we then precisely determine labels of the undetermined path, up to the constant of the fastest $u',v'$ temporal path.
 
-Since there are at most $|U|^2$ fastest temporal paths among vertices of interest, we create at most $4|U|^2$ extra instances for each unlabeled path.
+Since there are at most $|U|^2$ fastest temporal paths among vertices of interest, we create at most $4|U|^2$ extra instances for each undetermined path.
 Therefore one partial ILP instance $I$ is further extended into $O(|U|^3)=f(k)$ \todo{$O(2^k)$} final ILP instances $I_I$.
 
 \subsubsection*{Step 3(b) of the FPT algorithm}
-Using results from \cite{Lenstra1983Integer} we know that an ILP instance can be solved in FPT time with respect to the number of variables. In the case when the input instance as a solution, algorithm also provids us with one.
+Using results from \cite{Lenstra1983Integer} we know that an ILP instance can be solved in FPT time with respect to the number of variables. In the case when the input instance has a solution, algorithm also provides us with one.
 
 One final ILP instance $I_I$, that was built by our algorithm, has $f(k)$ variables. 
 Therefore one $I_I$ can be solved in FPT time with respect to $k$.
