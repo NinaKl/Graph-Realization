@@ -678,7 +678,7 @@ We solve each guess by creating an ILP instance with $f(k)$ variables and $O(n^c
 The ILP instance is a \textsc{Yes} instance if and only if $D$ is a \textsc{Yes} instance of \deltaExact.
 Moreover, from a positive solution of the ILP instance we can construct the desired labeling $\lambda$.
 Using results from \cite{Lenstra1983Integer} we know that an ILP instance can be solved in FPT time with respect to the number of variables.
-Therefore we can solve our ILP instance in $f(k)$ time.
+Therefore we can solve each of our ILP instances in $f(k)$ time.
 
 We now introduce the algorithm, that determines the labeling of $G$, satisfying $D$, and runs in $f(k) \cdot \text{poly}(n)$ time.
 Our algorithm performs the following steps.
@@ -811,11 +811,11 @@ Let $u, v \in U$ be two vertices of interest.
 We know the underlying path $P_{u,v}$ of a fastest temporal path from $u$ to $v$. 
 Suppose that $P_{u,v}$ consist of $\ell$ segments $S_{u_i,v_i}$.
 Using \cref{claim:FPT-uv-LabelAlmostalledges} we determine the labels of all but $\ell -1$ edges on $P_{u,v}$, with respect to the value of the first edge.
-This equals to creating a constraint by setting the duration of the temporal path along $P_{u,v}$ to equal the value $D_{u,v}$.
-There are $f(k)$ different paths $P^i_{u,v}$ from $u$ to $v$ in $G$.
+This results in creating one constraint, by setting the duration of the temporal path along $P_{u,v}$ to be equal to the value $D_{u,v}$.
+There are $O(k^k)$ different paths $P^i_{u,v}$ from $u$ to $v$ in $G$.
 We now have to iterate through all of them and add the constraint that the duration of $(P^i_{u,v}, \lambda)$ is greater or equal to $D_{u,v}$.
 We repeat the above procedure for all pairs of vertices in $U$.
-This results in producing $f(k)$ variables and constraints for our partial ILP.
+This results in producing $O(k^{k^3})$ variables and constraints to our partial ILP.
 
 \begin{comment}
 We create a variable $c_{u,v}^{e_1} \in [\Delta]$ that corresponds to the label of the first edge of $P_{u,v}$ in $(G', \lambda')$ and potentially at most $\ell_{u,v}$ variables $c_{u,v}^{e_w} \in [\Delta]$ corresponding to 
@@ -845,7 +845,7 @@ Let us first observe some properties of such edges.
     Since $u$ is not a vertex of interest, the only reason to label edges between $u'$ and $u$ would be if they were a part of some fastest temporal path among some vertices of interest and $u$ would be an inner vertex on that path.
     Therefore $u$ would have to be incident to two labeled edges (that are part of some fastest temporal path) and one undetermined edge, but in this case the degree of $u$ would be at least $3$ and therefore $u$ would be a vertex of interest.
 
-    It follows that $P$ is a segment.
+    From all of the above, it follows that $P$ is a segment in $G'$.
 \end{proof}
 
 \begin{claim}
@@ -860,7 +860,7 @@ Let us first observe some properties of such edges.
    So $S_{u,v}$ and $S_{u,v}'$ cannot be both fully undetermined.
 \end{proof}
 
-From the above it follows that there are at most $f(k)$ (namely $O(|U|^2$) undetermined segments in $G'$ after algorithm finishes going through fastest temporal paths among vertices of interest.
+From the above it follows that there are at most $O(|U|^2$) undetermined segments in $G'$ after algorithm finishes going through fastest temporal paths among vertices of interest.
 
 We now continue with guessing fastest temporal paths among all vertices in $U^*$, 
 which by similar arguing as for vertices in $U$, gives us $O(k^{k^6})$ guesses.
@@ -876,21 +876,134 @@ and the second one goes
 from $v_2$, through $u$, through $z$ and then to $z_2$.
 And two similar paths from $v_2$ to $z_{p-1}$.
 We repeat this procedure for all pairs of segments and all vertices from $U^*$ in those segments.
-There are $f(k)$ possible paths of this form, since there are $f(k)$ segments in $G'$.
-All together we made $f(k)$ new guesses for the structure of the fastest temporal paths.
-Each of the previous partial ILP instances is therefore extended into $f(k)$ new ILP instances.
+Since there are $O(k^3)$ segments in $G'$,
+there are $O(k^6)$ possible paths of this form.
+Lastly,
+for a segment $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$
+and a vertex of interest $w \in U$,
+we guess the underlying paths of the fastest temporal paths from $w$ to $v_2$, through $u$ and through $v$.
+Besides that we guess the underlying paths of the fastest temporal paths from $v_2$ to $w$ through $u$ and through $v$.
+For a fixed segment $S_{u,v}$ and a fixed vertex of interest $w$ we have $O(4 k^k)$ different possible such paths, therefore we make $O(k^6)$ guesses for these paths.
+All together we made $O(k^6)$ new guesses for the structure of all of the above mentioned fastest temporal paths.
+Each of the previous partial ILP instances is therefore extended into $O(k^6)$ new ILP instances.
 
 We now do the following.
 Let $S^i_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$, let us
 fix a vertex $v_i \in S^i_{u,v} \setminus \{u,v\}$.
 Let 
 $S^j_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be another segments in $G'$.
-Now we check the matrix $D$ and determine which vertex $z_j \in S^j_{w,z} \setminus \{w,z\}$ 
-has the biggest value $D_{v_i,z_j}$.
-Let us call this vertex a \emph{split vertex of $v_i$ in the segment $S_{wz}$}.
-Denote with $z_{j-1}$ and $z_{j-1}$
+Note that all inner vertices of $S^j_{w,z}$ (\ie vertices in $S^j_{w,z} \setminus \{w,z\}$)
+can be reached from $v_i$ by some path that has to go through $w$ oz $z$.
+In fact, this is true for all paths starting in any vertex not in $S^j_{w,z}$.
+Therefore, the values of the duration of the fastest path from $v_i$ to vertices on 
+the segment
+$S^j_{w,z}$ have to increase up to the certain point, when traversing the segment coming through $w$ and coming through $z$.
+Namely,
+let $z_j \in S^j_{w,z} \setminus \{w,z\}$ be the vertex with the biggest value $D_{v_i,z_j}$,
+we call this vertex a \emph{split vertex of $v_i$ in the segment $S_{wz}$}.
+Then $D_{v_i,z_2} < D_{v_i,z_3} < \dots < D_{v_i,z_j}$ and 
+$D_{v_i,z_{p-1}} < D_{v_i,z_{p-2}} < \dots < D_{v_i,z_j}$.
+From this it follows that the fastest temporal paths from $v_i$ to $z_2, z_3, \dots, z_{j-1}$ go through $w$,
+and 
+the fastest temporal paths from $v_i$ to $z_{p-1}, z_{p-2}, \dots, z_{j+1}$ go through $z$.
+We now have to guess which vertex $w$ or $z$ is on a fastest temporal path from $v_i$ to $z_j$.
+Similarly,
+all fastest temporal paths starting at $v_i$ have to go either through $u$ or through $v$,
+which also gives us two extra guesses for the underlying path of the fastest temporal path from $v_i$ to $z_j$.
+Therefore, all together we have $4$ possibilities on how the underlying path of the fastest temporal path from $v_i$ to $z_j$ 
+starts and ends.
+For a fixed $S^i_{u,v}, v_i$ and $S^j_{w,z}$ we can find the vertex $z_j$ in polynomial time, 
+or determine that this kind of vertex does not exist.
+We then make four guesses where we determine how the fastest temporal path from $v_i$ to $z_j$ passes through vertices $u,v$ and $w,z$.
+We repeat this procedure for all pairs of segments,
+which results in producing $O(k^6)$ new guesses.
+
+Before we can use the above information, let us first prove the following properties.
+\begin{claim}\label{claim:FPT-unlabeldPaths-01}
+    Suppose that
+    $S^i_{u,v}, S^j_{w,z}$ are two segments with $ v_i \in S^i_{u,v}$ and $z_j \in S^j_{w,z}$,
+    where $z_j$ is a split vertex of $v_i$ in the segment $S^j_{w,z}$.
+    Suppose that the fastest temporal path from $v_i$ to $z_j$ travels through vertices $u$ and $w$.
+    Then the fastest temporal path from $v_i$ to any other vertex of $S^j_{w,z}$, that is closer to $w$,
+    travels through the same two vertices $u$ and $w$.
+    Similarly it holds for the cases when the fastest temporal path travels through $w,v$ or $z,u$ or $z,v$.
+\end{claim}
+\begin{proof}
+    Let $z_\ell$ be a vertex of $S^j_{w,z}$, that is closer to $w$ than $z$ in the segment.
+    Let us denote with $P_{v_i,z_j}$ the underlying path of the fastest temporal path from $v_i$ to $z_j$.
+    Denote with $P_{v_i,z_j}^\ell$
+    the subpath of the fastest temporal path from $v_i$ to $z_j$, that terminates in $z_\ell$.
+    We want to show that $P_{v_i,z_j}^\ell$ is an underlying path of a fastest temporal path from $v_i$ to $z_j$.
+    Let us observe the following possibilities.
+    \\
+    First, suppose for the contradiction, that the fastest temporal path from $v_i$ to $z_\ell$ travels through vertices $u$ and $z$.
+    Denote this path as $P^1_{v_i,z_\ell}$.
+    Then it follows that $d(P^1_{v_i,z_\ell}, \lambda) \leq d(P_{v_i,z_j}^\ell,\lambda)$, which would imply that
+    the duration of the temporal path from $v_i$ to $z_j$ using the subpath of $P^1_{v_i,z_\ell}$, would be strictly smaller than the duration of $(P_{v_i,z_j},\lambda)$, which cannot be possible.
+    \\
+    Second, suppose that the fastest temporal path from $v_i$ to $z_\ell$ travels through vertices $v$ and $w$.
+    Denote this path as $P^2_{v_i,z_\ell}$.
+    Note that $P_{v_i,z_j}^\ell$ and $P^2_{v_i,z_\ell}$ intersect on a segment $S_{w,z}^j$ from the vertex $w$ to $z_ell$.
+    Therefore since
+    $d(P^2_{v_i,z_\ell}, \lambda) \leq d(P_{v_i,z_j}^\ell,\lambda)$,
+    and since there is unique way to
+    extend the path $P^2_{v_i,z_\ell}$ from $z_\ell$ to $z_j$, denote the extended path as $P^j_{v_i,z_\ell}$,
+    we get that $d(P^j_{v_i,z_\ell}, \lambda) \leq $$(P_{v_i,z_j},\lambda)$.
+    Which implies that $d(P^j_{v_i,z_\ell}, \lambda) = d(P_{v_i,z_j}, \lambda)$.
+    Now using the similar argument it follows that $d(P_{v_i,z_j}^\ell, \lambda) = d(P^2_{v_i,z_\ell}, \lambda)$,
+    therefore $P_{v_i,z_j}^\ell$ is also a fastest temporal path from $v_i$ to $z_j$.
+    \\
+    Third, suppose that the fastest temporal path from $v_i$ to $z_\ell$ travels through vertices $v$ and $z$.
+    Denote this path as $P^3_{v_i,z_\ell}$.
+    Then the duration of the temporal path from $v_i$ to $z_j$ using the subpath of $P^3_{v_i,z_\ell}$, would be strictly smaller than the duration of $(P_{v_i,z_j},\lambda)$, which cannot be possible.
+\end{proof}
+
+We proceed with adding constraints to our ILP instance, by iterating through all pairs of vertices.
+We already studied the case of fastest paths starting and ending in a vertex of $U$,
+so now we have to study all other cases.
+
+Let us start with the case of determining the fastest path from $u$ to $x$, where $u \in U$ and $x \in V(G') \setminus U$.
+We have two possibilities:
+\begin{enumerate}[(i)]
+    \item Vertex $x$ is on a fastest temporal path from $u$ to some other vertex of interest $v$.
+    Suppose that $x$ lies on a segment $S_{w,z}$.
+    Then by \cref{claim:FPT-uv-LabelAlmostalledges} we know that the fastest temporal path from $u$ to $x$ is a subpath of the fastest temporal path from $u$ to $v$,
+    which hast to be of the duration $D_{u,x}$. This results in adding an equality constraint to our ILP.
+    We now have to iterate through all others temporal paths from $u$ to $x$ and add the constraint to ILP that states that their duration is not smaller than the value $D_{u,x}$.
+    To reach $x$ from $u$, we have to first travel from $u$ to $w$ (resp.~$z$), and then travel through $S_{u,w}$ to $x$.
+    There are $O(k^k)$ different paths to reach $w$ (resp.~$z$), which are then uniquely extended to $x$.
+    Therefore we add $O(k^k)$ inequality constraints for all these paths.
+    
+    \item Vertex $x$ is not on a fastest temporal paths from $u$ to any $v \in U$.
+    Suppose that $x$ lies on a segment $S_{w,z} = (w,z_1,2_3, \dots, z_p, z)$.
+    Since we know the underlying path of the fastest temporal path from $u$ to $z_1$ through $w$ and from $u$ to $z_p$ through $z$,
+    we have to only determine how we reach vertex $x$ from the segment (\ie will the fastest path go through $w$ or through $z$).
+    This is done,
+    by checking the distances from $u$ to $z_i$, for $z_i \in S_{w,z} \setminus \{w,z\}$,
+    and determining the split vertex $w^*$ from $u$ on the segment $S_{w,z}$.
+    If $x \neq w^*$, we know which part of the segment is used to reach $x$.
+    We set this path as the fastest temporal path, that must satisfy the equalities and for all other temporal paths
+    (\ie paths from $u$ to $z$ and then to $x$, and paths from $u$ to $w$ and then to $x$),
+    we add the inequalities constraints.
+    If $x = w^*$, we have two possibilities, we check the values of each one and set the minimum of them, to equal the $D_{u,x}$ (if possible, if one is to small we immediately reject),
+    and again set all other possibilities to the inequality constraint.
+    There are $O(k^3)$ different paths from $u$ to $w$ (resp.~$z$), therefore we add $O(k^k)$ inequality constraints for all these paths.   
+\end{enumerate} 
+
+Now we proceed with the case of determining the fastest path from $x$ to $u$, where $x \in V(G') \setminus U$ and $u \in U$.
+
+Next is the case of determining the fastest path from $x$ to $y$, where $x,y \in V(G') \setminus U$.
 
 
+
+\bibliography{bibliography}	
+
+
+\clearpage
+
+\appendix
+
+\section{FPT, Old proof -- need to move useful stuff above}
 Let us first observe some properties.
 
 Suppose that $Q = (u,v_2,v_3, \dots, v_p, v)$, where $p \geq 2$ is an undetermined segment in $G'$, between vertices of interest $u,v \in U$,
@@ -906,7 +1019,7 @@ To reach $y$ from $x$ there are $4$ different options, at the start path uses ei
 and at the end path must use either $\ell_x$ or $y_x$.
 Since this is true for any path (hence any temporal path), it holds also for the fastest temporal path from $x$ to $y$.
 
-\begin{claim}\label{claim:FPT-unlabeldPaths-01}
+\begin{claim}\label{claim:FPT-unlabeldPaths-012}
     Suppose that the fastest temporal path from $x$ to $y$ uses at the beginning edge $\ell_x$.
     We now claim that if the fastest temporal path from $x$ to $y$ uses edge $\ell_y$ (resp.~$r_y$) as the last edge,
     then the fastest temporal path from $x$ to any other vertex of $Q$, that is closer to $u$ (resp.~$v$) 
@@ -1025,14 +1138,6 @@ We have build $f(k)$ different final ILP instances. If none of the instances is 
 and therefore $D$ is a \textsc{No} instance of \deltaExact.
 If there is a final ILP instance $I_I$, that is a \textsc{Yes} instance, then we take a solution $S$, provided by the algorithm from \cite{Lenstra1983Integer}, and determine the corresponding labeling $\lambda$ of $G$.
 Note, the minimum number of solutions of $I_I$ is at least $\delta$, since the graph is periodic and adding the same constant to every edge in the graph, dose not change the duration of any temporal path in $(G, \lambda)$.
-
-
-\bibliography{bibliography}	
-
-
-\clearpage
-
-\appendix
 
 \section{
 \texorpdfstring{\deltaExact\ is (NOT) polynomial-time solvable}
