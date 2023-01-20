@@ -751,7 +751,7 @@ For an easier understanding and the analysis of the algorithm we give the follow
     A path $P = (u=v_1,v_2, \dots, v_p = v)$ in $G'$, where all inner vertices are not in $U$, \ie $v_i \notin U$ for $i \in \{ 2, 3, \dots, p-1\}$,
     is called a \emph{segment}. Denote it with $S_{u,v}$.
 \end{definition}
-From the definition it follows, that there are exactly $k^2$ segments in $G'$.
+From the definition it follows, that there are $O(k^2)$ segments in $G'$.
 Observe also that a temporal path in $G'$ between two vertices of interest is either a segment, or consists of a sequence of some segments.
 %For a pair $u,v$ of vertices in $U$, there are $O(k!)=O(k^k)$ possible paths in $G'$ between them.  
 
@@ -795,11 +795,11 @@ We guess the following structures.
     For a fixed segment $S_{u,v}$ and a fixed vertex of interest $w$ we have $O(4 k^k)$ different possible such paths, therefore we make $O(k^6)$ guesses for these paths.
     All together we made $O(k^6)$ new guesses for the structure of all of the above mentioned fastest temporal paths.
 %Each of the previous partial ILP instances is therefore extended into $O(k^6)$ new ILP instances.
-    \item 
+    \item \label{FPT:guess-splitFromAnotherSegmentAndPaths}
     Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$, and let us
     fix a vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
     Let 
-    $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be another segments in $G'$.
+    $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be another segment in $G'$.
     Note that all inner vertices of $S_{w,z}$ (\ie vertices in $S_{w,z} \setminus \{w,z\}$)
     can be reached from $v_i$ by some path that has to go through $w$ oz $z$.
     In fact, this is true for all paths starting in any vertex not in $S_{w,z}$.
@@ -813,15 +813,21 @@ We guess the following structures.
     $D_{v_i,z_{p-1}} < D_{v_i,z_{p-2}} < \dots < D_{v_i,z_j}$.
     From this it follows that the fastest temporal paths from $v_i$ to $z_2, z_3, \dots, z_{j-1}$ go through $w$,
     and 
-    the fastest temporal paths from $v_i$ to $z_{p-1}, z_{p-2}, \dots, z_{j+1}$ go  through $z$.
-    We now have to guess which vertex $w$ or $z$ is on a fastest temporal path from $v_i$ to $z_j$.
+    the fastest temporal paths from $v_i$ to $z_{p-1}, z_{p-2}, \dots, z_{j+1}$ go through $z$.
+    We now want to guess which vertex $w$ or $z$ is on a fastest temporal path from $v_i$ to $z_j$.
     Similarly,
-    all fastest temporal paths starting at $v_i$ have to go either through $u$ or   through $v$,
+    all fastest temporal paths starting at $v_i$ have to go either through $u$ or through $v$,
     which also gives us two extra guesses for the fastest temporal path from $v_i$ to $z_j$.
     Therefore, all together we have $4$ possibilities on how the fastest temporal path from $v_i$ to $z_j$ starts and ends.
-    For a fixed $S_{u,v}, v_i$ and $S_{w,z}$ we find the vertex $z_j$ in    polynomial time, 
+    Besides that we want to guess also hot the fastest temporal paths from $v_i$ to $z_{j-1}, z_{j+1}$ start and end.
+    Note that one of these is the subpath of the fastest temporal path from $v_i$ to $z_j$, and the ending part is uniquely determined for both of them,
+    \ie to reach $z_{j-1}$ the fastest temporal path travels through $w$, and to reach $z_{j+1}$ the fastest temporal path travels through $z$.
+    Therefore we have to determine only how the path starts, namely if it travels through $u$ or $v$.
+    This introduces two extra guesses.
+    For a fixed $S_{u,v}, v_i$ and $S_{w,z}$ we find the vertex $z_j$ in polynomial time, 
     or determine that this kind of vertex does not exist.
-    We then make four guesses where we determine how the fastest temporal path from $v_i$ to $z_j$ passes through vertices $u,v$ and $w,z$.
+    We then make four guesses where we determine how the fastest temporal path from $v_i$ to $z_j$ passes through vertices $u,v$ and $w,z$ and 
+    for each of them two extra guesses to determine the fastest temporal path from $v_i$ to $z_{j-1}$ and from $v_i$ to $z_{j+1}$.
     We repeat this procedure for all pairs of segments,
     which results in producing $O(k^6)$ new guesses.
     \item At the end we also guess the permutation of all $O(k^3)$ variables, \ie for any two variables $x_e$ and $x_f$, we know if $x_e < x_f$ or $x_e = x_f$, or $x_e > x_f$.
@@ -956,55 +962,88 @@ and an \emph{inequality constraint} for $Q$
 \begin{equation}\label{eq:FPT-inequalityConstraint}
     D_{u,v} \leq \sum _ {i=2} ^ {r-1} (\lambda (z_{i}z_{i+1}) - \lambda (z_{i-1}z_i))_\Delta + 1.
 \end{equation}
-In both cases we implicitly assume that if the difference is smaller than zero we add the value $\Delta$ to it (\ie we consider the difference modulo $\Delta$), therefore we have the sign $\Delta$ around the brackets.
+In both cases we implicitly assume that if the difference of $(\lambda (z_{i}z_{i+1}) - \lambda (z_{i-1}z_i))$ is smaller than zero, for some $i$, we add the value $\Delta$ to it (\ie we consider the difference modulo $\Delta$), therefore we have the sign $\Delta$ around the brackets.
+In \emph{TODO: claim ???}\todo{TBD} we prove that for any two consecutive edges we know if the difference of labels is positive or negative, therefore we know when $\Delta$ has to be added.
 
-First case we observe is the case when we want to determine the labels on fastest paths from $u$ to $v$, where $u,v \in U$.
+First case we observe is the case when we want to determine the labels on fastest temporal paths among vertices of interest.
+We proceed in the following way.
+Let $u,v \in U$ be two vertices of interest and let $P_{u,v}$ be the fastest temporal path from $u$ to $v$.
+If $P_{u,v}$ is a segment we determine all the labels of edges of $P$, with respect to the label of the first edge (see \cref{claim:FPT-uv-Labelalledges}).
+%Note that since we determined labels of all edges, with respect to the first edge, we also know the exact values of waiting times at each inner vertex of $P_{u,v}$, when traversing the path.
+In the case when $P{_u,v}$ is a sequence of $\ell$ segments, we determine all but $\ell - 1$ labels of edges of $P$, with respect to the label of the first edge (see \cref{claim:FPT-uv-LabelAlmostalledges}).
+In both cases we introduce the equality constraint for $P_{u,v}$ (as in \cref{eq:FPT-equalityConstraint}).
+%Since there are $\ell - 1$ edge labels that are not determined with respect to the label of the first edge, may be some  TODO from above??
 
 After finishing the previous step for all pairs of vertices in $U$,
-the edges of fastest temporal paths from $u$ to $v$, where $u,v \in U$, are determined with respect to the label of the first edge.
+the edges of fastest temporal paths from $u$ to $v$, where $u,v \in U$, are determined with respect to the label of the first edge of each path.
 Let us call these edges \emph{determined edges}, and the edges that were not determined with the respect to some other edge label up to now the \emph{undetermined} edges.
-Note that these edges are exactly the ones that are not a part of any fastest temporal path.
+If the fastest temporal path among two vertices $u,v \in U$ is just an edge $e$, then we treat it as being determined, since it gets assigned a variable $x_e$.
+Note that the undetermined edges are exactly the ones that are not a part of any fastest temporal path.
 Let us first observe some properties of such edges.
 
-\todo[inline]{Fix the following proof, add more details/definitions to the introduction.}
 \begin{claim}
     Undetermined edges form disjoint segments in $G'$, where each segment starts and ends in some vertex of interest, 
     \ie for every undetermined path $P$ there exist $u,v \in U$, such that $P = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
 \end{claim}
 \begin{proof}
     We prove this claim in two steps.
-    First, all inner vertices of $P$, \ie vertices $v_i \in  S \setminus \{u,v\}$ are of degree exactly $2$. They are of degree at least $2$ since they are on a path $S$ and are incident to two undetermined edges in  $P$.
+    First we prove that all inner vertices of $P$, \ie vertices $v_i \in  S \setminus \{u,v\}$ are of degree exactly $2$ and are not vertices of interest. 
+    They are of degree at least $2$ since they are on a path $P$ and are incident to two undetermined edges in  $P$.
     They are of degree at most $2$ as if they were of a higher degree they would be vertices of interest and in this case we could split $P$ into shorter segments (subpaths).
     
     Second, suppose that $P$ does not start in a vertex of interest, therefore $u \notin U$. As $u$ is the starting vertex of the undetermined path $P$, there must exist a vertex of interest $u'$ such that a path between $u$ and $u'$ is labeled.
-    Since $u$ is not a vertex of interest, the only reason to label edges between $u'$ and $u$ would be if they were a part of some fastest temporal path among some vertices of interest and $u$ would be an inner vertex on that path.
+    Since $u$ is not a vertex of interest, the only reason to label edges between $u'$ and $u$ would be if they were a part of some fastest temporal path among two vertices of interest and $u$ would be an inner vertex on that path.
     Therefore $u$ would have to be incident to two labeled edges (that are part of some fastest temporal path) and one undetermined edge, but in this case the degree of $u$ would be at least $3$ and therefore $u$ would be a vertex of interest.
 
-    From all of the above, it follows that $P$ is a segment in $G'$.
+    From all of the above, it follows that $P$ is an undetermined segment in $G'$.
 \end{proof}
 
 \begin{claim}
-    Among any pair of vertices of interest $u,v \in U$ there can be at most one undetermined segment $S = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
+    After determining the labels of fastest temporal paths between all pairs of vertices of interest,
+    there can be at most one undetermined segment among each pair of them.
+    %among any pair of vertices of interest $u,v \in U$ there can be at most one undetermined segment $S = (u, v_1, v_2, \dots, v_p, v)$, where $p \geq 0$ and $v_1,v_2,\dots,v_p \in V(G') \setminus U$.
 \end{claim}
 \begin{proof}
-   Suppose for the contradiction that there are two undetermined segments among $u,v \in U$.
+   Suppose for the contradiction that after determining the labels of all fastest temporal paths between vertices of interest,
+   there are two undetermined segments among $u,v \in U$.
    Denote them with $S_{u,v}$ and $S'_{u,v}$. 
-   Then $C = S_{u,v} \cup S_{u,v}'$ form a cycle in $G'$. Since $G'$ admits no loops, the cycle $C$ is of length at least $3$.
+   Then $C = S_{u,v} \cup S_{u,v}'$ forms a cycle in $G'$. Since $G'$ admits no loops, the cycle $C$ is of length at least $3$.
    Since $C$ is a cycle, at least one of its edges $e \in E(C)$ has to be in the feedback edge set $F$, and therefore, by the definition of vertices of interest $U$, 
    both endpoints of $e$ have to be in $U$.
+   If $e = uv$ then there are only two vertices of interest in $C$, but the label of edge $e$ is determined.
+   And if $e \neq uv$ then there are at least $3$ vertices of interest in $C$.
    So $S_{u,v}$ and $S_{u,v}'$ cannot be both fully undetermined.
 \end{proof}
 
-From the above it follows that there are at most $O(|U|^2$) undetermined segments in $G'$ after algorithm finishes going through fastest temporal paths among vertices of interest.
+%From the above it follows that there are at most $O(|U|^2) = O(k^2)$ undetermined segments in $G'$ after the algorithm finishes with determining the labels for all fastest temporal paths among vertices of interest.
+Now we want to relate the undetermined segments with the determined ones.
+Let $S_{u,v}$ and $S_{w,z}$ be two segments.
+At the beginning we have guessed what is a split vertex of a fixed vertex $v_i \in S_{u,v}$ in the segment  $S_{w,z}$. 
+Denote this vertex as $z_j$, denote its neighbor closer to $w$ in $S_{w,z}$ as $z_{j-1}$,
+and its neighbor closer to $z$ in $S_{w,z}$ as $z_{j+1}$.
+We also guessed how the fastest temporal path from $v_i$ to $z_{j-1}, z_j, z_{j+1}$ starts and ends, 
+\ie through which of two vertices $u,v$ it leaves the segment $S_{u,v}$ and 
+through which of the two vertices $w,z$ it enters the segment $S_{w,z}$.
+For the details see \cref{FPT:guess-splitFromAnotherSegmentAndPaths}.
+Now using this information and \cref{obs:FirstLabelAndDuration}, we can determine the labels on all edges, with respect to the first label from the segment $S_{u,v}$,
+between 
+$w$ and $z_{j-1}$, and between $z$ and $z_{j+1}$, and the label of one of the edges $z_{j-1}z_j$ or $z_j z_{j+1}$ (depending which edge is used on the fastest temporal path from $v_i$ to $z_j$).
+We repeat this procedure for all pairs of segments.
+Each specific calculation takes linear time, since there are $O(k^2)$ segments, this calculation takes $O(k^4)$ time.
 
+Now all the edges are determined with the exception of at most two edges per segment (the first one and potentially one extra somewhere in the segment).
 
+We continue to adding all necessary constraint to our ILP instance. 
+We iterate through all pairs of vertices $x,y$ and make sure that the fastest temporal path from $x$ to $y$ produces the equality constrain \cref{eq:FPT-equalityConstraint},
+and all other temporal paths from $x$ to $y$ produce the inequality constraint \cref{eq:FPT-inequalityConstraint}.
 
+First we consider the case when $u,v$ are two vertices of interest.
+This was the case that we partially studied at the beginning of the algorithm,
+where we have already introduced all equality constraints for the fastest temporal paths among vertices of $U$.
+We now iterate through all of the paths from $u$ to $v$, and for every one, that is not the underlying path of a fastest temporal path, we add the inequality constraint.
+There are $O(k^k)$ possible paths from $u$ to $v$ in $G'$, therefore in this step we introduce $O(k^3)$ inequality constraints.
 
-
-We already studied the case of fastest paths starting and ending in a vertex of $U$,
-so now we have to study all other cases.
-
-Let us start with the case of determining the fastest path from $u$ to $x$, where $u \in U$ and $x \in V(G') \setminus U$.
+Next we continue with the case of the fastest path from $u$ to $x$, where $u \in U$ and $x \in V(G') \setminus U$.
 We have two possibilities:
 \begin{enumerate}[(i)]
     \item Vertex $x$ is on a fastest temporal path from $u$ to some other vertex of interest $v$.
@@ -1016,8 +1055,9 @@ We have two possibilities:
     There are $O(k^k)$ different paths to reach $w$ (resp.~$z$), which are then uniquely extended to $x$.
     Therefore we add $O(k^k)$ inequality constraints for all these paths.
     
-    \item Vertex $x$ is not on a fastest temporal paths from $u$ to any $v \in U$.
-    Suppose that $x$ lies on a segment $S_{w,z} = (w,z_1,2_3, \dots, z_p, z)$.
+    \item \label{item:FPT-uToxcase2}
+    Vertex $x$ is not on a fastest temporal paths from $u$ to any $v \in U$.
+    Suppose that $x$ lies on a segment $S_{w,z} = (w,z_1,z_3, \dots, z_p, z)$.
     Since we know the underlying path of the fastest temporal path from $u$ to $z_1$ through $w$ and from $u$ to $z_p$ through $z$,
     we have to only determine how we reach vertex $x$ from the segment (\ie will the fastest path go through $w$ or through $z$).
     This is done,
@@ -1027,15 +1067,129 @@ We have two possibilities:
     We set this path as the fastest temporal path, that must satisfy the equalities and for all other temporal paths
     (\ie paths from $u$ to $z$ and then to $x$, and paths from $u$ to $w$ and then to $x$),
     we add the inequalities constraints.
-    If $x = w^*$, we have two possibilities, we check the values of each one and set the minimum of them, to equal the $D_{u,x}$ (if possible, if one is to small we immediately reject),
-    and again set all other possibilities to the inequality constraint.
-    There are $O(k^3)$ different paths from $u$ to $w$ (resp.~$z$), therefore we add $O(k^k)$ inequality constraints for all these paths.   
+    If $x = w^*$, we have two possibilities, we check the values of each one and set the minimum of them, to equal the $D_{u,x}$, 
+    if this is even possible, if one is too small we immediately reject.
+    Note, we know the durations of fastest temporal paths from $u$ to $z_1$ and $z_p$. We also know all the labels of the edges of $S_{w,z}$, with respect to each other,
+    with the exception of at most one inner edge.
+    Therefore we can completely calculate the duration from $u$ to $x=w^*$ coming from one side (\ie either from $w$ or $z$).
+    Suppose that the value of the duration of the fastest path from $u$ to $w^*$, through $w$ is
+    smaller than $D_{u,x}$, then we reject and stop the calculation.
+    If the value equals $D_{u,x}$ we have determined the fastest temporal path and we use it to create equality constraints, while we use the other path, through $z$, to create an inequality constraint.
+    If the value is bigger than $D_{u,x}$, we create an inequality constraint for this path and create an equality constraint for the path through $z$.
+    We calculate also all other possible paths from $u$ to $x$ and create inequalities for all of them.
+    These paths are exactly all the paths from $u$ to $w$ (resp.~$z$), from where we uniquely continue to $x$ through $S_{w,z}$.
+    There are $O(k^{k})$ different paths from $u$ to $w$ (resp.~$z$), therefore we add
+    $O(k^k)$ inequality constraints for all these paths, for a fixed $u$ and $x$.   
 \end{enumerate} 
 
 Now we proceed with the case of determining the fastest path from $x$ to $u$, where $x \in V(G') \setminus U$ and $u \in U$.
+%We use the similar approach as in the case~\ref{item:FPT-uToxcase2} from above.
+Let $x$ a vertex in the segment $S_{w,z} = (w,z_1,z_2, \dots, z_p, z)$.
+We can easily determine the vertex $z_i \in S_{w,z}\setminus\{w,z\}$ for which the fastest temporal path from $z_i$ to $u$ has the biggest duration.
+Denote this vertex as $z^*$. 
+Then we know that all vertices in $S_{w,z}$ that are closer to $w$ than $z^*$ reach $u$ on the path that goes through $w$ and 
+all the vertices in $S_{w,z}$ that are closer to $z$ than $z^*$ reach $u$ on the path that goes through $z$.
+At the beginning we have also guessed the fastest path $z_1 \rightarrow w \rightarrow u$ (resp.~$z_p \rightarrow z \rightarrow u$).
+Using this information we know all the fastest paths from any vertex in $S_{w,z} \setminus \{ z^* \}$ to $u$.
+For all of these paths we introduce an equality constraint. 
+For $z^*$ we have to determine which of the paths, through $w$ or $z$, to $u$ is the fastest.
+Since we know the labels of all edges of $S_{w,z}$, with the exception of at most one edge, we can easily determine (procedure is similar as in case~\ref{item:FPT-uToxcase2} from above),
+which is the fastest temporal path from $z^*$ to $w$, which gives an equality constraint .
+Now
+we still need to add the inequality constraints for all other paths.
+There are $O(k^k)$ paths between $w$ (resp.~$z$) and $u$, and a unique path from $z^*$ to $w$ (resp.~$z$).
+For all paths from $w^*$ to $u$, that are not equal to the fastest, we introduce the inequality constraint.
+This results in adding $O(k^k)$ inequality constraints.
 
 Next is the case of determining the fastest path from $x$ to $y$, where $x,y \in V(G') \setminus U$.
+Let $x$ be a vertex in the segment $S_{u,v} = (u,v_1,v_2, \dots, v_p, v)$ and let $y$ be a vertex in the segment $S_{w,z} = (w,z_1,z_3, \dots, z_r, z)$.
+By checking the durations of the fastest paths from $x$ to every vertex in $S_{w,z} \setminus \{w,z\}$
+we can determine the vertex $z_i \in S_{w,z} $, for which the duration from $x$ is the biggest.
+This implies that the fastest temporal paths from $x$ to all vertices $z_1, z_2, \dots, z_{i-1}$ (resp.~$z_{i+1}, z_{i+2}, \dots, z_r$)  passes through $w$ (resp.~$z$).
+Now we determine the vertex $z_j \in S_{u,v} \setminus \{u,v\}$,
+for which the value of the durations of the fastest paths from it to the vertex $y$ is the biggest.
+This implies that the fastest temporal paths from the vertices $v_1, v_2, \dots, v_{j-1}$ (resp.~$v_{j+1}, v_{j+2}, \dots, v_p$) to the vertex $y$ passes through $u$ (resp.~$v$).
+At the beginning we have also guessed the following fastest paths  
+$z_1 \rightarrow w \rightarrow u \rightarrow v_1$,
+$z_1 \rightarrow w \rightarrow v \rightarrow v_p$,
+$z_r \rightarrow z \rightarrow v \rightarrow v_p$ and
+$z_r \rightarrow z \rightarrow v \rightarrow v_p$.
+We distinguish following two cases,
+first when $\{x,y\} \neq \{v_i, z_j\}$ and the second where $\{x,y\} = \{v_i, z_j\}$ (note this case encapsulates also the two cases when $x = v_i$ or $y=z_j$).
+In the first case we know how the fastest temporal path from $x$ to $y$ exits the segment $S_{u,v}$ and enters the segment $S_{w,z}$.
+Combining this with the guessed fastest paths, we uniquely determine the fastest temporal path from $x$ to $y$. 
+For this path we add the equality constraint, and for all other paths (by similar arguing as in other cases there are $O(k^k)$ such paths) we add the inequality constraints.
+In the second case when $\{x,y\} = \{v_i, z_j\}$ we do the following.
+\todo{TODO}
 
+All of the above is enough to determine the labelling $\lambda$ of $G'$. Now we have to make sure that the labeling considers also the vertices in $Z$ that we initially removed from $G$.
+Remember that removed vertices form disjoint trees in $G$.
+Let us denote $Z$ as the set of disjoint trees, \ie $Z = T_1 \cup T_2 \cup \cdots \cup T_t$, where $T_i$ represents one of the trees.
+Since there is a unique (static) path between any two vertices $t_1, t_2$ in a tree $T_i$,
+it follows that there is also a unique (therefore also the fastest) temporal path among them.
+Thus determining the label of an edge in $T_i$ uniquely determines the labels on all other edges of tree $T_i$.
+Let us describe now how to determine the labels on edges of an arbitrary $T_i \in Z$.
+For a tree $T_i$ denote with $u_i$ the vertex in $G'$ that is a neighbor of some vertex in $T_i$, 
+call it a \emph{clip vertex of the tree $T_i$}
+and denote with $r_i$ the neighbor of $u_i$, \ie the root of the tree $T_i$.
+By construction (by iteratively removing vertices of degree one from $G$) it follows that there can be many different trees $T_i$ that are incident to the same clip vertex $u_i \in V(G')$,
+but each tree $T_i$ is incident to exactly one clip vertex $u_i \in V(G')$.
+First observe that $|N_{G'}(u_i)|\geq 1$, if not also $u_i$ would be removed from $G$.
+To determine the correct label of all edges of $T_i$ we use the following property.
+\begin{claim}
+Let $T_i$ be a tree in $Z$ and let $e_i = (u_i,r_i)$ be an edge in $G$, where $u_i \in V(G')$ is a clip vertex of $T_i$ and $r_i \in T_i$ is a root of $T_i$.
+Let $v \in N_{G'}(u_i)$ be the closest vertex to $r_i$, regarding the values of $D$, \ie  $D_{r_i,v} \leq D_{r_i,w}$ for all $w \in N_{G'}(u)$.
+Then the path $P^*=(r_i,u_i,v)$ has to be the fastest temporal path from $r_i$ to $v$ in $G$.
+\end{claim}
+\begin{proof}
+Suppose that this is not true.
+Then there exists a faster path $P^*_2$ from $r_i$ to $v$, that goes through the clip vertex $u_i$ of $T_i$ (as this is the only neighbor of $r_i$), through some other vertex $w \in N_{G'}(u) \setminus \{v \}$, 
+and through some other path $P'$ in $G$, before it finishes in $v$, where $P'$ is at least an edge (from $w$ to $v$). 
+Therefore $P^*_2= (r_i,u_i,w,P',v)$, where $d(P^*_2) \leq d(P^*)$.
+Now since $D_{r_i,v} \leq D_{r_i,w}$ for all $ w\in N_{G'}(u)$ the first part of path $P^*_2$ from $r_i$ to $w$ takes at least $D_{r_i,v}$ time.
+Since $v \neq w$ we need at least one more time-step (one more edge) to traverse from $w$ to reach $v$. 
+So $d(P^*_2) \geq D_{r_i,v} + 1$, and so $P^*_2$ cannot be faster than $P^*$.
+\end{proof}
+
+Because $(r_i,u_i,v)$ is the fastest temporal path from $r_i$ to $v$ we can determine the label of edge $r_iu_i$ as 
+$\lambda (r_i u_i) \equiv \lambda(u_i v) + 1 - D_{r_i,v} \pmod \Delta$.
+Now using the algorithm for trees (see \cref{thm:deltaExact-PolyTimeTrees}), we determine labels on all edges of $T_i$.
+We repeat this procedure for all trees in $Z$.
+We have to now add the equality and inequality constraints for the fastest temporal paths from vertices of $Z$ to all other vertices in $G'$ and vice versa.
+
+Let us start with the case when we consider fastest paths from a vertex $t$ in some tree $T_i$ to a vertex of interest $u \in U$.
+Denote with $r_i$ the root of $T_i$.
+We distinguish the following two cases.
+\begin{enumerate}[(i)]
+    \item The clip vertex $w$ of the tree $T_i$ is a vertex of interest.
+    Note that since we have determined the label of the edge $w r_i$, we also know the waiting times 
+    at vertex $u$ coming from each of its neighbor $v_i$ and finishing in $r_i$. 
+    At the beginning we have also determined the fastest paths from $u$ to all $v_i \in N_{G'}(w)$.
+    Therefore we know the path $P$ that is the fastest from $u$ to $r_i$. 
+    Once we have determined $P$ we also know that the fastest path from $u$ to any other vertex in $T_i$ uses $P$ at the beginning, to go from $u$ to $r_i$.
+    Therefore we have determined the fastest paths from $u$ to all other vertices in $T_i$,
+    which gives rise to $|T_i|$ equality constraints.
+    We iterate now through all other $u \rightarrow w \rightarrow r_i$ paths and introduce inequality constraints for them.
+    There are $O(k^k)$ such paths.
+    
+    \item The clip vertex $x$ of the tree $T_i$ is not a vertex of interest.
+    Let $x$ be a part of a segment $S_{w,z} = (w, z_1, z_2, \dots, z_r )$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighbouring vertices of $x$, 
+    where $z_{i-1}$ is closer to $w$ in $S_{w,z}$ and 
+    $z_{i+1}$ is closer to $z$ in $S_{w,z}$.
+    Similarly as before we know the fastest paths from $u$ to $z_1$ and $z_r$.
+    We also know the waiting times at the clip vertex $x$ coming from $z_{i-1}$ and $z_{i+1}$. Therefore we can determine the fastest temporal path $P$ from $u$ to $r_i$.
+    Again this path is the one that is then extended to the fastest path from $u$ to all other vertices in $T_i$,
+    which gives rise to $|T_i|$ equality constraints.
+    We iterate through all other temporal paths and produce the inequality constraints.
+    There are $O(k^k)$ of them for each vertex in $T_i$.
+\end{enumerate}
+
+In the case when we want to determine the fastest path from a vertex $t$ in some tree $T_i$ to a vertex of interest $u \in U$,
+we use similar arguing as above.
+The procedure produces one equality constraint and $O(k^k)$ inequality ones.
+
+The only two cases to consider are the cases when we want to determine the fastest paths from some $x \in V(G)$, that is not a vertex of interest, to a vertex $t$ in some tree $T_i$, and vice versa.
+We again need to consider two cases, one where 
 
 
 \bibliography{bibliography}	
@@ -1102,7 +1256,7 @@ Using the results from above we can now prove the following.
 \begin{proof}
     %To prove this we use \cref{claim:FPT-unlabeldPaths-01} and \cref{obs:FirstLabelAndDuration}.
     Let us denote with $y$ the vertex of $Q$, for which the duration from $x$ to $y$ is the biggest, among vertices of $Q$,
-    more precisely $x$ is a vertex corresponding to $max_{v_i \in Q} D_{x,v_i}$.
+    more precisely $y$ is a vertex corresponding to $max_{v_i \in Q} D_{x,v_i}$.
     Denote 
     with $\ell_x$ the edge incident to $x$ that is closer to $u'$ on path $P$, and with $r_x$ the edge that is closer to $v'$ on $P$.
     Similarly, denote with $\ell_y$ the edge incident to $y$ that is closer to $u$ on the path $Q$, and with $r_y$ the edge that is closer to $v$ on $Q$.
