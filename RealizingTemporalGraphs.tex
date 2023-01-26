@@ -8,6 +8,8 @@
 \let\proof\relax
 \let\endproof\relax
 
+\sloppy
+
 
 \usepackage{amsthm}
 \usepackage{amssymb}
@@ -677,7 +679,7 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
 
     Given an instance $H$ of \textsc{Multicolored Clique}, we construct an instance $D$ of \deltaExactLong\ as follows. To ease the presentation, we first describe the underlying graph $G$ that is implicitly defined by the entries $D_{v,v'}=1$, that is, the pairs of vertices $v,v'$ that should be connected by a temporal path of duration one, meaning that there needs to an edge connecting the two vertices. Afterwards, we describe the remaining entries of $D$.
 
-    We use the following subgraph $G_{i,j}$ as a \emph{edge selection gadget} for color combination $i,j$ with $i<j$. We first describe the vertex set of $G_{i,j}$.
+    We will construct $G$ using several gadgets. We first introduce an \emph{edge selection gadget} for color combination $i,j$ with $i<j$. We start with describing the vertex set of the gadget.
     \begin{itemize}
         \item A set $X_{i,j}$ of vertices $x_1, x_2, \ldots, x_m$.
         \item A set $Y_{i,j}$ of vertices $y_1, y_2, \ldots, y_m$.
@@ -685,7 +687,7 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
         \item Vertex sets $U_1, U_2, \ldots, U_m$ with $U_\ell=\{u^\ell_1, u^\ell_2,\ldots, u^\ell_n, u^\ell_{n+1}, u^\ell_{n+2}, u^v_{2n}\}$ for all $\ell\in[m]$. Let $U_{i,j}=\bigcup_{\ell\in[n]} U_\ell$.
         \item Two special vertices $v_{i,j}^\star,v_{i,j}^{\star\star}$.
     \end{itemize}
-    Graph $G_{i,j}$ has the following edges.
+    The gadget has the following edges.
     \begin{itemize}
         \item For all $\ell\in [m]$ we have edge $\{x_\ell,v_{i,j}^\star\}$, $\{y_\ell,v_{i,j}^\star\}$, and $\{z_\ell,v_{i,j}^{\star\star}\}$. 
 
@@ -694,29 +696,81 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
     \end{itemize}
     This finishes the construction of the edge selection gadget $G_{i,j}$.
 
-    For each color $i$, we introduce the following vertices. Intuitively, what we describe in the following will be used as a \emph{verification gadget} for color $i$.
+    For each color $i$, we introduce the following vertices. What we describe in the following will be used as a \emph{verification gadget} for color $i$.
     \begin{itemize}
-        \item We have $k-1$ vertices $v^i_\ell$ for $\ell\in[k]\setminus\{i\}$ and one vertex $v^i$.
+        \item We have $k-1$ vertices $v^i_\ell$ for $\ell\in[k]\setminus\{i\}$ and one vertex $v^i_0$.
         \item If $1\neq i\neq k$, then we have a set $\hat{U}_i$ of $n$ additional vertices $\hat{u}^i_1,\hat{u}^i_2,\ldots,\hat{u}^i_n$.
     \end{itemize}
-    We add the following edges. Assume $1\neq i \neq k$. We describe the two cases $i=1$ and $i=k$ afterwards. Let $e_\ell\in F_{1,i}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v^i,u^\ell_{\ell'}\}$ between $v^i$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget $G_{1,i}$. 
+    We add the following edges. 
+    %Assume $1\neq i \neq k$. We describe the two cases $i=1$ and $i=k$ afterwards. 
+    If $i\neq 1$, let $e_\ell\in F_{1,i}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v^i_0,u^\ell_{\ell'}\}$ between $v^i_0$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $1,i$. 
     
-    Let $1<j<i$ and let $e_\ell\in F_{j,i}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v_{j-1}^i,u^\ell_{\ell'}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget $G_{j,i}$.
-    Furthermore, we add edge $\{v_{j}^i,u^\ell_{\ell'+1}\}$ between $v^i_j$ and the vertex $u^\ell_{\ell'+1}$ of the edge selection gadget $G_{j,i}$.
+    Let $1<j<i$ (skip if $i=1$) and let $e_\ell\in F_{j,i}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v_{j-1}^i,u^\ell_{\ell'}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $j,i$.
+    Furthermore, we add edge $\{v_{j}^i,u^\ell_{\ell'+1}\}$ between $v^i_j$ and the vertex $u^\ell_{\ell'+1}$ of the edge selection gadget of color combination $j,i$.
 
     We add edge $\{v^i_{i-1},\hat{u}^i_1\}$ and for all $\ell\in[n-1]$ we add edge $\{\hat{u}^i_\ell,\hat{u}^i_{\ell+1}\}$. 
     
-    Let $e_\ell\in F_{i,i+1}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{\hat{u}^i_n,u^\ell_{n+\ell'}\}$ between $\hat{u}^i_n$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget $G_{i,i+1}$.
+    Let $e_\ell\in F_{i,i+1}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{\hat{u}^i_n,u^\ell_{n+\ell'}\}$ between $\hat{u}^i_n$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,i+1$.
 
-    Let $i<j\le k$ and let $e_\ell\in F_{i,j}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v_{j-1}^i,u^\ell_{n+\ell'}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget $G_{i,j}$.
-    Furthermore, we add edge $\{v_{j}^i,u^\ell_{n+\ell'+1}\}$ between $v^i_j$ and the vertex $u^\ell_{n+\ell'+1}$ of the edge selection gadget $G_{i,j}$.
+    Let $i<j\le k$ (skip if $i=k$) and let $e_\ell\in F_{i,j}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v_{j-1}^i,u^\ell_{n+\ell'}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,j$.
+    Furthermore, we add edge $\{v_{j}^i,u^\ell_{n+\ell'+1}\}$ between $v^i_j$ and the vertex $u^\ell_{n+\ell'+1}$ of the edge selection gadget of color combination $i,j$.
 
-    Finally, we add two vertices $\hat{v},\hat{v}'$ and the following edges. Intuitively, what we describe next will be used to connect many vertex pairs by short paths, which will make arguing about possible labelings in yes-instances much easier.
+
+    Next, we describe \emph{connector gadgets}. Intuitively, these gadgets will be used to connect many vertex pairs by short paths, which will make arguing about possible labelings in yes-instances much easier. Connector gadgets consist of three vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2$. 
+    %Each connector gadget is associated with four sets $A,A',B,B'$ containing vertices of other gadgets. 
+    Each connector gadget is associated with two sets $A,B$ containing vertices of other gadgets. 
+    Let $V^\star$ denote the set of all vertices from all edge selection gadgets and all validation gadgets.
+    The sets $A$ and $B$ will only play a role when defining the distance matrix $D$ later. Informally speaking, vertices in $A$ should reach all vertices in $V^\star$ quickly through the gadget, except the ones in $B$.
+    We have the following edges. 
     \begin{itemize}
-        \item Edge $\{\hat{v},\hat{v}'\}$.
-        \item An edge between $\hat{v}$ an all vertices in $X_{i,j}\cup Y_{i,j} \cup Z_{i,j}\cup U_{i,j}$ for all $1\le i<j\le k$.
-        \item An edge between $\hat{v}'$ an all vertices in $X_{i,j}\cup Y_{i,j} \cup Z_{i,j}\cup U_{i,j}$ for all $1\le i<j\le k$.
+        \item Edges $\{\hat{v}_0,\hat{v}_1\},\{\hat{v}_1,\hat{v}_2\}$.
+        \item An edge between $\hat{v}_1$ and each vertex in $V^\star$.
+        \item An edge between $\hat{v}_2$ and each vertex in $V^\star$.
     \end{itemize}
+    We add two connector gadgets for each edge selection gadget and one connector gadget for each validation gadget.
+    
+    The first connector gadget for the edge selection gadget of color combination $i,j$ with $i<j$ has the following sets.
+    \begin{itemize}
+        \item Sets $A$ and $B$ contain all vertices in $X_{i,j}$ and vertex $v_{i,j}^{\star\star}$.
+        %\item Set $A'$ contains all vertices from all edge selection gadgets and all validation gadgets except $X_{i,j}$.
+        %\item Set $B$ contains all vertices from all edge selection gadgets and all validation gadgets, except $v_{i,j}^{\star\star}$.
+        %\item Set $B$ contains vertex $v_{i,j}^{\star\star}$.
+    \end{itemize}
+    The second connector gadget for the edge selection gadget of color combination $i,j$ with $i<j$ has the following sets.
+    \begin{itemize}
+        \item Set $A$ contains all vertices from the edge selection gadget $G_{i,j}$ except vertices in $X_{i,j}$.
+        %\item Set $A'$ contains all vertices in $X_{i,j}$.
+        %\item Set $B$ contains all vertices from all edge selection gadgets and all validation gadgets.
+        \item Set $B$ is empty.
+    \end{itemize}
+
+    The connector gadget for the verification gadget of color $i$ has the following sets.
+    \begin{itemize}
+        \item Sets $A$ and $B$ contain all vertices of the verification gadget and all vertices from edge selection gadgets that are neighbor of a vertex in the verification gadget.
+    \end{itemize}
+
+Lastly, we introduce an \emph{alignment gadget}. It consists of one vertex $w^\star$ and a set of vertices $\hat{W}$ containing one vertex for each edge selection gadget and one vertex for each connector gadget. Vertex $w^\star$ is connected to each vertex in $\hat{W}$.
+The vertex $x_1$ of each edge selection gadget is connected to exactly one vertex in $\hat{W}$ and the vertex $\hat{v}_1$ of each connector gadget is connected to exactly one vertex in $\hat{W}$ such that all vertices in $\hat{W}$ have degree two.
+
+This finished the description of the underlying graph $G$. We can observe that the vertex set containing
+\begin{itemize}
+    \item vertices $v_{i,j}^\star$ and $v_{i,j}^{\star\star}$ of each edge selection gadget,
+    \item vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_n$ (if exists) of each validation gadget.
+    \item vertices $\hat{v}_1$ and $\hat{v}_2$ of each connector gadget, and
+    \item vertex $w^\star$ of the alignment gadget
+\end{itemize}
+forms a feedback vertex set in $G$ with size $O(k^2)$.
+
+We proceed with describing the distance matrix $D$. We use the notation $d(v,v'):= D_{v,v'}$. For all vertices $v,v'$ that are neighbors in $G$ we have that $d(v,v')=1$ and $d(v',v)=1$.
+
+Next, consider a connector gadget consisting of vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2$ and with sets $A$ and $B$. Informally, the connector gadget makes sure that all vertices in $A$ can reach all other vertices (of edge selection gadgets and validation gadgets) except the ones in $B$. We set the following distances. Recall that $V^\star$ denotes the set of all vertices from all edge selection gadgets and all validation gadgets.
+\begin{itemize}
+    \item We set $d(\hat{v}_0,\hat{v}_1)=2$, $d(\hat{v}_1,\hat{v}_2)=2$, and $d(\hat{v}_0,\hat{v}_2)=3$.
+    \item Let $v\in V^\star\setminus B$, then we set $d(\hat{v}_0,v)=3$.
+    \item Let $v\in A$ and $v'\in V^\star\setminus B$ such that $v$ and $v'$ are not neighbors, then we set $d(v,v')=3$.
+\end{itemize}
+
+Next, consider the edge selection gadget for color combination $i,j$ with $i<j$.
 \end{proof}
 
 \section{FPT and W[1]-hardness of exact realization -- new version}
@@ -815,10 +869,10 @@ Observe also that a temporal path in $G'$ between two vertices of interest is ei
 We start the algorithm by guessing necessary structures.
 Note, whenever we say that we guess the fastest temporal path between two vertices, we mean that we guess the underlying path of the fastest temporal path among those two vertices.
 In the case when we want to guess the fastest path from $u$, that (somehow) passes through the vertex $x$, and goes directly to $v$ via an edge, we write it as a fastest path of form $u \leadsto x \rightarrow v$.
-Similarly it holds if we want to include more vertices, that has to be visited by the path. If there is an edge (\ie a unique path) among two vertices, we denote it by $\rightarrow$,
+Similarly it holds if we want to include more vertices that have to be visited by the path. If there is an edge (\ie a unique path) among two vertices, we denote it by $\rightarrow$,
 if the path among two vertices is not uniquely determined, we denote it by $\leadsto$.
 We guess the following structures.
-\begin{enumerate}
+\begin{enumerate}[G-1.]
     \item The fastest temporal paths among all pairs of vertices of $U$.
     For a pair $u,v$ of vertices in $U$, there are $k!$ possible paths in $G'$ between them. 
     Therefore, we have to try all $O(k^k)$ possible paths, where at least one of them will be a fastest temporal path from $u$ to $v$, respecting the values from $D$.
@@ -831,14 +885,18 @@ We guess the following structures.
     This gives us $O(k^{k^4})$ guesses.
     \item Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be two segments,
     first one between vertices $u,v \in U$, second one between vertices $w, z \in U$.
-    We want to guess the following fastest temporal paths
-    $v_2 \rightarrow u \leadsto w \rightarrow z_2$,
-    $v_2 \rightarrow u \leadsto z \rightarrow z_2$,
-    $v_2 \rightarrow u \leadsto w \rightarrow z_{r-1}$ and
-    $v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}$.
+    We want to guess the following fastest temporal path
+    $v_2 \rightarrow u \leadsto w \rightarrow z_2$. 
     We repeat this procedure for all pairs of segments.
     Since there are $O(k^2)$ segments in $G'$,
-    there are $O(k^{k^5})$ possible paths of this form.
+    there are $O(k^{k^5})$ possible paths of this form. 
+    \\
+    Recall that $S_{u,v}\neq S_{v,u}$ for every $u,v\in U$. Furthermore note that we did not assume that the sets $\{u,v\}$ and $\{w,z\}$ are disjoint. Therefore, by repeatedly making the above guesses, we also guess the following fastest temporal paths: 
+    ${v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}}$,\ \ \ 
+    ${v_2 \rightarrow u \leadsto v \rightarrow v_{p-1}}$,\ \ \  
+    ${v_{p-1} \rightarrow v \leadsto w \rightarrow z_{2}}$,\ \ \  
+    ${v_{p-1} \rightarrow v \leadsto z \rightarrow z_{r-1}}$, and  
+    ${v_{p-1} \rightarrow v \leadsto u \rightarrow v_{2}}$.
     \item \label{FPT:guess-uToSegment}
     For a segment $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$
     and a vertex of interest $w \in U$,
@@ -914,6 +972,10 @@ From now on we assume that we know exactly the structure of all paths we have gu
 }
 
 In this section we study the properties of our problem, that then help us creating constraints of our ILP.
+Remember, with $G$ we denote our underlying graph of $D$. We want to determine labeling $\lambda$ of each edge of $G$.
+We start with an empty labeling of edges and start adding certain values to them.
+Note, these values are not (necessarily) numbers. 
+In fact at the beginning the values will be determined with respect to each other (\ie as a function of each other).
 In our analysis we exploit the following greatly, that is why we state is as an observation.
 
 \begin{observation}\label{obs:FirstLabelAndDuration}
@@ -1070,12 +1132,12 @@ Let us first observe some properties of such edges.
 %From the above it follows that there are at most $O(|U|^2) = O(k^2)$ undetermined segments in $G'$ after the algorithm finishes with determining the labels for all fastest temporal paths among vertices of interest.
 Now we want to relate the undetermined segments with the determined ones.
 Let $S_{u,v}$ and $S_{w,z}$ be two segments.
-At the beginning we have guessed what is a split vertex of a fixed vertex $v_i \in S_{u,v}$ in the segment  $S_{w,z}$. 
+At the beginning we have guessed what is a split vertex of a fixed vertex $v_i \in S_{u,v}$ in the segment $S_{w,z}$. 
 Denote this vertex as $z_j$, denote its neighbor closer to $w$ in $S_{w,z}$ as $z_{j-1}$,
 and its neighbor closer to $z$ in $S_{w,z}$ as $z_{j+1}$.
 We also guessed how the fastest temporal path from $v_i$ to $z_j$ starts and ends, which determined also the structure of the fastest temporal paths 
 from $v_i$ to $z_{j-1}$ and from $v_i$ to $z_{j+1}$
-(for the details see \cref{FPT:guess-splitFromAnotherSegmentAndPaths}).
+(for the details see guess G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}). \todo{Two cases.}
 W.l.o.g. assume that we have guessed that the fastest path from $v_i$ to $z_j$
 passes through $w$ and $z_{j-1}$.
 Then the fastest temporal path from $v_i$ to $z_{j+1}$ passes through $z$.
@@ -1083,7 +1145,7 @@ And all fastest temporal paths from $v_i$ to any $z_{j'} \in S_{w,z}$
 use all of the edges in $S_{w,z}$ with the exception of the edge $z_j z_{j+1}$.
 Using this information and \cref{obs:FirstLabelAndDuration}, we can determine the labels on all edges, with respect to the first or last label from the segment $S_{u,v}$,
 with the exception of the edge $z_j z_{j+1}$.
-Therefore all edges of $S_{w,z}$ but $z_j z_{j+1}$ become determined.
+Therefore, all edges of $S_{w,z}$ but $z_j z_{j+1}$ become determined.
 Since we repeat that procedure for all pairs of segments,
 we get that for a fixed segment $S_{w,z}$ we end up with an undetermined edge $z_j z_{j+1}$
 if and only if, this is an undetermined edge in relation to every other segment $S_{u,v}$ and its fixed vertex $v_i$.
@@ -1135,6 +1197,7 @@ Therefore we know when $\Delta$ has to be added, which implies that \cref{eq:FPT
 We iterate through all pairs of vertices $x,y$ and make sure that the fastest temporal path from $x$ to $y$ produces the equality constrain \cref{eq:FPT-equalityConstraint},
 and all other temporal paths from $x$ to $y$ produce the inequality constraint \cref{eq:FPT-inequalityConstraint}.
 
+\subsubsection*{\boldmath Fastest paths among $u,v$ where $u \in U$ and $v \in V$}
 First we consider the case when $u,v$ are two vertices of interest.
 This was the case that we partially studied at the beginning of the algorithm, that helped us determine certain labels of the graph.
 We now iterate again through all fastest temporal paths from $u$ to $v$ and introduce an equality constraint for them.
@@ -1142,9 +1205,20 @@ We then continue
 through all of the paths from $u$ to $v$, and for every one, that is not the underlying path of a fastest temporal path, we add the inequality constraint.
 There are $O(k^k)$ possible paths from $u$ to $v$ in $G'$, therefore in this step we introduce $O(k^{k^3})$ constraints.
 
+\subsubsection*{\boldmath Fastest paths among $u,x$ where $u \in U$ and $x \in V(G') \setminus U$}
 Next we continue with the case of the fastest path from $u$ to $x$, where $u \in U$ and $x \in V(G') \setminus U$.
-We have two possibilities:
+We have three possibilities:
 \begin{enumerate}[(i)]
+    \item Vertex $x$ is on a segment $S_{u,v}=(u,v_1,v_2,\dots,v_p,v)$. 
+    If $x$ is on a fastest path from $u$ to some other vertex, then we know that the fastest path from $u$ to $x$ travels along the $S_{u,v}$.
+    Suppose now that the segment $S_{u,v}$ is not a part of a fastest path from $u$ to some other vertex.
+    Denote with $P$ the underlying path of the fastest temporal path from $u$ to $v$, 
+    and with $Q$ the fastest temporal path of form $u \leadsto v \rightarrow v_p$ (which we know as we have guessed it).
+    We find the vertices $v_i, v_{i'} \in S_{u,v}$ that are on the furthest distance from $u$.
+    Note that these two vertices are either neighbors, or the same vertex, \ie $i' \in \{i, i+1\}$.
+    Then we know that the fastest temporal paths from $u$ to $v_1 v_2, \dots, v_{i-1}$ travel along $S_{u,v}$,
+    and the fastest temporal paths from $u$ to $v_p, v_{p-1}, \dots, $.
+    \todo{Missing}
     \item Vertex $x$ is on a fastest temporal path from $u$ to some other vertex of interest $v$.
     Suppose that $x$ lies on a segment $S_{w,z}$.
     Then by \cref{claim:FPT-uv-LabelAlmostalledges} we know that the fastest temporal path from $u$ to $x$ is a subpath of the fastest temporal path from $u$ to $v$,
@@ -1188,7 +1262,7 @@ We can easily determine the vertex $z_i \in S_{w,z}\setminus\{w,z\}$ for which t
 Denote this vertex as $z^*$. 
 Then we know that all vertices in $S_{w,z}$ that are closer to $w$ than $z^*$ reach $u$ on the path that goes through $w$ and 
 all the vertices in $S_{w,z}$ that are closer to $z$ than $z^*$ reach $u$ on the path that goes through $z$.
-At the beginning we have also guessed the fastest path $z_1 \rightarrow w \rightarrow u$ (resp.~$z_p \rightarrow z \rightarrow u$).
+At the beginning we have also guessed the fastest path $z_1 \rightarrow w \leadsto u$ (resp.~$z_p \rightarrow z \leadsto u$).
 Using this information we know all the fastest paths from any vertex in $S_{w,z} \setminus \{ z^* \}$ to $u$.
 For all of these paths we introduce an equality constraint. 
 For $z^*$ we have to determine which of the paths, through $w$ or $z$, to $u$ is the fastest.
@@ -1200,7 +1274,18 @@ There are $O(k^k)$ paths between $w$ (resp.~$z$) and $u$, and a unique path from
 For all paths from $w^*$ to $u$, that are not equal to the fastest, we introduce the inequality constraint.
 This results in adding $O(k^k)$ inequality constraints.
 
+\subsubsection*{\boldmath Fastest paths among $x,y$ where $x \in V(G') \setminus U$ and $y \in V(G') \setminus U$}
 Next is the case of determining the fastest path from $x$ to $y$, where $x,y \in V(G') \setminus U$.
+We have two options.
+\begin{enumerate}[(i)]
+    \item Vertices $x,y$ are in the same segment $S_{u,v} = (u,v_1,v_2, \dots, v_p, v)$. W.l.o.g. suppose that $x$ is closer to $u$ in $S_{u,v}$ than $y$.
+    Denote with $x = v_i$ and $y = v_j$, where $i < j$.
+    Let $v_k \in S_{u,v}$ be a vertex for which the distance from $v_i$ is the biggest.
+    Then we know that $D_{x,v_{i+1}} < D_{x,v_{i+2}} < \cdots  < D_{x,v_{k}}$ and $D_{x,v_{i-1}} < D_{x,v_{i-2}} < \cdots  < D_{x,v_{k}}$, where indices are taken modulo $p$.
+    Then we know exactly the structure of all the fastest paths from $x$ to every vertex in $S_{u,v}$,
+    with the exception of path $x \leadsto v_k$.
+    \todo{Details}
+    \item Vertices $x$ and $y$ are in different segments. 
 Let $x$ be a vertex in the segment $S_{u,v} = (u,v_1,v_2, \dots, v_p, v)$ and let $y$ be a vertex in the segment $S_{w,z} = (w,z_1,z_3, \dots, z_r, z)$.
 By checking the durations of the fastest paths from $x$ to every vertex in $S_{w,z} \setminus \{w,z\}$
 we can determine the vertex $z_i \in S_{w,z} $, for which the duration from $x$ is the biggest.
@@ -1209,10 +1294,10 @@ Now we determine the vertex $z_j \in S_{u,v} \setminus \{u,v\}$,
 for which the value of the durations of the fastest paths from it to the vertex $y$ is the biggest.
 This implies that the fastest temporal paths from the vertices $v_1, v_2, \dots, v_{j-1}$ (resp.~$v_{j+1}, v_{j+2}, \dots, v_p$) to the vertex $y$ passes through $u$ (resp.~$v$).
 At the beginning we have also guessed the following fastest paths  
-$z_1 \rightarrow w \rightarrow u \rightarrow v_1$,
-$z_1 \rightarrow w \rightarrow v \rightarrow v_p$,
-$z_r \rightarrow z \rightarrow v \rightarrow v_p$ and
-$z_r \rightarrow z \rightarrow v \rightarrow v_p$.
+$z_1 \rightarrow w \leadsto u \rightarrow v_1$,
+$z_1 \rightarrow w \leadsto v \rightarrow v_p$,
+$z_r \rightarrow z \leadsto v \rightarrow v_p$ and
+$z_r \rightarrow z \leadsto v \rightarrow v_p$.
 We distinguish following two cases,
 first when $\{x,y\} \neq \{v_i, z_j\}$ and the second where $\{x,y\} = \{v_i, z_j\}$ (note this case encapsulates also the two cases when $x = v_i$ or $y=z_j$).
 In the first case we know how the fastest temporal path from $x$ to $y$ exits the segment $S_{u,v}$ and enters the segment $S_{w,z}$.
@@ -1220,7 +1305,9 @@ Combining this with the guessed fastest paths, we uniquely determine the fastest
 For this path we add the equality constraint, and for all other paths (by similar arguing as in other cases there are $O(k^k)$ such paths) we add the inequality constraints.
 In the second case when $\{x,y\} = \{v_i, z_j\}$ we do the following.
 \todo{TODO}
+\end{enumerate}
 
+\subsubsection*{\boldmath Considering the paths for vertices from $Z$}
 All of the above is enough to determine the labeling $\lambda$ of $G'$. Now we have to make sure that the labeling considers also the vertices in $Z$ that we initially removed from $G$.
 Remember that removed vertices form disjoint trees in $G$.
 Let us denote $Z$ as the set of disjoint trees, \ie $Z = T_1 \cup T_2 \cup \cdots \cup T_t$, where $T_i$ represents one of the trees.
@@ -1255,18 +1342,22 @@ $\lambda (r_i u_i) \equiv \lambda(u_i v) + 1 - D_{r_i,v} \pmod \Delta$.
 Now using the algorithm for trees (see \cref{thm:deltaExact-PolyTimeTrees}), we determine labels on all edges of $T_i$.
 We repeat this procedure for all trees in $Z$.
 The remaining thing is to add the equality (resp.~inequality) constraints for the fastest (resp. non-fastest) temporal paths from vertices of $Z$ to all other vertices in $G'$ and vice versa.
+Note that since 
+there is a unique path between vertices of tree $T_i$, and since all edges of tree $T_i$ are determined with respect to the same label,
+we present the study for cases when we find fastest temporal paths from and to the root vertex $r_i$ of tree $T_i$, 
+which can be uniquely extended to all vertices in $T_i$.
 
-Let us start with the case when we consider fastest paths from a vertex $t$ in some tree $T_i$ to a vertex of interest $u \in U$.
-Denote with $r_i$ the root of $T_i$.
+\subsubsection*{\boldmath Fastest paths among $z,u$ where $z \in Z$ and $u \in U$}
+Let us start with the case when we want to determine the fastest temporal path from a root vertex $r_i$ in some tree $T_i$ to a vertex of interest $u \in U$.
 We distinguish the following two cases.
 \begin{enumerate}[(i)]
     \item The clip vertex $x$ of the tree $T_i$ is not a vertex of interest.
-    Let $x$ be a part of a segment $S_{w,z} = (w, z_1, z_2, \dots, z_r )$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighbouring vertices of $x$, 
+    Let $x$ be a part of a segment $S_{w,z} = (w, z_1, z_2, \dots, z_r , z)$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighbouring vertices of $x$, 
     where $z_{i-1}$ is closer to $w$ in $S_{w,z}$ and 
     $z_{i+1}$ is closer to $z$ in $S_{w,z}$.
     Similarly as before we know the following fastest paths $z_1 \rightarrow w \leadsto u$ and
     $z_r \rightarrow z \leadsto u$.
-    Denote thew with $Q_1$ and $Q_r$ respetively.
+    Denote thew with $Q_1$ and $Q_r$ respectively.
     There are two options.
     \begin{itemize}
         \item The segment $S_{w,z}$ has no undetermined edges, with the exception of the first/last one.
@@ -1304,7 +1395,7 @@ We distinguish the following two cases.
         Denote with $c$ the value $c = D_{r_i z_{i-1}} + D_{x u} + 1$.
         We now claim the following, note that we do not know what is the fastest temporal path from $r_i$ to $x_{i-1}$. 
         It can be of the form $P^- = (r_i,x,z_{i-1})$,
-        or of the form $P^+ = (r_i,x, z_{i+1}, z_{i+2}, \dots, z) \cup Q \cup (w, z_1, \dots, z_{i-1}$, where $Q$ is some path from $z$ to $w$.
+        or of the form $P^+ = (r_i,x, z_{i+1}, z_{i+2}, \dots, z) \cup Q \cup (w, z_1, \dots, z_{i-1})$, where $Q$ is some path from $z$ to $w$.
         Denote with $R^x$ the underlying path of the fastest temporal path from $x$ to $u$,
         and with $R^{i-1}$ the underlying path of a fastest temporal path from $z_{i-1}$ to $u$.
         Note $R^{i-1} \subset R^x$.
@@ -1347,11 +1438,6 @@ We distinguish the following two cases.
        For all other paths we add the inequality constraints. 
        There are $O(k^k)$ of paths like this.
     \end{itemize}
-    We also know the waiting times at the clip vertex $x$ coming from $z_{i-1}$ and $z_{i+1}$. Therefore we can determine the fastest temporal path $P$ from $u$ to $r_i$.
-    Again this path is the one that is then extended to the fastest path from $u$ to all other vertices in $T_i$,
-    which gives rise to $|T_i|$ equality constraints.
-    We iterate through all other temporal paths and produce the inequality constraints.
-    There are $O(k^k)$ of them for each vertex in $T_i$.
     
     \item The clip vertex $w$ of the tree $T_i$ is a vertex of interest.
     Note that since we have determined the label of the edge $w r_i$, we also know the waiting times 
@@ -1361,17 +1447,84 @@ We distinguish the following two cases.
     Once we have determined $P$ we also know that the fastest path from $u$ to any other vertex in $T_i$ uses $P$ at the beginning, to go from $u$ to $r_i$.
     Therefore we have determined the fastest paths from $u$ to all other vertices in $T_i$,
     which gives rise to $|T_i|$ equality constraints.
-    We iterate now through all other $u \leadsto w \rightarrow r_i$ paths and introduce inequality constraints for them.
+    We iterate now through all other $u \leadsto w \rightarrow r_i$ paths and introduce inequality constraints for them. \todo{FIX}
     There are $O(k^k)$ such paths.
 \end{enumerate}
 
-In the case when we want to determine the fastest path from a vertex $t$ in some tree $T_i$ to a vertex of interest $u \in U$,
+In the case when we want to determine the fastest path from a vertex of interest $u \in U$ to a root vertex $r_i$ in $T_i$,
 we use similar arguing as above.
 The procedure produces one equality constraint and $O(k^k)$ inequality ones.
 
-The only two cases to consider are the cases when we want to determine the fastest paths from some $x \in V(G)$, that is not a vertex of interest, to a vertex $t$ in some tree $T_i$, and vice versa.
-We again need to consider two cases, one where 
+\subsubsection*{\boldmath Fastest paths among $z,y$ where $z \in Z$ and $y \in V(G') \setminus U$}
+The next two cases are the ones where we want to determine the fastest temporal path from root $r_i$ in $T_i$, to some vertex $y \in V(G') \setminus U$ that is not a vertex of interest,
+and vice versa.
+Since $y$ is not a vertex of interest it holds that $y \in S_{u,v}=(u, v_1, v_2, \dots, v_p, v)$. Let $y = v_j$, for some $j \in [p]$.
+We use the similar approach as above, to determine the fastest temporal path from $r_i$ to $y$, 
+where the difference is that 
+we know the fastest temporal path from the clip vertex of $T_i$ to $y$.
+Since $y \in S_{u,v}$ there are $O(k^{k^6})$ paths from the clip vertex to $y$, when the clip vertex is not a vertex of interest,
+and $O(k^{k^6})$ paths from the clip vertex to $y$, when the clip vertex is a vertex of interest.
+In all of the cases, we can uniquely determine the underlying path of the fastest temporal path from $r_i$ to $y$, which gives us an equality constraint.
+For all other paths we add the inequality constraints. 
 
+
+\subsubsection*{\boldmath Fastest paths among $z,z'$ where $z \in Z$ and $z' \in Z$}
+The last case to consider is when we want to determine the fastest temporal paths among two vertices from $Z$.
+Let $r_i, r_j$ be root vertices of trees $T_i$ and $T_j$ and let $w_i, w_j$ be their root vertices, respectively.
+If $w_i = w_j$, then there is a unique path among $r_i$ and $r_j$, which gives rise to the equality constraint.
+If $w_i \neq w_j$, we know the underlying paths of fastest paths 
+from $r_i$ to $w_j$, from $w_j$ to $r_i$,
+from $r_j$ to $w_i$, from $w_i$ to $r_j$,
+and from $w_i$ to $w_j$.
+Using similar approaches as above, we can uniquely determine the fastest paths from $r_i$ to $r_j$.
+We again have to consider multiple cases.
+One where $w_i,w_j \notin U$ and 
+split it into two subcases, when the edges of the tree $T_i$ are determined with respect to the
+label of the first edge of the segment of $w_i$, and similarly for $T_j$.
+And one where the edges of the tree are determined with respect to some undetermined edge incident to $w_i$ (resp.~$w_j$).
+The second case is when $\{w_i, w_j\} \cap U \neq \emptyset$.
+In all of these cases we can uniquely determine the underlying paths of the fastest paths between $r_i$ and $r_j$,
+which give rise to equality constraints for them. 
+Then we have to find all non-fastest temporal paths among $r_i$ and $r_j$, for which we introduce the inequality constraints. 
+There are at most $O(k^{k^6})$ such paths.
+
+
+
+\begin{comment}
+We have the following two cases.
+\begin{enumerate}[(i)]
+    \item The clip vertex $x$ of the tree $T_i$ is not a vertex of interest.
+    Let $x$ be a part of a segment $S_{w,z} = (w, z_1, z_2, \dots, z_r, z)$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighbouring vertices of $x$, 
+    where $z_{i-1}$ is closer to $w$ in $S_{w,z}$ and 
+    $z_{i+1}$ is closer to $z$ in $S_{w,z}$.
+    Similarly as above, we determine two cases.
+    \begin{itemize}
+    \item $S_{w,z}$ has no undetermined edge $p$ in the middle, or $p \cap \{x \} = \emptyset$.
+    Then we can determine the waiting time at vertex $x$, when traversing from $r_i$ to $z_{i-1}$ (resp.~$z_{i+1}$).
+    Let $P$ be the underlying path of a fastest temporal path from $x$ to $y$ (we determined it in one of the previous steps, when we were considering vertices $x$ and $y$).
+    W.l.o.g. suppose that $P$ passes through vertex $z_{i-1}$. 
+    Then we set $P^-$ as $P^- = \{r_i, x\} \cup P^-$ and check the value of $d(P^-)$.
+    If $d(P^-) < D_{r_i,y}$ we stop with calculations and determine that the ILP instance hos no valid solution.
+    If $d(P^-) = D_{r_i,y}$ we determine that $P^-$ is the underlying path of the fastest temporal path from $r_i$ to $y$. 
+    If $d(P^-) > D_{r_i,y}$ we determine that the fastest temporal path from $r_i$ to $y$ goes through the vertex $z_{i+1}$.
+    We determine $P^+$ as the union of the unique path from $x$ to $z_p$, and the underlying path of the fastest temporal path $P'$ of form $z_p \rightarrow z \leadsto y$, \ie $P^+ = (r_i, x, z_{i+1}, \dots, z_p) \cup P'$.
+    We know how to determine $P'$, since
+    we did it in one of the previous steps, when we were considering fastest path from $z_p$ through $z$ to $y$.
+    Note, if the fastest temporal path from $z_p$ to $y$ does not pass through $z$, then we would be in previous case, where the fastest temporal path from $r_i$ to $y$ would be $P^-$.
+    
+    \item The segment $S_{w,z}$ has an extra undetermined edge $p$. Suppose that $p = x z_{i+1}$.
+
+    \end{itemize}
+    
+    In all of the cases, we have uniquely determined the underlying path of the fastest temporal path from $r_i$ to $y$, which gives us an equality constraint.
+    For all other paths we add the inequality constraints. 
+    Since the path from $r_i$ to $z_1$ (resp.~$z_p$) is unique, the number of non-fastest paths temporal paths from $r_i$ to $y$ depends on the number of non-fastest temporal paths from $z_1$ (resp.~$z_p$) to $y$.
+    There are $O(k^{k^6})$ such paths.
+    
+    \item The clip vertex $w$ of the tree $T_i$ is a vertex of interest.
+    
+\end{enumerate}
+\end{comment}
 
 \bibliography{bibliography}	
 
