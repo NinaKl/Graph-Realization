@@ -746,7 +746,7 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
 
     The connector gadget for the verification gadget of color $i$ has the following sets.
     \begin{itemize}
-        \item Sets $A$ and $B$ contain all vertices of the verification gadget and all vertices from edge selection gadgets that are neighbor of a vertex in the verification gadget.
+        \item Sets $A$ and $B$ contain all vertices of the verification gadget. % and all vertices from edge selection gadgets that are neighbor of a vertex in the verification gadget.
     \end{itemize}
 
 Lastly, we introduce an \emph{alignment gadget}. It consists of one vertex $w^\star$ and a set of vertices $\hat{W}$ containing one vertex for each edge selection gadget and one vertex for each connector gadget. Vertex $w^\star$ is connected to each vertex in $\hat{W}$.
@@ -772,20 +772,43 @@ Next, consider a connector gadget consisting of vertices $\hat{v}_0,\hat{v}_1,\h
 
 Next, consider the edge selection gadget for color combination $i,j$ with $i<j$.
 \begin{itemize}
-    \item Let $1\le \ell<\ell'\le m$. We set $d(x_\ell,x_\ell')=2(i+j)\cdot(\ell'-\ell)$.
-    \item For all $\ell\in[m]$ we set $d(x_\ell,v_{i,j}^{\star\star})=4n+4$.
+    \item Let $1\le \ell<\ell'\le m$. We set $d(x_\ell,x_\ell')=2n\cdot (i+j)\cdot(\ell'-\ell)+1$.
+    \item For all $\ell\in[m]$ we set $d(x_\ell,v_{i,j}^{\star\star})=4n+5$.
 \end{itemize}
 
-Next, consider the validation gadget for color $i$. First, assume $1\neq i \neq k$. Let $1\le j<i$, let $e_\ell\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. We set the following.
-\begin{itemize}
-    \item We set $d(v^i_{j-1},w^i_{\ell'+1})=3$.
+Next, consider the validation gadget for color $i$. First, assume $1\neq i \neq k$. 
+%Let $1\le j<i$, let $e_\ell\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. We set the following.
+%\begin{itemize}
+    %\item We set $d(v^i_{j-1},w^i_{\ell'+1})=3$.
     %\item We set $d(w^i_{\ell'},v^i_{j})=3$.
+%\end{itemize}
+%
+For all $0\le j<j'<i$ and all $i<j<j'\le k$ we set the following.
+\begin{itemize}
+    \item We set $d(v^i_j,v^i_{j'})=6(j'-j)-1$.
+\end{itemize}
+For all $0\le j<i$ and $\ell\in[n+3]$ we set the following.
+\begin{itemize}
+    \item We set $d(v^i_j,\hat{u}^i_{\ell})=6(i-j-1)+2\ell-1$.
+\end{itemize}
+For all $\ell,\ell'\in[n+3]$ with $\ell<\ell'$ we set the following.
+\begin{itemize}
+    \item We set $d(\hat{u}^i_{\ell},\hat{u}^i_{\ell'})=2(\ell'-\ell)-1$.
+\end{itemize}
+For all $0\le j<i$ and all $i<j'\le k$ we set the following.
+\begin{itemize}
+    \item We set $d(v^i_j,v^i_{j'})=6(j'-j)+2n-1$.
+\end{itemize}
+For all $\ell\in[n+3]$ and $i<j\le k$ we set the following.
+\begin{itemize}
+    \item We set $d(\hat{u}^i_{\ell},v^i_j)=6(j-i)+2(n-\ell)+5$.
 \end{itemize}
 
-For all $0\le j<j'<i$ we set the following.
-\begin{itemize}
-    \item We set $d(v^i_j,v^i_{j'})=6(j'-j)$.
-\end{itemize}
+Finally, we consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$. Then we set $d(w^\star,x_1)=6(i+j)$. Let $\hat{v}_1$ belong to some connector gadget. Then we set $d(w^\star,\hat{v}_1)=n^5$.
+
+All distances between non-adjacent vertex pairs that are not specified above are set to infinity.
+
+This finishes the construction of the \deltaExactLong\ instance, which can clearly be computed in polynomial time. As discussed earlier, we have that the vertex cover number of the underlying graph of the instance is in $O(k^2)$.
 \end{proof}
 
 \section{FPT}
@@ -1750,7 +1773,7 @@ We distinguish the following two cases.
     
     \item The clip vertex $w$ of the tree $T_i$ is a vertex of interest.
     Note that since we have determined the label of the edge $w r_i$, we also know the waiting times 
-    at vertex $u$ coming from each of its neighbor $v_i$ and finishing in $r_i$. 
+    at vertex $u$ coming from each of its neighbors $v_i$ and finishing in $r_i$. 
     At the beginning we have also determined the fastest paths from $u$ to all $v_i \in N_{G'}(w)$.
     Therefore we know the path $P$ that is the fastest from $u$ to $r_i$. 
     Once we have determined $P$ we also know that the fastest path from $u$ to any other vertex in $T_i$ uses $P$ at the beginning, to go from $u$ to $r_i$.
