@@ -899,8 +899,10 @@ For an easier understanding and the analysis of the algorithm we give the follow
     is called a \emph{segment} from $u$ to $v$. We denote it as $S_{u,v}$.
     Note $S_{u,v} \neq S_{v,u}$.
 \end{definition}
-From the definition it follows, that there are $O(k^2)$ segments in $G'$. \todo{True but does not follow directly just from the definition}
-Observe also that a temporal path in $G'$ between two vertices of interest is either a segment, or consists of a sequence of some segments.
+%From the definition it follows, that there are $O(k^2)$ segments in $G'$. \todo{True but does not follow directly just from the definition}
+Observe that a temporal path in $G'$ between two vertices of interest is either a segment, or consists of a sequence of some segments.
+In the analysis of the algorithm we rely heavily on the fact that there are $O(k^2)$ segments in $G'$, 
+which we prove later on (see~\cref{obs:FPT-k2segments}).
 %For a pair $u,v$ of vertices in $U$, there are $O(k!)=O(k^k)$ possible paths in $G'$ between them.  
 
 \subsection{Creating ILP instances and determining variables}
@@ -953,7 +955,7 @@ We guess the following structures.
     Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$, and let us
     fix a vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
     In the case when $S_{u,v}$ is of length $4$, the fixed vertex $v_i$ is the middle vertex (\ie vertex that is on distance two from $u$ and $v$ in $S_{u,v}$).
-    If $S_{u,v}$ is not of length $4$, we fix an arbitrary vertex $v_i \in S_{u,v}$.
+    If $S_{u,v}$ is not of length $4$, we fix an arbitrary vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
     Let 
     $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be another segment in $G'$.
     Note that all inner vertices of $S_{w,z}$ (\ie vertices in $S_{w,z} \setminus \{w,z\}$)
@@ -1007,6 +1009,8 @@ We guess the following structures.
     and $u \leadsto z \rightarrow z_{p-1}$
     (see guess~G-\ref{FPT:guess-uToSegmentz2}).
     \end{enumerate}
+    Note that this case results also in knowing the fastest paths from the vertex $v_i \in S_{u,v}$ to $w,z \in S_{w,z}$ for all segments $S_{w,z}$, 
+    \ie we know the fastest paths from a fixed $v_i \in S_{u,v}$ to all vertices of interest in $U$.
     \item \label{FPT:guess-splitFromUtoAnotherSegment}
     Let $w \in U$ be a vertex of interest and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$.
     Similarly as above we want to guess a split vertex of $w$ in $S_{u,v}$, and the fastest temporal path that reaches it.
@@ -1272,7 +1276,7 @@ We proceed in the following way.
 Let $u,v \in U$ be two vertices of interest and let $P_{u,v}$ be the fastest temporal path from $u$ to $v$.
 If $P_{u,v}$ is a segment we determine all the labels of edges of $P$, with respect to the label of the first edge (see \cref{claim:FPT-uv-Labelalledges}).
 %Note that since we determined labels of all edges, with respect to the first edge, we also know the exact values of waiting times at each inner vertex of $P_{u,v}$, when traversing the path.
-In the case when $P_{u,v}$ is a sequence of $\ell$ segments, we determine all but $\ell - 1$ labels of edges of $P_{u,v}$, with respect to the label of the first edge (see \cref{claim:FPT-uv-LabelAlmostalledges}). \todo{Chenge/explain}
+In the case when $P_{u,v}$ is a sequence of $\ell$ segments, we determine all but $\ell - 1$ labels of edges of $P_{u,v}$, with respect to the label of the first edge (see \cref{claim:FPT-uv-LabelAlmostalledges}). \todo{Change/explain what ``with respect to first label'' means}
 %In both cases we introduce the equality constraint for $P_{u,v}$ (as in \cref{eq:FPT-equalityConstraint}).
 %Since there are $\ell - 1$ edge labels that are not determined with respect to the label of the first edge, may be some  TODO from above??
 
@@ -1316,8 +1320,15 @@ Let us first observe some properties of such edges.
    And if $e \neq uv$ then there are at least $3$ vertices of interest in $C$.
    So $S_{u,v}$ and $S_{u,v}'$ cannot be both fully not yet determined.
 \end{proof}
+From the above it follows that
+after the algorithm finishes with determining the labels for all fastest temporal paths among vertices of interest
+there is at most one fully determined segment among two vertices of interest and at most one undetermined segment.
+Therefore the following holds.
+\begin{observation}\label{obs:FPT-k2segments}
+    There are at most $O(k^2)$ segments in $G'$.
+\end{observation}
 
-%From the above it follows that there are at most $O(|U|^2) = O(k^2)$ undetermined segments in $G'$ after the algorithm finishes with determining the labels for all fastest temporal paths among vertices of interest.
+
 Now we want to relate the not yet determined segments with the determined ones.
 Let $S_{u,v}$ and $S_{w,z}$ be two segments.
 At the beginning we have guessed the fastest path from $v_i$ to all vertices in $S_{w,z}$ (see guess G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}).
@@ -1713,10 +1724,11 @@ We distinguish the following two cases.
         and has an extra not yet determined edge $p$. 
         If $p \cap \{x\} = \emptyset$, 
         we can proceed with the same approach as above.
-        So suppose now that $p = x z_{i+1}$. 
+        So suppose now that $p = x z_{i+1}$.  
         Then, from knowing that $p$ is a not yet determined edge we conclude that
-        all fastest temporal paths from $x$ to any vertex of interest $u'$ go through the edge $z_{i-1}x$ (not trough $p$).
-        Now, if the edges of tree are determined with respect to the label of the edge $z_{i-1}x$,
+        all fastest temporal paths from $x$ to any vertex of interest $u'$ go through the edge $z_{i-1}x$, not trough $p$ 
+        (this is true as if a fastest temporal path from $x$ to some vertex of interest $w'$ went through $p$, then $p$ would be determined).
+        Now, if the edges of tree are determined with respect to the label of the edge $z_{i-1}x$ (not $p$),
         we use the same approach as above to determine the fastest temporal path from $r_i$ to $u$.
         Therefore, suppose that the edges of the tree $T_i$ are determined with respect to the label of the edge $p$.
         Which means that $D_{r_i, z_{i+1}} < D_{r_i, z_{i-1}}$.
