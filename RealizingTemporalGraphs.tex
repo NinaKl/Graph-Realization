@@ -28,6 +28,20 @@
 \usepackage{graphicx}
 \graphicspath{{Figures/}}
 
+\usepackage{tikz}
+
+\usetikzlibrary{arrows,decorations.pathmorphing,decorations.pathreplacing,backgrounds,positioning,fit,matrix}
+\usetikzlibrary{shapes,calc,patterns,arrows.meta,snakes}
+\tikzset{
+	vert/.style={circle,inner sep=1.5,fill=white,draw,minimum size=.3cm},
+	edge/.style={color=black, thick},
+	diredge/.style={->,>={Stealth[width=8pt,length=8pt]},color=black, thick},
+	timelabel/.style={fill=white,font=\footnotesize, text centered},
+	wave/.style={decorate,decoration={coil,aspect=0}},
+	dirwave/.style={->, >={Stealth[width=8pt,length=8pt]},decorate,decoration={coil,aspect=0}},
+	diredge2/.style={->,>={Stealth[width=8pt,length=8pt]}}
+}
+
 %\usepackage{enumitem} %enumerate 
 \usepackage{enumerate}
 \usepackage{todonotes}
@@ -49,6 +63,10 @@
 
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
+
+\newenvironment{claimproof}{\noindent\emph{Proof of Claim.}}{\hfill$\diamond$
+
+}
 
 %font encoding
 \usepackage[T1]{fontenc}
@@ -752,7 +770,7 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
 Lastly, we introduce an \emph{alignment gadget}. It consists of one vertex $w^\star$ and a set of vertices $\hat{W}$ containing one vertex for each edge selection gadget and one vertex for each connector gadget. Vertex $w^\star$ is connected to each vertex in $\hat{W}$.
 The vertex $x_1$ of each edge selection gadget is connected to exactly one vertex in $\hat{W}$ and the vertex $\hat{v}_1$ of each connector gadget is connected to exactly one vertex in $\hat{W}$ such that all vertices in $\hat{W}$ have degree two.
 
-This finished the description of the underlying graph $G$. We can observe that the vertex set containing
+This finished the description of the underlying graph $G$. For an illustration see \cref{fig:hardness1}. We can observe that the vertex set containing
 \begin{itemize}
     \item vertices $v_{i,j}^\star$ and $v_{i,j}^{\star\star}$ of each edge selection gadget,
     \item vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_{n+3}$ (if exists) of each validation gadget.
@@ -769,11 +787,18 @@ Next, consider a connector gadget consisting of vertices $\hat{v}_0,\hat{v}_1,\h
     \item Let $v\in V^\star\setminus B$, then we set $d(\hat{v}_0,v)=3$.
     \item Let $v\in A$ and $v'\in V^\star\setminus B$ such that $v$ and $v'$ are not neighbors, then we set $d(v,v')=3$.
 \end{itemize}
+Now consider two connector gadgets, one with vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2$ and with sets $A$ and $B$, and one with vertices $\hat{v}_0',\hat{v}_1',\hat{v}_2'$ and with sets $A'$ and $B'$.
+\begin{itemize}
+    \item If there is a vertex $v\in A$ with $v\notin A'$, then we set $d(\hat{v}_1,\hat{v}_1')=3$.
+    \item If there is a vertex $v\in A$ with $v\in A'\setminus B'$, then we set $d(\hat{v}_1,\hat{v}_2')=3$.
+    \item If there is a vertex $v\in V^\star\setminus (A\setminus B)$ with $v\notin A'$, then we set $d(\hat{v}_2,\hat{v}_1')=3$.    
+    \item If there is a vertex $v\in V^\star\setminus (A\setminus B)$ with $v\in A'\setminus B'$, then we set $d(\hat{v}_2,\hat{v}_2')=3$.
+\end{itemize}
 
 Next, consider the edge selection gadget for color combination $i,j$ with $i<j$.
 \begin{itemize}
     \item Let $1\le \ell<\ell'\le m$. We set $d(x_\ell,x_\ell')=2n\cdot (i+j)\cdot(\ell'-\ell)+1$.
-    \item For all $\ell\in[m]$ we set $d(x_\ell,v_{i,j}^{\star\star})=4n+5$.
+    \item For all $\ell\in[m]$ we set $d(x_\ell,v_{i,j}^{\star\star})=4n+3$.
 \end{itemize}
 
 Next, consider the validation gadget for color $i$. First, assume $1\neq i \neq k$. 
@@ -804,11 +829,188 @@ For all $\ell\in[n+3]$ and $i<j\le k$ we set the following.
     \item We set $d(\hat{u}^i_{\ell},v^i_j)=6(j-i)+2(n-\ell)+5$.
 \end{itemize}
 
-Finally, we consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$. Then we set $d(w^\star,x_1)=6(i+j)$. Let $\hat{v}_1$ belong to some connector gadget. Then we set $d(w^\star,\hat{v}_1)=n^5$.
+Finally, we consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$ and let $w\in \hat{W}$ denote the neighbor of $x_1$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the first connector gadget of the edge selection gadget for color combination $i,j$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the first one of the edge selection gadget for color combination $i,j$). 
+\begin{itemize}
+    \item We set $d(w^\star,x_1)=6(i+j)$.
+    \item We set $d(w,\hat{v}_1)=n^5-6(i+j)+1$ and $d(w,\hat{v}_2)=n^5-6(i+j)+1$.
+    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we set $d(w,v)=n^5-6(i+j)+3$.
+\end{itemize}
+Let $\hat{v}_1$ belong to some connector gadget. Then we set $d(w^\star,\hat{v}_1)=n^5$.
 
 All distances between non-adjacent vertex pairs that are not specified above are set to infinity.
 
-This finishes the construction of the \deltaExactLong\ instance, which can clearly be computed in polynomial time. As discussed earlier, we have that the vertex cover number of the underlying graph of the instance is in $O(k^2)$.
+\begin{figure}%[t]
+\begin{center}
+\begin{tikzpicture}[line width=1pt, scale=.7]
+\footnotesize
+\draw[rounded corners, dashed, gray] (-13, 5) rectangle (8, 1.5) {};
+\node (A) at (-10.5,4.5) {alignment gadget};
+
+\draw[rounded corners, dotted, gray] (-12, -2.5) rectangle (-10, -7.5) {};
+\draw[rounded corners, dotted, gray] (-12, -10.5) rectangle (-10, -15.5) {};
+\draw[rounded corners, dotted, gray] (7, -2.5) rectangle (9, -7.5) {};
+\node[rotate=90] (A) at (-12.5,-13) {connector gadget};
+
+\draw[rounded corners, dashed, gray] (-9.5, 1) rectangle (1.5, -27) {};
+\node (A) at (-4,-26) {edge selection gadget for $i,j$};
+
+\draw[rounded corners, dashed, gray] (3.5, 1) rectangle (6.5, -27) {};
+\node[rotate=-90] (A) at (7,-18) {verification gadget for $i$};
+
+    \node[vert,label=above:$w^\star$, fill=gray] (W) at (-2,4) {};
+    \node[vert] (W1) at (-6.5,2) {};
+    \node[vert] (W2) at (-10,2) {};
+    \node[vert] (W3) at (-12,2) {};
+    \node[vert] (W4) at (7,2) {}; 
+
+
+    \node[vert,label=left:$\hat{v}_0$] (VH11) at (-11,-3) {}; 
+    \node[vert,label=left:$\hat{v}_1$, fill=gray] (VH12) at (-11,-5) {}; 
+    \node[vert,label=left:$\hat{v}_2$, fill=gray] (VH13) at (-11,-7) {}; 
+
+    \node[vert,label=left:$\hat{v}_0$] (VH21) at (-11,-11) {}; 
+    \node[vert,label=left:$\hat{v}_1$, fill=gray] (VH22) at (-11,-13) {}; 
+    \node[vert,label=left:$\hat{v}_2$, fill=gray] (VH23) at (-11,-15) {};
+
+    \node[vert,label=right:$\hat{v}_0$] (VH31) at (8,-3) {}; 
+    \node[vert,label=right:$\hat{v}_1$, fill=gray] (VH32) at (8,-5) {}; 
+    \node[vert,label=right:$\hat{v}_2$, fill=gray] (VH33) at (8,-7) {}; 
+    
+    \node[vert,label=above:$x_1$] (X1) at (-8,0) {}; 
+    \node[vert,label=above:$x_2$] (X2) at (-6,0) {}; 
+    \node[vert,label=above:$x_3$] (X3) at (-4,0) {}; 
+    \node (A) at (-2,0) {$\ldots$};
+    \node[vert,label=above:$x_m$] (XM) at (0,0) {}; 
+    
+    \node[vert,label=left:$v_{i,j}^\star$, fill=gray] (VS) at (-4,-3) {}; 
+    
+    \node[vert,label=left:$y_1$] (Y1) at (-8,-6) {}; 
+    \node[vert,label=left:$y_2$] (Y2) at (-6,-6) {}; 
+    \node[vert,label=left:$y_3$] (Y3) at (-4,-6) {}; 
+    \node (A) at (-2,-6) {$\ldots$};
+    \node[vert,label=right:$y_m$] (YM) at (0,-6) {}; 
+
+    \node[vert,label=left:$u^1_1$] (U11) at (-8,-8) {}; 
+    \node[vert,label=left:$u^1_2$] (U12) at (-6,-8) {}; 
+    \node[vert,label=left:$u^1_3$] (U13) at (-4,-8) {}; 
+    \node (A) at (-2,-8) {$\ldots$};
+    \node[vert,label=right:$u^1_m$] (U1M) at (0,-8) {};
+    
+    \node[vert,label=left:$u^2_1$] (U21) at (-8,-10) {}; 
+    \node[vert,label=left:$u^2_2$] (U22) at (-6,-10) {}; 
+    \node[vert,label=left:$u^2_3$] (U23) at (-4,-10) {}; 
+    \node (A) at (-2,-10) {$\ldots$};
+    \node[vert,label=right:$u^2_m$] (U2M) at (0,-10) {};
+    
+    \node (A) at (-8,-11.5) {$\vdots$}; 
+    \node (A) at (-6,-11.5) {$\vdots$}; 
+    \node (A) at (-4,-11.5) {$\vdots$}; 
+    \node (A) at (0,-11.5) {$\vdots$};
+
+    \node[vert,label=left:$u^n_1$] (UN1) at (-8,-13) {}; 
+    \node[vert,label=left:$u^n_2$] (UN2) at (-6,-13) {}; 
+    \node[vert,label=left:$u^n_3$] (UN3) at (-4,-13) {}; 
+    \node (A) at (-2,-13) {$\ldots$};
+    \node[vert,label=right:$u^n_m$] (UNM) at (0,-13) {};
+
+    \node[vert,label=left:$u^{n+1}_1$] (UN11) at (-8,-17) {}; 
+    \node[vert,label=left:$u^{n+1}_2$] (UN12) at (-6,-17) {}; 
+    \node[vert,label=left:$u^{n+1}_3$] (UN13) at (-4,-17) {}; 
+    \node (A) at (-2,-17) {$\ldots$};
+    \node[vert,label=right:$u^{n+1}_m$] (UN1M) at (0,-17) {};
+        
+    \node (A) at (-8,-18.5) {$\vdots$}; 
+    \node (A) at (-6,-18.5) {$\vdots$}; 
+    \node (A) at (-4,-18.5) {$\vdots$}; 
+    \node (A) at (0,-18.5) {$\vdots$};
+
+    \node[vert,label=left:$u^{2n}_1$] (U2N1) at (-8,-20) {}; 
+    \node[vert,label=left:$u^{2n}_2$] (U2N2) at (-6,-20) {}; 
+    \node[vert,label=left:$u^{2n}_3$] (U2N3) at (-4,-20) {}; 
+    \node (A) at (-2,-20) {$\ldots$};
+    \node[vert,label=right:$u^{2n}_m$] (U2NM) at (0,-20) {};
+    
+    \node[vert,label=left:$v_{i,j}^\star$, fill=gray] (VSS) at (-4,-24.5) {};
+
+
+    \node[vert,label=right:$v_0^i$, fill=gray] (VI0) at (5,0) {};
+    \node[vert,label=right:$v_1^i$, fill=gray] (VI1) at (5,-3) {};
+    \node (A) at (5,-5) {$\vdots$};
+    \node[vert,label=right:$v_{j-1}^i$, fill=gray] (VIJ1) at (5,-7) {};
+    \node[vert,label=right:$v_{j}^i$, fill=gray] (VIJ) at (5,-11) {};
+    \node (A) at (5,-13) {$\vdots$};
+    \node[vert,label=right:$v_{i-1}^i$, fill=gray] (VII1) at (5,-15) {};
+    \node[vert,label=right:$\hat{u}_{1}^i$] (UI1) at (5,-17) {};
+    \node[vert,label=right:$\hat{u}_{2}^i$] (UI2) at (5,-19) {};
+    \node (A) at (5,-20.5) {$\vdots$};
+    \node[vert,label=right:$\hat{u}_{n+3}^i$, fill=gray] (UIN3) at (5,-22) {};
+    \node (A) at (5,-24) {$\vdots$};
+    \node[vert,label=right:$v_{k}^i$, fill=gray] (VIK) at (5,-26) {};
+    
+	\draw[edge, line width=1.5pt] (X1) --node[timelabel] {$t_1$} (VS);
+	\draw[edge] (X2) --node[timelabel] {$t_2$} (VS);
+	\draw[edge] (X3) --node[timelabel] {$t_3$} (VS);
+	\draw[edge] (XM) --node[timelabel] {$t_m$} (VS);
+
+    \draw[edge] (Y1) --node[timelabel,sloped] {$t_3+2$} (VS);
+	\draw[edge] (Y2) --node[timelabel,sloped] {$t_m+2$} (VS);
+	\draw[edge, line width=1.5pt] (Y3) --node[timelabel,sloped] {$t_1+2$} (VS);
+	\draw[edge] (YM) --node[timelabel,sloped] {$t_2+2$} (VS);
+
+    \draw[edge] (Y1) --node[timelabel] {$t_3+4$} (U11);
+	\draw[edge] (Y2) --node[timelabel] {$t_m+4$} (U12);
+	\draw[edge, line width=1.5pt] (Y3) --node[timelabel] {$t_1+4$} (U13);
+	\draw[edge] (YM) --node[timelabel] {$t_2+4$} (U1M);
+	
+    \draw[edge] (U21) --node[timelabel] {$t_3+6$} (U11);
+	\draw[edge] (U22) --node[timelabel] {$t_m+6$} (U12);
+	\draw[edge, line width=1.5pt] (U23) --node[timelabel] {$t_1+6$} (U13);
+	\draw[edge] (U2M) --node[timelabel] {$t_2+6$} (U1M);
+
+    \draw[edge] (UN1) --node[timelabel,sloped] {$t_3+2n+2$} (UN11);
+	\draw[edge] (UN2) --node[timelabel,sloped] {$t_m+2n+2$} (UN12);
+	\draw[edge, line width=1.5pt] (UN3) --node[timelabel,sloped] {$t_1+2n+2$} (UN13);
+	\draw[edge] (UNM) --node[timelabel,sloped] {$t_2+2n+2$} (UN1M);
+ 
+    \draw[edge] (U2N1) --node[timelabel,sloped] {$t_3+4n+2$} (VSS);
+	\draw[edge] (U2N2) --node[timelabel,sloped] {$t_m+4n+2$} (VSS);
+	\draw[edge, line width=1.5pt] (U2N3) --node[timelabel,sloped] {$t_1+4n+2$} (VSS);
+	\draw[edge] (U2NM) --node[timelabel,sloped] {$t_2+4n+2$} (VSS);
+
+    \draw[edge] (VH11) --node[timelabel] {$n^5$} (VH12);
+	\draw[edge] (VH12) --node[timelabel] {$n^5+1$} (VH13);
+	
+    \draw[edge] (VH21) --node[timelabel] {$n^5$} (VH22);
+	\draw[edge] (VH22) --node[timelabel] {$n^5+1$} (VH23);
+ 
+    \draw[edge] (VH31) --node[timelabel] {$n^5$} (VH32);
+	\draw[edge] (VH32) --node[timelabel] {$n^5+1$} (VH33);
+ 
+	\draw[edge] (VIJ1) --node[timelabel, near start] {$t_1+4$} (U13);
+	\draw[edge] (VIJ) --node[timelabel, near start] {$t_1+8$} (U23);
+ 
+	\draw[edge] (W) --node[timelabel] {$1$} (W1);
+	\draw[edge] (W) --node[timelabel] {$1$} (W2);
+	\draw[edge] (W) --node[timelabel] {$1$} (W3);
+	\draw[edge] (W) --node[timelabel] {$1$} (W4);
+ 
+	\draw[edge] (X1) --node[timelabel] {$t_1$} (W1);
+	\draw[edge] (VH11) --node[timelabel] {$n^5$} (W2);
+	\draw[edge] (VH21) edge[bend left=15] node[timelabel] {$n^5$} (W3);
+	\draw[edge] (VH31) --node[timelabel] {$n^5$} (W4);
+ 
+	\draw[edge] (VII1) --node[timelabel] {$t'$} (UI1);
+	\draw[edge] (UI1) --node[timelabel] {$t'+2$} (UI2);
+\end{tikzpicture}
+    \end{center}
+    \caption{...}\label{fig:hardness1}
+\end{figure}
+
+This finishes the construction of the \deltaExactLong\ instance, which can clearly be computed in polynomial time. For an illustration see \cref{fig:hardness1}. As discussed earlier, we have that the vertex cover number of the underlying graph of the instance is in $O(k^2)$.
+
+\emph{Correctness.} In the remainder we prove that $D$ is a yes-instance of \deltaExactLong\ if and only if the $H$ is a yes-instance of \textsc{Multicolored Clique}.
+
+$(\Rightarrow)$: Assume $D$ is a yes-instance of \deltaExactLong\ and let $(G,\lambda)$ be a solution. We have that the underlying graph $G$ is uniquely defined by $D$. We first prove a number of properties of $\lambda$.
 \end{proof}
 
 \section{FPT}
@@ -838,26 +1040,21 @@ and we either come to the contradiction (meaning that the current guess was wron
 or our assumption holds (meaning that the guessed path is really a fastest path from $u$ to $v$ in $(G, \lambda)$).
 
 Note that we can easily solve the \deltaExact\ by guessing the structure of temporal paths among all pairs of vertices.
-But, this would create $f(n,m)$ guesses (where $f(n,m)$ is an exponential function), and the running time of the algorithm would be too big.
-Therefore, we approach the problem using some special properties, which allow us to create $f(k)$ different guesses.
+But, this would create $f(n,m)$ guesses (where $f(n,m)$ is an exponential function in $|V|=n$ and $|E| = m$), and the running time of the algorithm would be too big.
+Therefore, we approach the problem using some special properties, which allow us to create $f(k)$ different guesses (where $f$ is a super exponential function in the feedback edge number $k$).
 We solve each guess by creating an ILP instance with $O(k^3)$ variables and $O(n^c)$ constraints, for some $c \in \mathbb{N}$.
 The ILP instance is a \textsc{Yes} instance if and only if $D$ is a \textsc{Yes} instance of \deltaExact.
 Moreover, from a positive solution of the ILP instance we can construct the desired labeling $\lambda$.
 Using results from \cite{Lenstra1983Integer} we know that an ILP instance can be solved in FPT time with respect to the number of variables.
-Therefore we can solve each of our ILP instances in FPT time with respect to $k$.
+Therefore, we can solve each of our ILP instances in FPT time with respect to $k$.
 
 We now introduce the algorithm, that determines the labeling of $G$, satisfying $D$, and runs in $f(k) \cdot \text{poly}(n)$ time.
 Our algorithm performs the following steps.
 \begin{enumerate}
-    \item Preprocessing on graph $G$. Determine the set $E$ of feedback edges, the set $U$ of vertices of interest and the set $U^*$ of neighbors of vertices of interest, where $|E|, |U|, |U^*| \in O(k)$.
-    \item Guess what are the fastest temporal paths among vertices in $U$ and 
-    what are the fastest temporal paths among the vertices in $U^*$, that are of some specific form.
-    \begin{enumerate}
-        \item For each guess create an ILP instance $I$ with $f(k)$ variables.
-        \item Add constraints for all pairs of vertices.
-    \end{enumerate}
-    \item Solve the ILP instance $I$ and check if a solution exists. In the positive case create its corresponding labeling $\lambda_I$ and check if it satisfies $D$.
-    All in total we create $f(k)$ partial ILP instances, each with $f(k)$ variables and $O(n^c)$ constraints.
+    \item Preprocessing on graph $G$.
+    \item Guess desired structures and create ILP instances.
+    \item Add constraints to the ILP instances for all pairs of vertices.
+    \item Solve the ILP instances.
 \end{enumerate}
 
 \subsection{Preprocessing of the input}
@@ -940,6 +1137,8 @@ We guess the following structures.
     ${v_{p-1} \rightarrow v \leadsto w \rightarrow z_{2}}$,\ \ \  
     ${v_{p-1} \rightarrow v \leadsto z \rightarrow z_{r-1}}$, and  
     ${v_{p-1} \rightarrow v \leadsto u \rightarrow v_{2}}$.
+    %
+    For an example see~\cref{fig:FPT-guessG4}.
     \item \label{FPT:guess-uToSegmentz2}
     For a segment $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$
     and a vertex of interest $w \in U$,
@@ -949,6 +1148,8 @@ We guess the following structures.
     $v_2 \rightarrow u \leadsto w$, $v_2 \rightarrow v_3 \rightarrow \cdots v \leadsto w$.
     \\
     For a fixed segment $S_{u,v}$ and a fixed vertex of interest $w$ we have $O(k^k)$ different possible such paths, therefore we make $O(k^{k^4})$ guesses for these paths.
+    %
+    For an example see~\cref{fig:FPT-guessG5}.
     %All together we made $O(k^{k^4}$  new guesses for the structure of all of the above mentioned fastest temporal paths.
 %Each of the previous partial ILP instances is therefore extended into $O(k^6)$ new ILP instances.
     \item \label{FPT:guess-splitFromAnotherSegmentAndPaths}
@@ -1011,6 +1212,8 @@ We guess the following structures.
     \end{enumerate}
     Note that this case results also in knowing the fastest paths from the vertex $v_i \in S_{u,v}$ to $w,z \in S_{w,z}$ for all segments $S_{w,z}$, 
     \ie we know the fastest paths from a fixed $v_i \in S_{u,v}$ to all vertices of interest in $U$.
+    %
+    For an example see~\cref{fig:FPT-guessG6}.
     \item \label{FPT:guess-splitFromUtoAnotherSegment}
     Let $w \in U$ be a vertex of interest and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$.
     Similarly as above we want to guess a split vertex of $w$ in $S_{u,v}$, and the fastest temporal path that reaches it.
@@ -1034,9 +1237,168 @@ We guess the following structures.
     All together we make two guesses for each pair of vertex $w \in U$ and segment $S_{u,v}$.
     We repeat this for all vertices of interest, and all segments,
     which produces $O(k^{k^2})$ new guesses.
+    %
+    For an example see~\cref{fig:FPT-guessG7}.
     % counter for guesses continues
     \setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
+%
+\begin{figure}[ht]
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}
+			%%%S_uv
+			\node[vert,label=above:$u {=} v_1$] (v1) at (1,0) {};
+			\node[vert,label=above:$v_2$] (v2) at (2,0) {};
+			\node[vert,label=above:$v_{p-1}$] (vp1) at (6,0) {};
+			\node[vert,label=above:$v_p {=} v$] (vp) at (7,0) {};
+			\draw (v1) -- (v2) -- (vp1) -- (vp);
+			
+			%%%% S_wz
+			\node[vert,label=below:$w {=} z_1$] (z1) at (1,-3) {};
+			\node[vert,label=below:$z_2$] (z2) at (2,-3) {};
+			\node[vert,label=below:$z_{r-1}$] (zr1) at (6,-3) {};
+			\node[vert,label=below:$z_r {=} z$] (zr) at (7,-3) {};
+			\draw (z1) -- (z2) -- (zr1) -- (zr);
+			
+			
+			\draw [violet] (v2) edge[diredge2] (v1);
+			
+			\draw [blue]%[transform canvas={yshift=0.5mm},thick] 
+			(v1) edge[dirwave] [out=250,in=120] (z1) 
+			(z1) edge[diredge2] (z2);
+			
+			
+			\draw [red] %[transform canvas={yshift=-0.5mm}] 
+			(v1) edge[dirwave] [out=300,in=90] (zr) 
+			(zr) edge[diredge2] (zr1);
+		\end{tikzpicture}}
+	\caption{Example of a guess G-4, where we guessed the fastest temporal paths of form $v_2 \rightarrow u \leadsto w \rightarrow z_2$ (in blue)
+	and $v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}$ (in red).
+	\label{fig:FPT-guessG4}}
+	\end{subfigure}
+	\qquad
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{
+			
+			\begin{tikzpicture}
+				%%%S_uv
+				\node[vert,label=above:$u {=} v_1$] (v1) at (1,0) {};
+				\node[vert,label=above:$v_2$] (v2) at (2,0) {};
+				\node[vert,label=above:$v_{p-1}$] (vp1) at (6,0) {};
+				\node[vert,label=above:$v_p {=} v$] (vp) at (7,0) {};
+				\draw (v1) -- (v2) -- (vp1) -- (vp);
+				
+				%%%% node w
+				\node[vert,label=below:$w$] (w) at (4,-3) {};
+				
+				
+				
+				\draw [blue]%[transform canvas={yshift=0.5mm},thick] 
+				(w) edge[dirwave] [out=160,in=285] (v1) 
+				(v1) edge[diredge2] (v2);
+				
+				\draw [red]%[transform canvas={yshift=0.5mm},thick] 
+				(w) edge[dirwave] [out=20,in=255] (vp) 
+				(vp) edge[diredge2] (vp1);
+				
+				
+			\end{tikzpicture}}
+		\caption{Example of a guess G-5, where we guessed the fastest temporal paths of form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
+			\label{fig:FPT-guessG5}}
+	\end{subfigure}
+	%
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{
+			
+		\begin{tikzpicture}
+			%%%S_uv
+			\node[vert,label=above:$u {=} v_1$] (v1) at (1,0) {};
+			\node[vert,label=above:$v_2$] (v2) at (2,0) {};
+			\node[vert,label=above:$v_i$] (vi) at (3,0) {};
+			\node[vert,label=above:$v_{p-1}$] (vp1) at (6,0) {};
+			\node[vert,label=above:$v_p {=} v$] (vp) at (7,0) {};
+			\draw (v1) -- (v2) -- (vi) -- (vp1) -- (vp);
+			
+			%%%% S_wz
+			\node[vert,label=below:$w {=} z_1$] (z1) at (1,-3) {};
+			\node[vert,label=below:$z_2$] (z2) at (2,-3) {};
+			\node[vert,label=below:$z_{j-1}$] (zj-1) at (3.2,-3) {};
+			\node[vert,label=below:$z_{j}$] (zj) at (4,-3) {};
+			\node[vert,label=below:$z_{j+1}$] (zj+1) at (4.8,-3) {};
+			\node[vert,label=below:$z_{r-1}$] (zr1) at (6,-3) {};
+			\node[vert,label=below:$z_r {=} z$] (zr) at (7,-3) {};
+			\draw (z1) -- (z2) -- (zj-1) -- (zj) -- (zj+1) -- (zr1) -- (zr);
+			
+			
+			
+			\draw [blue]%[transform canvas={yshift=0.5mm},thick] 
+			(vi) -- (v2) edge[diredge2] (v1) 
+			(v1) edge[wave] (3,1.3) 
+			(3,1.3) edge[wave] (8,1.3)
+			(8,1.3) edge[dirwave] (zr) 
+			(zr) --(zr1) -- (zj+1)
+			(zj+1) edge[diredge2] (zj);
+			
+			\draw [red]
+			(vi) -- (vp1) edge[diredge2] (vp) 
+			(vp) edge[dirwave] [out=250,in=60] (z1) 
+			(z1) --(z2)
+			(z2) edge[diredge2] (zj-1);
+			
+			
+		\end{tikzpicture}}
+		\caption{Example of a guess G-6, where, for fixed a vertex $v_i \in S_{u,v}$,
+		we calculated its corresponding split vertex $z_j \in S_{w,z}$,
+		and guessed the fastest paths of form
+		$v_i \rightarrow v_{i-1} \rightarrow \cdots \rightarrow u \leadsto z \rightarrow z_{r-1} \cdots \rightarrow z_j$ (in blue) 
+		and $v_i \rightarrow v_{i+1} \rightarrow \cdots \rightarrow v \leadsto w \rightarrow z_2 \rightarrow \cdots \rightarrow z_{j-1}$ (in red). 
+			\label{fig:FPT-guessG6}}
+	\end{subfigure}
+	\qquad
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\resizebox{\linewidth}{!}{
+		\begin{tikzpicture}
+			%%%S_uv
+			\node[vert,label=above:$u {=} v_1$] (v1) at (1,0) {};
+			\node[vert,label=above:$v_2$] (v2) at (2,0) {};
+			\node[vert,label=above:$v_i$] (vi) at (3,0) {};
+			\node[vert,label=above:$v_{i+1}$] (vi+1) at (3.8,0) {};
+			\node[vert,label=above:$v_{p-1}$] (vp1) at (6,0) {};
+			\node[vert,label=above:$v_p {=} v$] (vp) at (7,0) {};
+			\draw (v1) -- (v2) -- (vi) -- (vi+1) -- (vp1) -- (vp);
+			
+			%%%% node w
+			\node[vert,label=below:$w$] (w) at (4,-3) {};
+			
+			
+			
+			\draw [blue] 
+			(w) edge[dirwave] [out=160,in=285] (v1) 
+			(v1) -- (v2)
+			(v2) edge[diredge2] (vi);
+			
+			\draw [red]
+			(w) edge[dirwave] [out=20,in=255] (vp) 
+			(vp) -- (vp1)
+			(vp1) edge[diredge2] (vi+1);
+			
+		\end{tikzpicture}}
+	\caption{Example of a guess G-7, where, for a vertex of interest $w$, 
+		we
+		calculated its corresponding split vertex $v_i \in S_{u,v}$,
+		and guessed the fastest paths of form
+		$w \leadsto u \rightarrow v_2 \rightarrow \cdots \rightarrow v_i$  (in blue) 
+		and $w \leadsto v \rightarrow v_{p-1} \rightarrow \cdots \rightarrow v_{i+1}$ (in red). 
+		\label{fig:FPT-guessG7}}
+	\end{subfigure}
+\caption{An example of guesses G-4, G-5, G-6 and G-7.}
+\end{figure}
+%
 We create all of the guesses independently.
 We start with the first one, that results in $O(k^{k^3})$ different possibilities, then we split each one of these guesses into $O(k^{k^6})$ new ones, that respond to the guessing in the second step, etc.
 After creating all of the guesses we end up with exponential in $k$ different cases.
@@ -1832,7 +2194,27 @@ which give rise to equality constraints for them.
 Then we have to find all non-fastest temporal paths among $r_i$ and $r_j$, for which we introduce the inequality constraints. 
 There are at most $O(k^{k^6})$ such paths.
 
-
+\subsection{Solving ILP instances}
+All of the above finishes our construction of ILP instances.
+We have created $f(k)$ instances (where $f$ is a super exponential function), 
+each with $O(k^2)$ variables and $n^2 g(k)$ constraints (again, $g$ is a super exponential function).
+We now solve each ILP instance $I$, using results from Lenstra \cite{Lenstra1983Integer},
+in the FPT time, with respect to $k$.
+If none of the ILP instances gives a positive solution, then there exsist no labeling $\lambda$ of $G$ that would preserve all the fastest durations from $D$.
+In the case when there is at least one $I$ that has a valid solution $X$, 
+we use the solution $X$ and produce our labelling $\lambda$.
+We use the following procedure,
+first we
+label each edge $e$, that corresponds to the variable $x_e$
+by assigning the value $\lambda(e) = x_e$.
+We then continue to set the labels of all other edges. 
+We know that all of the labels of these edges depend on the label of (at least one) of the edges that were determined in previous step. 
+Therefore we easily calculate the desired labels for all remaining edges.
+At the end we have a labeling $\lambda$ of $G$, that preserves all the distances from $D$.
+This follow from the fact that ILP consisted of constraints for all temporal paths,
+\ie
+it cannot happen that there is a fastest temporal path $P_{u,v}$ among two vertices $u,v$ in $(G,\lambda)$ 
+for which $P_{u,v} \neq D_{u,v}$.
 
 \begin{comment}
 We have the following two cases.
