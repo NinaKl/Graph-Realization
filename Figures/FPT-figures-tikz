@@ -6,7 +6,7 @@
 
 
 \usetikzlibrary{arrows,decorations.pathmorphing,decorations.pathreplacing,backgrounds,positioning,fit,matrix}
-\usetikzlibrary{shapes,calc,patterns,arrows.meta,snakes}
+\usetikzlibrary{shapes,calc,patterns,arrows.meta}
 \tikzset{
 	vert/.style={circle,inner sep=1.5,fill=white,draw,minimum size=.3cm},
 	edge/.style={color=black, thick},
