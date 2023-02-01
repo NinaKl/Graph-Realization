@@ -1,12 +1,25 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate,anonymous]{lipics-v2021}
+%This is a template for producing LIPIcs articles. 
+%See lipics-v2021-authors-guidelines.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling autoref support, use "autoref"
+%for anonymousing the authors (e.g. for double-blind review), add "anonymous"
+%for enabling thm-restate support, use "thm-restate"
+%for enabling a two-column layout for the author/affilation part (only applicable for > 6 authors), use "authorcolumns"
+%for producing a PDF according the PDF/A standard, add "pdfa"
 
-\usepackage[english]{babel}
+%\pdfoutput=1 %uncomment to ensure pdflatex processing (mandatatory e.g. to submit to arXiv)
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
 
-\usepackage{fullpage}
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
 
 \usepackage{amsmath}
-\let\proof\relax
-\let\endproof\relax
+%\let\proof\relax
+%\let\endproof\relax
 
 \sloppy
 
@@ -16,6 +29,7 @@
 \usepackage{amsfonts}
 \usepackage{mathrsfs}
 \usepackage{wrapfig} %wrap the text around the picture
+
 
 \usepackage{thmtools} 
 \usepackage{thm-restate}
@@ -48,25 +62,12 @@
 \newcommand{\todonkl}[2][]{\todo[color=red!100!green!33,#1]{NKL:\\ #2}} %todo note that starts with NKL:
 \setlength{\marginparwidth}{3.7cm} %setting the length of todonote
 
-\newtheorem{theorem}{Theorem}
-\newtheorem{observation}{Observation}
-\newtheorem{lemma}[theorem]{Lemma}
-\newtheorem{corollary}[theorem]{Corollary}
-\newtheorem{claim}[theorem]{Claim}
-\newtheorem{conjecture}[theorem]{Conjecture}
-\theoremstyle{remark}
-\newtheorem{remark}[theorem]{Remark}
-\theoremstyle{definition}
-\newtheorem{definition}[theorem]{Definition}
-\newtheorem{example}[definition]{Example}
+
 \usepackage{comment}
 
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 
-\newenvironment{claimproof}{\noindent\emph{Proof of Claim.}}{\hfill$\diamond$
-
-}
 
 %font encoding
 \usepackage[T1]{fontenc}
@@ -75,16 +76,12 @@
 
 \usepackage{hyperref}
 
-\usepackage[capitalise,nameinlink, noabbrev]{cleveref}
 \crefname{claim}{Claim}{Claims}
-\crefname{observation}{Observation}{Observations}
-
-\usepackage{authblk}
 
 %\usepackage{natbib}
 
 \newcommand{\ie}{i.\,e.,\ }
-\newcommand{\st}{s.\,t.,\ }
+\renewcommand{\st}{s.\,t.,\ }
 \newcommand{\NP}{\textrm{NP}}
 \newcommand{\APX}{\textrm{APX}}
 \newcommand{\FPT}{\textrm{FPT}}
@@ -116,6 +113,7 @@
 
 \newcounter{guesscounter}
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROBLEMS NAMES
 %% One label per edge, period Delta, exact realization
 \newcommand{\deltaExactLong}{\textsc{Simple periodic Temporal Graph Realization}}
@@ -133,13 +131,105 @@
 \newcommand{\kDeltaLowerBoundLong}{\textsc{Simple $\Delta$-periodic Lower-Bounded Temporal Graph Realization}}
 
 
-\title{Realizing Temporal Graphs}
-\author{Nina Klobas, George B. Mertzios, Hendrik Molter, Paul G. Spirakis}
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Realizing temporal graphs from fastest travel times} %TODO Please add
+
+%\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
+
+%\author{Nina Klobas}{Department of Computer Science, Durham University, UK}{nina.klobas@durham.ac.uk}{ https://orcid.org/0000-0002-8024-5782}{}
+
+%\author{George B. Mertzios}{Department of Computer Science, Durham University, UK}{george.mertzios@durham.ac.uk}{https://orcid.org/0000-0001-7182-585X}{Supported by the EPSRC grant EP/P020372/1.}
+
+%\author{Hendrik Molter}{Department of Industrial Engineering and Management, Ben-Gurion~University~of~the~Negev, Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant No.~1070/20.}
+
+%\author{Paul G. Spirakis}{Department of Computer Science, University of Liverpool, UK}{p.spirakis@liverpool.ac.uk}{https://orcid.org/0000-0001-5396-3749}{Supported by the EPSRC grant EP/P02002X/1.}
+
+%\authorrunning{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+%\Copyright{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[500]{Theory of computation~Graph algorithms analysis}
+\ccsdesc[500]{Mathematics of computing~Discrete mathematics}
+%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm 
+
+\keywords{Temporal graph, periodic temporal labeling, fastest temporal path, graph realization, temporal connectivity.} %TODO mandatory; please add comma-separated list of keywords
+
+\category{} %optional, e.g. invited paper
+
+\relatedversion{} %optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversiondetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93]{Classification (e.g. Full Version, Extended Version, Previous Version}{URL to related version} %linktext and cite are optional
+
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\supplementdetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93, subcategory={Description, Subcategory}, swhid={Software Heritage Identifier}]{General Classification (e.g. Software, Dataset, Model, ...)}{URL to related version} %linktext, cite, and subcategory are optional
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%\acknowledgements{I want to thank \dots}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
 
 
-\bibliographystyle{abbrv}
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \begin{document}
-	\maketitle
+\maketitle
+
+\begin{abstract}
+In this paper we study \emph{temporal design} problems of undirected temporally connected graphs. 
+The basic setting of these optimization problems is as follows: given an undirected graph~$G$, 
+what is the smallest number $|\lambda|$ of time-labels that we need to add to the edges of $G$ such that the resulting temporal graph $(G,\lambda)$ is temporally connected? 
+
+
+\vspace{0,2cm}
+\noindent \textbf{Due to lack of space, the full paper with all proofs is attached in a 
+	clearly marked Appendix to be read at the discretion of the Program Committee.}
+\end{abstract}
+
+
+\section{Introduction}\label{intro-sec}
+
+Graph realization problems are fundamental graph-algorithmic questions where the objective is to (re)construct a graph, 
+given some constraints on some of its graph attributes. Among the most well studied such parameters for graph reconstruction 
+are the vertex degrees~\cite{}, distances~\cite{}, eccentricities~\cite{}, connectivity~\cite{}, etc. 
+The motivation for network realization problems stems from both ``verification'' applications where we attempt to reconstruct an existing network of unknown structure based on the outcomes of experimental measurements, and engineering applications related to network design~\cite{.....}. 
+
+
+
+
+
+
+
+
+
+
+
 
 \section{Preliminaries}
 
@@ -192,10 +282,42 @@ $O(n^2 + m \sum_{v \in V(G)} \log c_v) = O(n^2 + mn \log deg_{max}) = O(n + mn \
 Since an instance $I$ of \kDeltaExact\ problem is an $n \times n$ matrix $D$, the running time of calculating one row of $D$ (\ie the fastest temporal paths from a single vertex to all others) takes $O(|I|\log \sqrt{|I|})$-time and calculating the whole matrix $D$ (\ie the fastest temporal paths among all pairs of vertices) takes $O(|I|^{3/2} \log \sqrt{|I|})$ time.
 Therefore, from now on we say that calculating (a row of) $D$ takes polynomial time.
 
+\section{Motivation}
+
+	When considering the problem of finding shortest paths among vertices, one relies heavily on the optimal substructure of the problem,
+	which implies that if a shortest path $P$ from vertex $u$ to $v$ traverses the vertex $w$,
+	then the shortest path from $u$ to $w$ is a subpath of $P$.
+	After studying the problem of fastest temporal paths (\ie temporal paths of smallest duration),
+	one can see that this property does not carry over.
+	For an example see~\cref{fig:ftpExample}.
+	Which makes all the standard intuition and work with these kind of paths, much harder.
+	
+	\begin{figure}[h]
+    \centering
+	\begin{tikzpicture}[xscale=2]
+	%%%S_uv
+	\node[vert,label=below:$u$] (v1) at (1,0) {};
+	\node[vert] (v2) at (2,0) {};
+	\node[vert,label=below:$w$] (v3) at (3,0) {};
+	\node[vert] (v4) at (4,0) {};
+	\node[vert,label=below:$v$] (v5) at (5,0) {};
+	\draw (v1) -- node[timelabel] {$1$} (v2) -- node[timelabel] {$3$}  (v3) -- node[timelabel] {$5$} (v4) -- node[timelabel] {$7$} (v5);
+	\draw (v1) to [out=80,in=100,distance=2cm] node[timelabel] {$9$} (v3);
+	
+	\draw[transform canvas={yshift=-1.5mm}, blue]
+	(v1) edge[diredge2]  node[pos=0.3,yshift=-2,label=below:$P_{u,v}$] {} (v5) ;
+	
+	\draw[red]
+	(v1) edge[diredge2] [out=85,in=95,distance=2.1cm] node[pos=0.3,yshift=2,label=above:$P_{u,w}$] {} (v3) ;
+\end{tikzpicture}
+	\caption{An example of a temporal graph, where the fastest temporal path $P_{u,v}$ (in blue) from $u$ to $v$ is of duration $7$,
+		while the fastest temporal path $P_{u,w}$ (in red) from $u$ to a vertex $w$ that is on a path $P_{u,v}$ is of duration $1$ and is not a subpath of $P_{u,v}$.		
+		\label{fig:ftpExample}}
+	\end{figure}
+
 %\section{Results}
 
-\section{
-\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}}
+\section{\deltaExact}
 
 In this section we study the hardness of \deltaExact. We first start with defining certain notions, that will be of use when solving the problem.
 
@@ -267,9 +389,7 @@ In this section we study the hardness of \deltaExact. We first start with defini
     which is exactly the definition of $\tau_{v_i}^{v_{i-1},v_{i+1}}$.
 \end{proof}
 
-\subsection{
-\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}
-is polynomial-time solvable on trees and paths}
+\subsection{ \deltaExact\ is polynomial-time solvable on trees and paths}
 
 Let $D$ be a matrix from \deltaExact, when the underlying graph $G$ of $D$ is a tree on $n$ vertices $\{v_1, v_2, \dots, v_n\}$.
 Let $v_i,v_j$ be two arbitrary vertices in $G$. Then we know that there exists a unique (static) path $P$ among them.
@@ -343,8 +463,7 @@ where $d(P_{i,j})$ is the duration of the (unique) temporal path $P_{i,j}$ from 
     It is not hard to see, that also the calculation of the labeling $\lambda$ takes polynomial time, as we have to traverse the graph exactly once, to successfully fix the labeling. Therefore, all together the whole algorithm is performed in polynomial time.
 \end{proof}
 
-\subsection{
-\texorpdfstring{\deltaExact\ } {Simple Delta-TGR}
+\subsection{ \deltaExact\
 is polynomial-time solvable on cycles}
 
 Let us observe some properties of the matrix $D$ from \deltaExact, when the underlying graph $G$ of $D$ is a cycle $C_n = \{v_1, v_2, \dots, v_n\}$  on $n$ vertices.
@@ -549,11 +668,11 @@ Now we specify the distances between all vertex pairs. Naturally, the distance b
     
     If $x$ appears non-negated in $c$ we specify the following distances:
 
-    $d(c,x_F)=2$.
+    $d(c,x^F)=2$.
 
     If $x$ appears negated in $c$ we specify the following distances:
 
-    $d(c,x_T)=2$.
+    $d(c,x^T)=2$.
     \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we specify the following distances:
 
     $d(c,x^T)=d(c,x^F)=2$.
@@ -644,6 +763,103 @@ New matrix entries D for period Delta: d(v,c)=Delta (using two edges, with label
 
 All edges incident with $v$ have labels two or three. All edges incident with $x$ have label two and all edges incident with $c$ have label one. We immediately have that there is no temporal path from $v$ to $c$. Furthermore, since $x$ and $v$ are non-adjacent, we also have that there is no temporal path from $v$ to $x$.
 \end{itemize}
+%
+\begin{figure}[h]
+	\noindent
+	\makebox[\textwidth]{
+		\centering
+\begin{tikzpicture}%[xscale=2]
+
+	%%Variable X1
+	\node[vert,label=left:$x_1^T$] (x1t) at (1,0) {};
+	\node[vert,label=right:$x_1^F$] (x1f) at (3,0) {};
+	\node[vert,label=above:$x_1$] (x1) at (2,1) {};
+	\draw (x1t) -- (x1f) -- (x1) -- (x1t);
+	
+	%%Variable X2
+	\node[vert,label=left:$x_2^T$] (x2t) at (5,0) {};
+	\node[vert,label=right:$x_2^F$] (x2f) at (7,0) {};
+	\node[vert,label=above:$x_2$] (x2) at (6,1) {};
+	\draw (x2t) -- (x2f) -- (x2) -- (x2t);
+	
+	%%Variable x3
+	\node[vert,label=left:$x_3^T$] (x3t) at (9,0) {};
+	\node[vert,label=right:$x_3^F$] (x3f) at (11,0) {};
+	\node[vert,label=above:$x_3$] (x3) at (10,1) {};
+	\draw (x3t) -- (x3f) -- (x3) -- (x3t);
+	
+	%%Variable x4
+	\node[vert,label=left:$x_4^T$] (x4t) at (13,0) {};
+	\node[vert,label=right:$x_4^F$] (x4f) at (15,0) {};
+	\node[vert,label=above:$x_4$] (x4) at (14,1) {};
+	\draw (x4t) -- (x4f) -- (x4) -- (x4t);
+	
+	%%vertices for clauses c1, c2 + vertex v
+	\node[vert,label=above:$v$] (v) at (8,3) {};
+	\node[vert,label=below:$c_1$] (c1) at (4.5,-3) {};
+	\node[vert,label=below:$c_2$] (c2) at (11.5,-3) {};
+	
+	%%% edges between x1 gadget and v,c1,c2
+	\draw (x1t) to node[timelabel] {$1$} (c1);
+	\draw (x1t) to node[timelabel] {$1$} (c2);
+	\draw (x1t) to [out=90,in=190] (v);
+	\draw (x1f) to [out=90,in=200] node[timelabel] {$3$} (v);
+	
+	%%% edges between x2 gadget and v,c1,c2
+	\draw (x2f) to node[timelabel] {$1$} (c1);
+	\draw (x2t) to node[timelabel] {$1$} (c2);
+	\draw (x2t) to [out=80,in=210]  (v);
+	\draw (x2f) to node[timelabel] {$3$} (v);
+	
+	%%% edges between x3 gadget and v,c1
+	\draw (x3t) to node[timelabel] {$1$} (c1);
+	\draw (x3t) to node[timelabel] {$3$} (v);
+	\draw (x3f) to [out=100,in=330] (v);
+	
+	%%% edges between x4 gadget and v,c2
+	\draw (x4t) to node[timelabel] {$1$} (c2);
+	\draw (x4t) to [out=90,in=340] node[timelabel] {$3$} (v);
+	\draw (x4f) to [out=90,in=360] (v);
+	
+	%% edges among xt, xf vertices
+	%x1 to all
+	\draw [dotted] (x1t) [out=30,in=150] to (x2t);
+	\draw [dotted] (x1t) [out=30,in=150] to (x3t);
+	\draw [dotted] (x1t) [out=30,in=150] to (x4t);
+	\draw [dotted] (x1t) [out=30,in=150] to (x2f);
+	\draw [dotted] (x1t) [out=30,in=150] to (x3f);
+	\draw [dotted] (x1t) [out=30,in=150] to (x4f);
+	
+	\draw [dotted] (x1f) [out=30,in=150] to (x2t);
+	\draw [dotted] (x1f) [out=30,in=150] to (x3t);
+	\draw [dotted] (x1f) [out=30,in=150] to (x4t);
+	\draw [dotted] (x1f) [out=30,in=150] to (x2f);
+	\draw [dotted] (x1f) [out=30,in=150] to (x3f);
+	\draw [dotted] (x1f) [out=30,in=150] to (x4f);
+	%x2 to all
+	\draw [dotted] (x2t) [out=30,in=150] to (x3t);
+	\draw [dotted] (x2t) [out=30,in=150] to (x4t);
+	\draw [dotted] (x2t) [out=30,in=150] to (x3f);
+	\draw [dotted] (x2t) [out=30,in=150] to (x4f);
+	
+	\draw [dotted] (x2f) [out=30,in=150] to (x3t);
+	\draw [dotted] (x2f) [out=30,in=150] to (x4t);
+	\draw [dotted] (x2f) [out=30,in=150] to (x3f);
+	\draw [dotted] (x2f) [out=30,in=150] to (x4f);
+	%x3 to all
+	\draw [dotted] (x3t) [out=30,in=150] to (x4t);
+	\draw [dotted] (x3t) [out=30,in=150] to (x4f);
+	
+	\draw [dotted] (x3f) [out=30,in=150] to (x4t);
+	\draw [dotted] (x3f) [out=30,in=150] to (x4f);
+\end{tikzpicture}
+}
+\caption{Example of the temporal graph $(G_\phi,\lambda)$ from the NP-hardness reduction, 
+	where the 3-SAT formula $\phi$ is of form $\phi = (x_1 \vee \overline{x_2} \vee x_3) \wedge (\overline{x_1} \vee x_2 \vee x_4)$.
+For the simplicity we draw edges between vertices $x_i^T$ and $x_j^F$ (where $i \neg j$) with a dotted line.
+Presented is the labeling of $G_\phi$, corresponding to the assignment $x_1=x_2=\textsc{True}$ and $x_3,x_4=\textsc{False}$,
+where all unlabeled edges get the label $2$.}
+\end{figure}
 \end{proof}
 
 
@@ -655,24 +871,24 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
     We present a parameterized reduction from the W[1]-hard problem \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval}.  Here, given a $k$-partite graph $H=(W_1\uplus W_2 \uplus\ldots\uplus W_k, F)$, we are asked whether $H$ contains a clique of size $k$. If $w\in W_i$, then we say that $w$ has \emph{color} $i$. W.l.o.g.\ we assume that $|W_1|=|W_2|=\ldots=|W_k|=n$ and that every vertex has at least one neighbor of every color. 
     Furthermore, for all $i\in[k]$, we assume the vertices in $W_i$ are ordered in some arbitrary but fixed way, that is, $W_i=\{w^i_1,w^i_2,\ldots,w^i_n\}$.
     Let $F_{i,j}$ with $i<j$ denote the set of all edges between vertices from $W_i$ and $W_j$. We assume w.l.o.g.\ that $|F_{i,j}|=m$ for all $i< j$.
-    Furthermore, for all $i<j$ we assume that the edges in $F_{i,j}$ are ordered in some arbitrary but fixed way.
+    Furthermore, for all $i<j$ we assume that the edges in $F_{i,j}$ are ordered in some arbitrary but fixed way, that is, $F_{i,j}=\{e^{i,j}_1,e^{i,j}_2,\ldots,e^{i,j}_m\}$.
 
     Given an instance $H$ of \textsc{Multicolored Clique}, we construct an instance $D$ of \deltaExactLong\ as follows. To ease the presentation, we first describe the underlying graph $G$ that is implicitly defined by the entries $D_{v,v'}=1$, that is, the pairs of vertices $v,v'$ that should be connected by a temporal path of duration one, meaning that there needs to an edge connecting the two vertices. Afterwards, we describe the remaining entries of $D$.
 
     We will construct $G$ using several gadgets. We first introduce an \emph{edge selection gadget} for color combination $i,j$ with $i<j$. We start with describing the vertex set of the gadget.
     \begin{itemize}
         \item A set $X_{i,j}$ of vertices $x_1, x_2, \ldots, x_m$.
-        \item A set $Y_{i,j}$ of vertices $y_1, y_2, \ldots, y_m$.
-        \item A set $Z_{i,j}$ of vertices $z_1, z_2, \ldots, z_m$.
-        \item Vertex sets $U_1, U_2, \ldots, U_m$ with $U_\ell=\{u^\ell_1, u^\ell_2,\ldots, u^\ell_n, u^\ell_{n+1}, u^\ell_{n+2}, u^v_{2n}\}$ for all $\ell\in[m]$. Let $U_{i,j}=\bigcup_{\ell\in[n]} U_\ell$.
+        %\item A set $Y_{i,j}$ of vertices $y_1, y_2, \ldots, y_m$.
+        %\item A set $Z_{i,j}$ of vertices $z_1, z_2, \ldots, z_m$.
+        \item Vertex sets $U_1, U_2, \ldots, U_m$ with $U_\ell=\{u^\ell_0, u^\ell_1, u^\ell_2,\ldots, u^\ell_n, u^\ell_{n+1}, u^\ell_{n+2}, u^\ell_{2n}\}$ for all $\ell\in[m]$. Let $U_{i,j}=\bigcup_{\ell\in[n]} U_\ell$.
         \item Two special vertices $v_{i,j}^\star,v_{i,j}^{\star\star}$.
     \end{itemize}
     The gadget has the following edges.
     \begin{itemize}
-        \item For all $\ell\in [m]$ we have edge $\{x_\ell,v_{i,j}^\star\}$, $\{y_\ell,v_{i,j}^\star\}$, and $\{z_\ell,v_{i,j}^{\star\star}\}$. 
+        \item For all $\ell\in [m]$ we have edge $\{x_\ell,v_{i,j}^\star\}$, $\{v_{i,j}^\star,u^\ell_0\}$, and $\{u^\ell_{2n},v_{i,j}^{\star\star}\}$. 
 
-        Furthermore, we have edges $\{y_\ell,u^\ell_1\}$ and $\{z_\ell,u^\ell_{2n}\}$.
-        \item For all $\ell\in [m]$ and $\ell'\in [2n-1]$, we have edge $\{u^\ell_{\ell'},u^\ell_{\ell'+1}\}$.
+        %Furthermore, we have edges $\{y_\ell,u^\ell_1\}$ and $\{z_\ell,u^\ell_{2n}\}$.
+        \item For all $\ell\in [m]$ and $\ell'\in [2n]$, we have edge $\{u^\ell_{\ell'-1},u^\ell_{\ell'}\}$.
     \end{itemize}
     This finishes the construction of the edge selection gadget $G_{i,j}$.
 
@@ -685,24 +901,24 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
     %Assume $1\neq i \neq k$. We describe the two cases $i=1$ and $i=k$ afterwards. 
     %If $i\neq 1$, let $e_\ell\in F_{1,i}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v^i_0,u^\ell_{\ell'}\}$ between $v^i_0$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $1,i$. 
     
-    Let $1\le j<i$ (skip if $i=1$), let $e_\ell\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v_{j-1}^i,u^\ell_{\ell'}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $j,i$.
-    Furthermore, we add edge $\{v_{j}^i,u^\ell_{\ell'+1}\}$ between $v^i_j$ and the vertex $u^\ell_{\ell'+1}$ of the edge selection gadget of color combination $j,i$.
+    Let $1\le j<i$ (skip if $i=1$), let $e_\ell^{j,i}\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{j,i}$. Then we add edge $\{v_{j-1}^i,u^\ell_{\ell'-1}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{\ell'-1}$ of the edge selection gadget of color combination $j,i$.
+    Furthermore, we add edge $\{v_{j}^i,u^\ell_{\ell'}\}$ between $v^i_j$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $j,i$.
 
     If $1\neq i\neq k$, then we add edge $\{v^i_{i-1},\hat{u}^i_1\}$ and for all $\ell\in[n+2]$ we add edge $\{\hat{u}^i_\ell,\hat{u}^i_{\ell+1}\}$. 
-    Let $e_\ell\in F_{i,i+1}$ and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. If $i\neq 1\neq k$, then we add edge $\{\hat{u}^i_{n+3},u^\ell_{n+\ell'}\}$ between $\hat{u}^i_{n+3}$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,i+1$. If $i=1$, then we add edge $\{v^i_0,u^\ell_{n+\ell'}\}$ between $v^i_0$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,i+1$.
+    Let $e_\ell^{i,i+1}\in F_{i,i+1}$ and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,i+1}$. If $i\neq 1\neq k$, then we add edge $\{\hat{u}^i_{n+3},u^\ell_{n+\ell'-1}\}$ between $\hat{u}^i_{n+3}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$. If $i=1$, then we add edge $\{v^i_0,u^\ell_{n+\ell'-1}\}$ between $v^i_0$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$.
 
-    Let $i<j\le k$ (skip if $i=k$), let $e_\ell\in F_{i,j}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v_{j-1}^i,u^\ell_{n+\ell'}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,j$.
-    Furthermore, we add edge $\{v_{j}^i,u^\ell_{n+\ell'+1}\}$ between $v^i_j$ and the vertex $u^\ell_{n+\ell'+1}$ of the edge selection gadget of color combination $i,j$.
+    Let $i<j\le k$ (skip if $i=k$), let $e_\ell^{i,j}\in F_{i,j}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,j}$. Then we add edge $\{v_{j-1}^i,u^\ell_{n+\ell'-1}\}$ between $v^i_{j-1}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,j$.
+    Furthermore, we add edge $\{v_{j}^i,u^\ell_{n+\ell'}\}$ between $v^i_j$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,j$.
 
 
-    Next, we describe \emph{connector gadgets}. Intuitively, these gadgets will be used to connect many vertex pairs by short paths, which will make arguing about possible labelings in yes-instances much easier. Connector gadgets consist of three vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2$. 
+    Next, we describe \emph{connector gadgets}. Intuitively, these gadgets will be used to connect many vertex pairs by short paths, which will make arguing about possible labelings in yes-instances much easier. Connector gadgets consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$. 
     %Each connector gadget is associated with four sets $A,A',B,B'$ containing vertices of other gadgets. 
     Each connector gadget is associated with two sets $A,B$ with $B\subseteq A$ containing vertices of other gadgets. 
     Let $V^\star$ denote the set of all vertices from all edge selection gadgets and all validation gadgets.
     The sets $A$ and $B$ will only play a role when defining the distance matrix $D$ later. Informally speaking, vertices in $A$ should reach all vertices in $V^\star$ quickly through the gadget, except the ones in $B$.
     We have the following edges. 
     \begin{itemize}
-        \item Edges $\{\hat{v}_0,\hat{v}_1\},\{\hat{v}_1,\hat{v}_2\}$.
+        \item Edges $\{\hat{v}_0,\hat{v}_1\},\{\hat{v}_0',\hat{v}_1\},\{\hat{v}_1,\hat{v}_2\},\{\hat{v}_2,\hat{v}_3\},\{\hat{v}_2,\hat{v}_3'\}$.
         \item An edge between $\hat{v}_1$ and each vertex in $V^\star$.
         \item An edge between $\hat{v}_2$ and each vertex in $V^\star$.
     \end{itemize}
@@ -742,13 +958,14 @@ forms a feedback vertex set in $G$ with size $O(k^2)$.
 
 We proceed with describing the distance matrix $D$. We use the notation $d(v,v'):= D_{v,v'}$. For all vertices $v,v'$ that are neighbors in $G$ we have that $d(v,v')=1$ and $d(v',v)=1$.
 
-Next, consider a connector gadget consisting of vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2$ and with sets $A$ and $B$. Informally, the connector gadget makes sure that all vertices in $A$ can reach all other vertices (of edge selection gadgets and validation gadgets) except the ones in $B$. We set the following distances. Recall that $V^\star$ denotes the set of all vertices from all edge selection gadgets and all validation gadgets.
+Next, consider a connector gadget consisting of vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2,\hat{v}_3$ and with sets $A$ and $B$. Informally, the connector gadget makes sure that all vertices in $A$ can reach all other vertices (of edge selection gadgets and validation gadgets) except the ones in $B$. We set the following distances. Recall that $V^\star$ denotes the set of all vertices from all edge selection gadgets and all validation gadgets.
 \begin{itemize}
-    \item We set $d(\hat{v}_0,\hat{v}_2)=2$.
-    \item Let $v\in V^\star\setminus B$, then we set $d(\hat{v}_0,v)=3$.
+    \item We set $d(\hat{v}_0,\hat{v}_2)=d(\hat{v}_3,\hat{v}_1)=d(\hat{v}_2,\hat{v}_0')=d(\hat{v}_1,\hat{v}_3')=2$, and $d(\hat{v}_0,\hat{v}_0')=d(\hat{v}_3,\hat{v}_3')=d(\hat{v}_0,\hat{v}_3')=d(\hat{v}_3,\hat{v}_0')=3$.
+    \item Let $v\in A$, then we set $d(v,\hat{v}_0')=3$ and $d(v,\hat{v}_3')=3$.
+    \item Let $v\in V^\star\setminus B$, then we set $d(\hat{v}_0,v)=3$ and $d(\hat{v}_3,v)=3$.
     \item Let $v\in A$ and $v'\in V^\star\setminus B$ such that $v$ and $v'$ are not neighbors, then we set $d(v,v')=3$.
 \end{itemize}
-Now consider two connector gadgets, one with vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2$ and with sets $A$ and $B$, and one with vertices $\hat{v}_0',\hat{v}_1',\hat{v}_2'$ and with sets $A'$ and $B'$.
+Now consider two connector gadgets, one with vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and with sets $A$ and $B$, and one with vertices $\hat{v}_0',\hat{v}_0'',\hat{v}_1',\hat{v}_2',\hat{v}_3',\hat{v}_3''$ and with sets $A'$ and $B'$.
 \begin{itemize}
     \item If there is a vertex $v\in A$ with $v\notin A'$, then we set $d(\hat{v}_1,\hat{v}_1')=3$.
     \item If there is a vertex $v\in A$ with $v\in A'\setminus B'$, then we set $d(\hat{v}_1,\hat{v}_2')=3$.
@@ -758,11 +975,11 @@ Now consider two connector gadgets, one with vertices $\hat{v}_0,\hat{v}_1,\hat{
 
 Next, consider the edge selection gadget for color combination $i,j$ with $i<j$.
 \begin{itemize}
-    \item Let $1\le \ell<\ell'\le m$. We set $d(x_\ell,x_\ell')=2n\cdot (i+j)\cdot(\ell'-\ell)+1$.
+    \item Let $1\le \ell<\ell'\le m$. We set $d(x_\ell,x_{\ell'})=2n\cdot (i+j)\cdot(\ell'-\ell)+1$.
     \item For all $\ell\in[m]$ we set $d(x_\ell,v_{i,j}^{\star\star})=4n+3$.
 \end{itemize}
 
-Next, consider the validation gadget for color $i$. First, assume $1\neq i \neq k$. 
+Next, consider the validation gadget for color $i$. 
 %Let $1\le j<i$, let $e_\ell\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. We set the following.
 %\begin{itemize}
     %\item We set $d(v^i_{j-1},w^i_{\ell'+1})=3$.
@@ -773,6 +990,7 @@ For all $0\le j<j'<i$ and all $i<j<j'\le k$ we set the following.
 \begin{itemize}
     \item We set $d(v^i_j,v^i_{j'})=6(j'-j)-1$.
 \end{itemize}
+The next cases are only relevant if $1\neq i \neq k$. 
 For all $0\le j<i$ and $\ell\in[n+3]$ we set the following.
 \begin{itemize}
     \item We set $d(v^i_j,\hat{u}^i_{\ell})=6(i-j-1)+2\ell-1$.
@@ -793,24 +1011,29 @@ For all $\ell\in[n+3]$ and $i<j\le k$ we set the following.
 Finally, we consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$ and let $w\in \hat{W}$ denote the neighbor of $x_1$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the first connector gadget of the edge selection gadget for color combination $i,j$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the first one of the edge selection gadget for color combination $i,j$). 
 \begin{itemize}
     \item We set $d(w^\star,x_1)=6(i+j)$.
-    \item We set $d(w,\hat{v}_1)=n^5-6(i+j)+1$ and $d(w,\hat{v}_2)=n^5-6(i+j)+1$.
-    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we set $d(w,v)=n^5-6(i+j)+3$.
+    \item We set $d(w,\hat{v}_1)=n^6-6(i+j)+1$ and $d(w,\hat{v}_2)=n^6-6(i+j)+1$.
+    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we set $d(w,v)=n^6-6(i+j)+3$.
 \end{itemize}
-Let $\hat{v}_1$ belong to some connector gadget. Then we set $d(w^\star,\hat{v}_1)=n^5$.
+Let $\hat{v}_1$ belong to some connector gadget. Then we set $d(w^\star,\hat{v}_1)=n^6$.
 
 All distances between non-adjacent vertex pairs that are not specified above are set to infinity.
 
+
 \begin{figure}%[t]
-\begin{center}
-\begin{tikzpicture}[line width=1pt, scale=.7]
-\footnotesize
+\noindent\makebox[\textwidth]{
+\centering
+%\begin{center}
+\begin{tikzpicture}[line width=1pt, scale=.65]
+\scriptsize
+\node (A) at (12,0) {};
+
 \draw[rounded corners, dashed, gray] (-13, 5) rectangle (8, 1.5) {};
 \node (A) at (-10.5,4.5) {alignment gadget};
 
-\draw[rounded corners, dotted, gray] (-12, -2.5) rectangle (-10, -7.5) {};
-\draw[rounded corners, dotted, gray] (-12, -10.5) rectangle (-10, -15.5) {};
-\draw[rounded corners, dotted, gray] (7, -2.5) rectangle (9, -7.5) {};
-\node[rotate=90] (A) at (-12.5,-13) {connector gadget};
+\draw[rounded corners, dotted, gray] (-14, -2.5) rectangle (-10.5, -9.5) {};
+\draw[rounded corners, dotted, gray] (-14, -12.5) rectangle (-10.5, -19.5) {};
+\draw[rounded corners, dotted, gray] (7.5, -2.5) rectangle (11, -9.5) {};
+\node[rotate=90] (A) at (-14.5,-16) {connector gadget};
 
 \draw[rounded corners, dashed, gray] (-9.5, 1) rectangle (1.5, -27) {};
 \node (A) at (-4,-26) {edge selection gadget for $i,j$};
@@ -826,16 +1049,25 @@ All distances between non-adjacent vertex pairs that are not specified above are
 
 
     \node[vert,label=left:$\hat{v}_0$] (VH11) at (-11,-3) {}; 
-    \node[vert,label=left:$\hat{v}_1$, fill=gray] (VH12) at (-11,-5) {}; 
-    \node[vert,label=left:$\hat{v}_2$, fill=gray] (VH13) at (-11,-7) {}; 
+    \node[vert,label=left:$\hat{v}_0'$] (VH111) at (-13,-3) {}; 
+    \node[vert,label=left:$\hat{v}_1$, fill=gray] (VH12) at (-12,-5) {}; 
+    \node[vert,label=left:$\hat{v}_2$, fill=gray] (VH13) at (-12,-7) {}; 
+    \node[vert,label=left:$\hat{v}_3$] (VH14) at (-11,-9) {};  
+    \node[vert,label=left:$\hat{v}_3'$] (VH144) at (-13,-9) {}; 
 
-    \node[vert,label=left:$\hat{v}_0$] (VH21) at (-11,-11) {}; 
-    \node[vert,label=left:$\hat{v}_1$, fill=gray] (VH22) at (-11,-13) {}; 
-    \node[vert,label=left:$\hat{v}_2$, fill=gray] (VH23) at (-11,-15) {};
+    \node[vert,label=left:$\hat{v}_0$] (VH21) at (-11,-13) {};
+    \node[vert,label=left:$\hat{v}_0'$] (VH211) at (-13,-13) {}; 
+    \node[vert,label=left:$\hat{v}_1$, fill=gray] (VH22) at (-12,-15) {}; 
+    \node[vert,label=left:$\hat{v}_2$, fill=gray] (VH23) at (-12,-17) {};
+    \node[vert,label=left:$\hat{v}_3$] (VH24) at (-11,-19) {};
+    \node[vert,label=left:$\hat{v}_3'$] (VH244) at (-13,-19) {}; 
 
     \node[vert,label=right:$\hat{v}_0$] (VH31) at (8,-3) {}; 
-    \node[vert,label=right:$\hat{v}_1$, fill=gray] (VH32) at (8,-5) {}; 
-    \node[vert,label=right:$\hat{v}_2$, fill=gray] (VH33) at (8,-7) {}; 
+    \node[vert,label=right:$\hat{v}_0'$] (VH311) at (10,-3) {}; 
+    \node[vert,label=right:$\hat{v}_1$, fill=gray] (VH32) at (9,-5) {}; 
+    \node[vert,label=right:$\hat{v}_2$, fill=gray] (VH33) at (9,-7) {}; 
+    \node[vert,label=right:$\hat{v}_3$] (VH34) at (8,-9) {};  
+    \node[vert,label=right:$\hat{v}_3'$] (VH344) at (10,-9) {}; 
     
     \node[vert,label=above:$x_1$] (X1) at (-8,0) {}; 
     \node[vert,label=above:$x_2$] (X2) at (-6,0) {}; 
@@ -845,53 +1077,53 @@ All distances between non-adjacent vertex pairs that are not specified above are
     
     \node[vert,label=left:$v_{i,j}^\star$, fill=gray] (VS) at (-4,-3) {}; 
     
-    \node[vert,label=left:$y_1$] (Y1) at (-8,-6) {}; 
-    \node[vert,label=left:$y_2$] (Y2) at (-6,-6) {}; 
-    \node[vert,label=left:$y_3$] (Y3) at (-4,-6) {}; 
+    \node[vert,label=left:$u^1_0$] (Y1) at (-8,-6) {}; 
+    \node[vert,label=left:$u^2_0$] (Y2) at (-6,-6) {}; 
+    \node[vert,label=left:$u^3_0$] (Y3) at (-4,-6) {}; 
     \node (A) at (-2,-6) {$\ldots$};
-    \node[vert,label=right:$y_m$] (YM) at (0,-6) {}; 
+    \node[vert,label=right:$u^m_0$] (YM) at (0,-6) {}; 
 
     \node[vert,label=left:$u^1_1$] (U11) at (-8,-8) {}; 
-    \node[vert,label=left:$u^1_2$] (U12) at (-6,-8) {}; 
-    \node[vert,label=left:$u^1_3$] (U13) at (-4,-8) {}; 
+    \node[vert,label=left:$u^2_1$] (U12) at (-6,-8) {}; 
+    \node[vert,label=left:$u^3_1$] (U13) at (-4,-8) {}; 
     \node (A) at (-2,-8) {$\ldots$};
-    \node[vert,label=right:$u^1_m$] (U1M) at (0,-8) {};
+    \node[vert,label=right:$u^m_1$] (U1M) at (0,-8) {};
     
-    \node[vert,label=left:$u^2_1$] (U21) at (-8,-10) {}; 
+    \node[vert,label=left:$u^1_2$] (U21) at (-8,-10) {}; 
     \node[vert,label=left:$u^2_2$] (U22) at (-6,-10) {}; 
-    \node[vert,label=left:$u^2_3$] (U23) at (-4,-10) {}; 
+    \node[vert,label=left:$u^3_2$] (U23) at (-4,-10) {}; 
     \node (A) at (-2,-10) {$\ldots$};
-    \node[vert,label=right:$u^2_m$] (U2M) at (0,-10) {};
+    \node[vert,label=right:$u^m_2$] (U2M) at (0,-10) {};
     
     \node (A) at (-8,-11.5) {$\vdots$}; 
     \node (A) at (-6,-11.5) {$\vdots$}; 
     \node (A) at (-4,-11.5) {$\vdots$}; 
     \node (A) at (0,-11.5) {$\vdots$};
 
-    \node[vert,label=left:$u^n_1$] (UN1) at (-8,-13) {}; 
-    \node[vert,label=left:$u^n_2$] (UN2) at (-6,-13) {}; 
-    \node[vert,label=left:$u^n_3$] (UN3) at (-4,-13) {}; 
+    \node[vert,label=left:$u^1_n$] (UN1) at (-8,-13) {}; 
+    \node[vert,label=left:$u^2_n$] (UN2) at (-6,-13) {}; 
+    \node[vert,label=left:$u^3_n$] (UN3) at (-4,-13) {}; 
     \node (A) at (-2,-13) {$\ldots$};
-    \node[vert,label=right:$u^n_m$] (UNM) at (0,-13) {};
+    \node[vert,label=right:$u^m_n$] (UNM) at (0,-13) {};
 
-    \node[vert,label=left:$u^{n+1}_1$] (UN11) at (-8,-17) {}; 
-    \node[vert,label=left:$u^{n+1}_2$] (UN12) at (-6,-17) {}; 
-    \node[vert,label=left:$u^{n+1}_3$] (UN13) at (-4,-17) {}; 
+    \node[vert,label=left:$u_{n+1}^1$] (UN11) at (-8,-17) {}; 
+    \node[vert,label=left:$u_{n+1}^2$] (UN12) at (-6,-17) {}; 
+    \node[vert,label=left:$u_{n+1}^3$] (UN13) at (-4,-17) {}; 
     \node (A) at (-2,-17) {$\ldots$};
-    \node[vert,label=right:$u^{n+1}_m$] (UN1M) at (0,-17) {};
+    \node[vert,label=right:$u_{n+1}^m$] (UN1M) at (0,-17) {};
         
     \node (A) at (-8,-18.5) {$\vdots$}; 
     \node (A) at (-6,-18.5) {$\vdots$}; 
     \node (A) at (-4,-18.5) {$\vdots$}; 
     \node (A) at (0,-18.5) {$\vdots$};
 
-    \node[vert,label=left:$u^{2n}_1$] (U2N1) at (-8,-20) {}; 
-    \node[vert,label=left:$u^{2n}_2$] (U2N2) at (-6,-20) {}; 
-    \node[vert,label=left:$u^{2n}_3$] (U2N3) at (-4,-20) {}; 
+    \node[vert,label=left:$u_{2n}^1$] (U2N1) at (-8,-20) {}; 
+    \node[vert,label=left:$u_{2n}^2$] (U2N2) at (-6,-20) {}; 
+    \node[vert,label=left:$u_{2n}^3$] (U2N3) at (-4,-20) {}; 
     \node (A) at (-2,-20) {$\ldots$};
-    \node[vert,label=right:$u^{2n}_m$] (U2NM) at (0,-20) {};
+    \node[vert,label=right:$u_{2n}^m$] (U2NM) at (0,-20) {};
     
-    \node[vert,label=left:$v_{i,j}^\star$, fill=gray] (VSS) at (-4,-24.5) {};
+    \node[vert,label=left:$v_{i,j}^{\star\star}$, fill=gray] (VSS) at (-4,-24.5) {};
 
 
     \node[vert,label=right:$v_0^i$, fill=gray] (VI0) at (5,0) {};
@@ -938,14 +1170,23 @@ All distances between non-adjacent vertex pairs that are not specified above are
 	\draw[edge, line width=1.5pt] (U2N3) --node[timelabel,sloped] {$t_1+4n+2$} (VSS);
 	\draw[edge] (U2NM) --node[timelabel,sloped] {$t_2+4n+2$} (VSS);
 
-    \draw[edge] (VH11) --node[timelabel] {$n^5$} (VH12);
-	\draw[edge] (VH12) --node[timelabel] {$n^5+1$} (VH13);
+    \draw[edge] (VH11) --node[timelabel,sloped] {$n^6$} (VH12);
+	\draw[edge] (VH12) --node[timelabel,sloped] {$n^6+1$} (VH111);
+	\draw[edge] (VH12) --node[timelabel] {$n^6+1$} (VH13);
+    \draw[edge] (VH13) --node[timelabel,sloped] {$n^6$} (VH14);
+	\draw[edge] (VH13) --node[timelabel,sloped] {$n^6+1$} (VH144);
 	
-    \draw[edge] (VH21) --node[timelabel] {$n^5$} (VH22);
-	\draw[edge] (VH22) --node[timelabel] {$n^5+1$} (VH23);
+    \draw[edge] (VH21) --node[timelabel,sloped] {$n^6$} (VH22);
+	\draw[edge] (VH22) --node[timelabel,sloped] {$n^6+1$} (VH211);
+	\draw[edge] (VH22) --node[timelabel] {$n^6+1$} (VH23);
+    \draw[edge] (VH23) --node[timelabel,sloped] {$n^6$} (VH24);
+	\draw[edge] (VH23) --node[timelabel,sloped] {$n^6+1$} (VH244);
  
-    \draw[edge] (VH31) --node[timelabel] {$n^5$} (VH32);
-	\draw[edge] (VH32) --node[timelabel] {$n^5+1$} (VH33);
+    \draw[edge] (VH31) --node[timelabel,sloped] {$n^6$} (VH32);
+	\draw[edge] (VH32) --node[timelabel,sloped] {$n^6+1$} (VH311);
+	\draw[edge] (VH32) --node[timelabel] {$n^6+1$} (VH33);
+    \draw[edge] (VH33) --node[timelabel,sloped] {$n^6$} (VH34);	
+    \draw[edge] (VH33) --node[timelabel,sloped] {$n^6+1$} (VH344);
  
 	\draw[edge] (VIJ1) --node[timelabel, near start] {$t_1+4$} (U13);
 	\draw[edge] (VIJ) --node[timelabel, near start] {$t_1+8$} (U23);
@@ -956,16 +1197,18 @@ All distances between non-adjacent vertex pairs that are not specified above are
 	\draw[edge] (W) --node[timelabel] {$1$} (W4);
  
 	\draw[edge] (X1) --node[timelabel] {$t_1$} (W1);
-	\draw[edge] (VH11) --node[timelabel] {$n^5$} (W2);
-	\draw[edge] (VH21) edge[bend left=15] node[timelabel] {$n^5$} (W3);
-	\draw[edge] (VH31) --node[timelabel] {$n^5$} (W4);
+	\draw[edge] (VH11) --node[timelabel] {$n^6$} (W2);
+	\draw[edge] (VH21) edge[bend left=50] node[timelabel] {$n^6$} (W3);
+	\draw[edge] (VH31) --node[timelabel] {$n^6$} (W4);
  
 	\draw[edge] (VII1) --node[timelabel] {$t'$} (UI1);
 	\draw[edge] (UI1) --node[timelabel] {$t'+2$} (UI2);
 \end{tikzpicture}
-    \end{center}
-    \caption{...}\label{fig:hardness1}
+    %\end{center}
+    }
+    \caption{Illustration of part of the underlying graph $G$ and a possible labelling. Edges incident with vertices of connector gadgets are omitted. Gray vertices form a feedback vertex set.}\label{fig:hardness1}
 \end{figure}
+
 
 This finishes the construction of the \deltaExactLong\ instance, which can clearly be computed in polynomial time. For an illustration see \cref{fig:hardness1}. As discussed earlier, we have that the vertex cover number of the underlying graph of the instance is in $O(k^2)$.
 
@@ -984,24 +1227,90 @@ To start, consider the alignment gadget. We can observe that all edges incident 
 
 Next, we analyse the labelings of connector gadgets.
 \begin{claim}\label{claim:2}
-    Let $\hat{v}_0$, $\hat{v}_1$, and $\hat{v}_2$ be the vertices of a connector gadget with sets $A$ and $B$. Then we have the following:
-    \begin{itemize}
-        \item $\lambda(\{\hat{v}_0,\hat{v}_1\})=n^5$.
-        \item $\lambda(\{\hat{v}_1,\hat{v}_2\})=n^5+1$.
-        \item For all $v\in V^\star$ we have $n^5\le \lambda(\{\hat{v}_1,v\}), \lambda(\{\hat{v}_2,v\})\le n^5+2$.
-        %\item For all $v\in A\setminus B$ we have $\lambda(\{\hat{v}_1,v\})=n^5$ and $\lambda(\{\hat{v}_2,v\})=n^5+2$.
-        %\item For all $v\in B$ we have $\lambda(\{\hat{v}_1,v\})=n^5$ and $\lambda(\{\hat{v}_2,v\})=n^5$.
-        %\item For all $v\in V^\star \setminus A$ we have $\lambda(\{\hat{v}_1,v\})=n^5+2$ and $\lambda(\{\hat{v}_2,v\})=n^5+2$.
-    \end{itemize}
+    Let $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ be the vertices of a connector gadget with sets $A$ and $B$. Then we have that 
+    %\begin{itemize}
+        %\item 
+        $\lambda(\{\hat{v}_0,\hat{v}_1\})=n^6$,  $\lambda(\{\hat{v}_0',\hat{v}_1\})=n^6+2$,
+        %\item 
+        $\lambda(\{\hat{v}_1,\hat{v}_2\})=n^6+1$, $\lambda(\{\hat{v}_2,\hat{v}_3\})=n^6$, and $\lambda(\{\hat{v}_2,\hat{v}_3'\})=n^6+2$. 
+        %\item For all $v\in V^\star$ we have $n^6\le \lambda(\{\hat{v}_1,v\}), \lambda(\{\hat{v}_2,v\})\le n^6+2$.
+        %\item For all $v\in A\setminus B$ we have $\lambda(\{\hat{v}_1,v\})=n^6$ and $\lambda(\{\hat{v}_2,v\})=n^6+2$.
+        %\item For all $v\in B$ we have $\lambda(\{\hat{v}_1,v\})=n^6$ and $\lambda(\{\hat{v}_2,v\})=n^6$.
+        %\item 
+        Furthermore, for all $v\in V^\star$ we have $n^6\le \lambda(\{\hat{v}_1,v\})\le n^6+2$ and $n^6\le \lambda(\{\hat{v}_2,v\}) \le n^6+2$.
+    %\end{itemize}
 \end{claim}
 \begin{claimproof}
-    Let $w\in \hat{W}$ denote the vertex of the alignment gadget that is neighbor of $w^\star$ and $\hat{v}_0$. We have $d(w^\star,\hat{v}_0)=n^5$. It follows that $\lambda(\{w,\hat{v}_0\})=n^5$. Since $d(\hat{v}_1,w)=\infty$ and $d(w,\hat{v}_1)=\infty$, we have that $\lambda(\{\hat{v}_0,\hat{v}_1\})=n^5$.
-    Note that $\hat{v}_1$ is the only common neighbor of $\hat{v}_0$ and $\hat{v}_2$. Since $d(\hat{v}_0,\hat{v}_2)=2$ we have that $\lambda(\{\hat{v}_1,\hat{v}_2\})=n^5+1$.
+    Let $w\in \hat{W}$ denote the vertex of the alignment gadget that is neighbor of $w^\star$ and $\hat{v}_0$. We have $d(w^\star,\hat{v}_0)=n^6$. It follows that $\lambda(\{w,\hat{v}_0\})=n^6$. Since $d(\hat{v}_1,w)=\infty$ and $d(w,\hat{v}_1)=\infty$, we have that $\lambda(\{\hat{v}_0,\hat{v}_1\})=n^6$.
+    Note that $\hat{v}_1$ is the only common neighbor of $\hat{v}_0$ and $\hat{v}_2$ and the only common neighbor of $\hat{v}_0$ and $\hat{v}_0'$. Since $d(\hat{v}_0,\hat{v}_2)=2$ and $d(\hat{v}_0,\hat{v}_0')=3$ we have that $\lambda(\{\hat{v}_1,\hat{v}_2\})=n^6+1$ and $\lambda(\{\hat{v}_0',\hat{v}_1\})=n^6+2$. Similarly, we have that $\hat{v}_2$ is the only common neighbor of $\hat{v}_3$ and $\hat{v}_1$ and the only common neighbor of $\hat{v}_3$ and $\hat{v}_3'$. Since $d(\hat{v}_3,\hat{v}_1)=2$ and $d(\hat{v}_3,\hat{v}_3')=3$ we have that $\lambda(\{\hat{v}_2,\hat{v}_3\})=n^6$ and $\lambda(\{\hat{v}_2,\hat{v}_3'\})=n^6+2$.
 
-    %Let $v\in B$. Note that $d(\hat{v}_0,v)=\infty$ and $d(v,\hat{v}_0)=\infty$. It follows that $\lambda(\{\hat{v}_1,v\})=n^5$.
-Let $v\in V^\star$. Note that $d(v,\hat{v}_0)=\infty$. It follows that $\lambda(\{\hat{v}_1,v\})\ge n^5$.
+%    
+Let $v\in V^\star$. Note that $d(v,\hat{v}_0)=\infty$ and $d(v,\hat{v}_3)=\infty$. It follows that $\lambda(\{\hat{v}_1,v\})\ge n^6$ and $\lambda(\{\hat{v}_2,v\})\ge n^6$. Otherwise, there would be a temporal path from $v$ to $\hat{v}_0$ via $\hat{v}_1$ or a temporal path from $v$ to $\hat{v}_3$ via $\hat{v}_2$, a contradiction.
+Furthermore, note that $d(\hat{v}_0',v)=\infty$ and $d(\hat{v}_3',v)=\infty$. It follows that $\lambda(\{\hat{v}_1,v\})\le n^6+2$ and $\lambda(\{\hat{v}_2,v\})\le n^6+2$. Otherwise, there would be a temporal path from $\hat{v}_0'$ to $v$ via $\hat{v}_1$ or a temporal path from $\hat{v}_3$ to $v$ via $\hat{v}_2$, a contradiction.
+%Furthermore, if $v\in B$ then we also have $d(\hat{v}_0,v)=\infty$ and it follows that $\lambda(\{\hat{v}_1,v\})=n^6$.
+%If $v\notin B$ then we have $d(\hat{v}_0,v)=3$ and it follows that $\lambda(\{\hat{v}_1,v\})=n^6+2$ or $\lambda(\{\hat{v}_2,v\})=n^6+2$.
 \end{claimproof}
+
+
+\begin{claim}\label{claim:3}
+    For all $1\le i<j\le k$ and $\ell\in[m]$ we have that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})\le n^6+2$, where $u_\ell^{2n}$ belongs to the edge selection gadget for $i,j$.
+\end{claim}
+\begin{claimproof}
+    Consider the first connector gadget of the edge selection gadget for $i,j$ with vertices $\hat{v}_0$, $\hat{v}_1$, and $\hat{v}_2$ and sets $A,B$. Recall that $v_{i,j}^{\star\star}\in B$ and hence we have that $d(\hat{v}_0,v_{i,j}^{\star\star})=\infty$. Furthermore, we have that $u_\ell^{2n}\notin B$ and hence $d(\hat{v}_0,u_\ell^{2n})=3$. By \cref{claim:2} and the fact that $d(w^\star,\hat{v}_0)=n^6$ we have that both edges incident with $\hat{v}_0$ have label $n^6$. It follows that a fastest temporal path from $\hat{v}_0$ to $u_\ell^{2n}$ arrives at $u_\ell^{2n}$ at time $n^6+2$. Now assume for contradiction that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})> n^6+2$. Then there exists a temporal walk from $\hat{v}_0$ to $v_{i,j}^{\star\star}$ via $u_\ell^{2n}$, a contradiction to $d(\hat{v}_0,v_{i,j}^{\star\star})=\infty$.
+\end{claimproof}
+
+\begin{claim}\label{claim:4}
+    For all $1\le i<j\le k$ and $\ell\in[m]$ we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell -2n+6)$, where $x_\ell$ belongs to the edge selection gadget for $i,j$.
+\end{claim}
+\begin{claimproof}
+    We first determine the label of $\{x_1,v_{i,j}^{\star}\}$, where $x_1$ belongs to the edge selection gadget for $i,j$. Note that $x_1$ is connected to the alignment gadget. Let $w\in \hat{W}$ be the vertex of the alignment gadget that is a neighbor of $x_1$. Since $d(w^\star,x_1)=6(i+j)$ we have that $\lambda(\{w,x_1\})=6(i+j)$. 
+
+    First, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})<6(i+j)$. Then there is a temporal path from $v_{i,j}^\star$ to $w$ via $x_1$. However, we have that $d(x_{i,j^\star},w)=\infty$, a contradiction.
+    Next, assume that $6(i+j)<\lambda(\{x_1,v_{i,j}^{\star}\})<n^6+2$. Then there is a temporal path from $w$ to $v_{i,j}$ via $x_1$ with duration strictly less than $n^6-6(i+j)+3$. However, we have that $d(w,v_{i,j}^\star)=n^6-6(i+j)+3$, a contradiction.
+    Finally, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})\ge n^6+2$. Consider a fastest temporal path from $x_1$ to $v_{i,j}^{\star\star}$. This temporal path cannot visit $w$ as its first vertex, since from there it cannot continue. It follows by \cref{claim:2} and the just made assumption that the first edge of the temporal path has a label of at least $n^6$. However, by \cref{claim:2,claim:3} we have that all edges incident with $v_{i,j}^{\star\star}$ have a label of at most $n^6+2$. It follows that $d(x_1,v_{i,j}^{\star\star})\le 3$, a contradiction.
+
+    We can conclude that $\lambda(\{x_1,v_{i,j}^{\star}\})=6(i+j)$. Now let $1<\ell\le m$. We have that $d(x_1,x_\ell)=2n\cdot (i+j)\cdot(\ell-1)+1$ which implies that $\lambda(\{x_\ell,v_{i,j}^{\star}\})\ge (i+j)\cdot (2n\ell -2n+6)$. Assume that $(i+j)\cdot (2n\ell -2n+6) <\lambda(\{x_\ell,v_{i,j}^{\star}\})\le n^6+2$. Then the temporal path from $x_1$ to $x_\ell$ via $v_{i,j}^\star$ is not a fastest temporal path from $x_1$ to $x_\ell$. Again, we have that a fastest temporal path from $x_1$ to $x_\ell$ cannot visit $w$ as its first vertex, since from there it cannot continue. By \cref{claim:2}, all other edges incident with $x_1$ (that is, all different from the one to $v_{i,j}^\star$ and the one to $w$) have a label of at least $n^6$ and at most $n^6+2$. Similarly, by \cref{claim:2} we have that all other edges incident with $x_\ell$ (that is, all different from the one to $v_{i,j}^\star$) have a label of at least $n^6$ and at most $n^6+2$. It follows that any temporal path from $x_1$ to $x_\ell$ that visits $v_{i,j}^\star$ as its first vertex has a duration strictly larger than $2n\cdot (i+j)\cdot(\ell-1)+1$. Any temporal path from $x_1$ to $x_\ell$ that visits a vertex different from $v_{i,j}^\star$ as its first vertex has duration of at most $3$. In both cases we have a contradiction. 
+    Lastly, assume that $\lambda(\{x_\ell,v_{i,j}^{\star}\})> n^6+2$. Consider a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$. Now this temporal path has duration at most 3 since by \cref{claim:2} and the just made assumption all edges incident with $x_\ell$ have label at least $n^6$ whereas by \cref{claim:2,claim:3} all edges incident with $v_{i,j}^{\star\star}$ have label at most $n^6+2$, a contradiction. 
+\end{claimproof}
+
+\begin{claim}\label{claim:5}
+    For all $1\le i<j\le k$ there exist a permutation $\sigma_{i,j}:[m]\rightarrow [m]$ such that for all $\ell\in[m]$ we have that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell) -2n+6)+4n+2$, where $u_\ell^{2n}$ belongs to the edge selection gadget for $i,j$.
+\end{claim}
+\begin{claimproof}
+    For every $\ell\in[m]$ we have that $d(x_\ell,v_{i,j}^{\star\star})=4n+3$, where $x_\ell$ belongs to the edge selection gadget for $i,j$. From \cref{claim:2,claim:4} follows that all edges incident with $x_\ell$ have a label of at least $n^6$ except the one to $v_{i,j}^\star$ and, if $\ell=1$, the edge connecting $x_1$ to the alignment gadget. In the latter case, no temporal path from $x_1$ from $v_{i,j}^{\star\star}$ can continue to the neighbor of $x_1$ in the alignment gadget, since it cannot continue from there.
+
+    Now consider $v_{i,j}^{\star\star}$. By \cref{claim:2,claim:3} we have that all edges incident with $v_{i,j}^{\star\star}$ have a label of at most $n^6+2$. It follows that a fastest temporal path $P$ from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $v_{i,j}^\star$ after $x_\ell$, since otherwise we have $d(x_\ell,v_{i,j}^{\star\star})\le 2$, a contradiction.
+
+    Furthermore, we have by \cref{claim:2} that all edges incident with $v_{i,j}^{\star\star}$ have a label of at least $n^6$ except the ones to $u_{\ell'}^{2n}$ for $\ell'\in[m]$. By \cref{claim:4} we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})\le 4n^4$.
+    It follows that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $u_{\ell'}^{2n}$ for some $\ell'\in[m]$ as its second last vertex. Otherwise, we have $d(x_\ell,v_{i,j}^{\star\star})> 4n+3$ (for sufficiently large $n$), a contradiction.
+
+    We can conclude that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $v_{i,j}^\star$ as its second vertex and $u_{\ell'}^{2n}$ for some $\ell'\in[m]$ as its second last vertex. Recall that in a  temporal path, the difference between the labels of the first and last edge determine its duration (minus one). Hence, we have that $\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})-\lambda(\{x_\ell,v_{i,j}^{\star}\})+1=4n+3$.
+    By \cref{claim:4} we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell -2n+6)$. It follows that $\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\ell -2n+6)+4n+2$. We set $\sigma_{i,j}(\ell')=\ell$.
+
+    Finally, we show that $\sigma_{i,j}$ is a permutation on $[m]$. Assume for contradiction that there are $\ell,\ell'\in[m]$ with $\ell\neq \ell'$ such that $\sigma_{i,j}(\ell)=\sigma_{i,j}(\ell')$. Then we have that $\lambda(\{u_{\ell}^{2n},v_{i,j}^{\star\star}\})=\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})$. However, by \cref{claim:4} we have that all edges from $v_{i,j}$ to a vertex in $X_{i,j}$ have distinct labels. Furthermore, we argued above that every fastest path from a vertex in $X_{i,j}$ to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex and a vertex from the set $\{u_{\ell''}^{2n}\mid \ell''\in[m]\}$ as its second last vertex. Since for all $x_{\ell''}$ with $\ell''\in[m]$ we have that $d(x_{\ell''},v_{i,j}^{\star\star})=4n+3$, we must have that all edges from vertices in $\{u_{\ell''}^{2n}\mid \ell''\in[m]\}$ to $v_{i,j}^{\star\star}$ must have distinct labels. Hence, we have a contradiction and can conclude that $\sigma_{i,j}$ is indeed a permutation.
+\end{claimproof}
+
+For all $1\le i<j\le k$, let $\sigma_{i,j}$ be the permutation on $[m]$ as defined in \cref{claim:5}. We call $\sigma_{i,j}$ the \emph{permutation of color combination $i,j$}. Consider the following set $X$ of edges from $H$.
+\[
+X=\{e_\ell^{i,j}\in F_{i,j}\mid \sigma_{i,j}(\ell)=1\}
+\]
+We claim that $X$ forms a multicolored clique in $H$.
+From now on, denote $\{e_{i,j}\}=X\cap F_{i,j}$. We show that for all $i\in [k]$ we have that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|=1$, that is, for every color~$i$, all edges of a color combination involving $i$ have the same vertex of color $i$ as endpoint.
+
+Before we proceed, we show another property of $\lambda$.
+
+\begin{claim}\label{claim:6}
+    For all $1\le i<j\le k$,  $\ell\in[m]$, and $\ell'\in[2n]$ we have that $\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\})=(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell) -2n+6)+2\ell'$, where $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ belong to the edge selection gadget for $i,j$ and $\sigma_{i,j}$ is the permutation of color combination $i,j$.
+\end{claim}
+\begin{claimproof}
+    To do.
+\end{claimproof}
+
+Assume for contradiction that for some color $i\in[k]$ we have that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|\neq 1$. 
+Consider the verification gadget for color $i$. We first consider the case that $1\neq i\neq k$.
+
 \end{proof}
+
 
 \section{FPT}
 In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subset E(G)$ is a subset of edges, such that each cycle in $G$ has at least one edge in $F$.
@@ -1235,7 +1544,8 @@ We guess the following structures.
 \end{enumerate}
 %
 \begin{figure}[ht]
-	\begin{subfigure}{0.48\textwidth}
+    \centering
+	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\resizebox{\linewidth}{!}{
 		\begin{tikzpicture}
@@ -1269,8 +1579,8 @@ We guess the following structures.
 	and $v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}$ (in red).
 	\label{fig:FPT-guessG4}}
 	\end{subfigure}
-	\qquad
-	\begin{subfigure}{0.48\textwidth}
+	\quad
+	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\resizebox{\linewidth}{!}{
 			
@@ -1300,57 +1610,55 @@ We guess the following structures.
 		\caption{Example of a guess G-5, where we guessed the fastest temporal paths of form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
 			\label{fig:FPT-guessG5}}
 	\end{subfigure}
-	%
-	\begin{subfigure}{0.48\textwidth}
-		\centering
-		\resizebox{\linewidth}{!}{
-			
-		\begin{tikzpicture}
-			%%%S_uv
-			\node[vert,label=above:$u {=} v_1$] (v1) at (1,0) {};
-			\node[vert,label=above:$v_2$] (v2) at (2,0) {};
-			\node[vert,label=above:$v_i$] (vi) at (3,0) {};
-			\node[vert,label=above:$v_{p-1}$] (vp1) at (6,0) {};
-			\node[vert,label=above:$v_p {=} v$] (vp) at (7,0) {};
-			\draw (v1) -- (v2) -- (vi) -- (vp1) -- (vp);
-			
-			%%%% S_wz
-			\node[vert,label=below:$w {=} z_1$] (z1) at (1,-3) {};
-			\node[vert,label=below:$z_2$] (z2) at (2,-3) {};
-			\node[vert,label=below:$z_{j-1}$] (zj-1) at (3.2,-3) {};
-			\node[vert,label=below:$z_{j}$] (zj) at (4,-3) {};
-			\node[vert,label=below:$z_{j+1}$] (zj+1) at (4.8,-3) {};
-			\node[vert,label=below:$z_{r-1}$] (zr1) at (6,-3) {};
-			\node[vert,label=below:$z_r {=} z$] (zr) at (7,-3) {};
-			\draw (z1) -- (z2) -- (zj-1) -- (zj) -- (zj+1) -- (zr1) -- (zr);
-			
-			
-			
-			\draw [blue]%[transform canvas={yshift=0.5mm},thick] 
-			(vi) -- (v2) edge[diredge2] (v1) 
-			(v1) edge[wave] (3,1.3) 
-			(3,1.3) edge[wave] (8,1.3)
-			(8,1.3) edge[dirwave] (zr) 
-			(zr) --(zr1) -- (zj+1)
-			(zj+1) edge[diredge2] (zj);
-			
-			\draw [red]
-			(vi) -- (vp1) edge[diredge2] (vp) 
-			(vp) edge[dirwave] [out=250,in=60] (z1) 
-			(z1) --(z2)
-			(z2) edge[diredge2] (zj-1);
-			
-			
-		\end{tikzpicture}}
-		\caption{Example of a guess G-6, where, for fixed a vertex $v_i \in S_{u,v}$,
-		we calculated its corresponding split vertex $z_j \in S_{w,z}$,
-		and guessed the fastest paths of form
-		$v_i \rightarrow v_{i-1} \rightarrow \cdots \rightarrow u \leadsto z \rightarrow z_{r-1} \cdots \rightarrow z_j$ (in blue) 
-		and $v_i \rightarrow v_{i+1} \rightarrow \cdots \rightarrow v \leadsto w \rightarrow z_2 \rightarrow \cdots \rightarrow z_{j-1}$ (in red). 
-			\label{fig:FPT-guessG6}}
-	\end{subfigure}
-	\qquad
-	\begin{subfigure}{0.48\textwidth}
+	
+	\begin{subfigure}[b]{0.48\textwidth}
+			\centering
+			\resizebox{1.2\linewidth}{!}{
+				%
+				\begin{tikzpicture}[scale=1]
+					%%%S_uv
+					\node[vert,label=above:$u {=} v_1$] (v1) at (1,0) {};
+					\node[vert,label=above:$v_2$] (v2) at (2,0) {};
+					\node[vert,label=above:$v_i$] (vi) at (3,0) {};
+					\node[vert,label=above:$v_{p-1}$] (vp1) at (6,0) {};
+					\node[vert,label=above:$v_p {=} v$] (vp) at (7,0) {};
+					\draw (v1) -- (v2) -- (vi) -- (vp1) -- (vp);
+					
+					%%%% S_wz
+					\node[vert,label=below:$w {=} z_1$] (z1) at (1,-3) {};
+					\node[vert,label=below:$z_2$] (z2) at (2,-3) {};
+					\node[vert,label=below:$z_{j-1}$] (zj-1) at (3.2,-3) {};
+					\node[vert,label=below:$z_{j}$] (zj) at (4,-3) {};
+					\node[vert,label=below:$z_{j+1}$] (zj+1) at (4.8,-3) {};
+					\node[vert,label=below:$z_{r-1}$] (zr1) at (6,-3) {};
+					\node[vert,label=below:$z_r {=} z$] (zr) at (7,-3) {};
+					\draw (z1) -- (z2) -- (zj-1) -- (zj) -- (zj+1) -- (zr1) -- (zr);
+					
+					
+					
+					\draw [blue]%[transform canvas={yshift=0.5mm},thick] 
+					(vi) -- (v2) edge[diredge2] (v1) 
+					(v1) edge[dirwave] [out=40,in=55,distance=5.2cm] (zr) 
+					(zr) --(zr1) -- (zj+1)
+					(zj+1) edge[diredge2] (zj);
+					
+					\draw [red]
+					(vi) -- (vp1) edge[diredge2] (vp) 
+					(vp) edge[dirwave] [out=250,in=60] (z1) 
+					(z1) --(z2)
+					(z2) edge[diredge2] (zj-1);
+					
+					
+			\end{tikzpicture}}
+			\caption{Example of a guess G-6, where, for fixed a vertex $v_i \in S_{u,v}$,
+				we calculated its corresponding split vertex $z_j \in S_{w,z}$,
+				and guessed the fastest paths of form
+				$v_i \rightarrow v_{i-1} \rightarrow \cdots \rightarrow u \leadsto z \rightarrow z_{r-1} \cdots \rightarrow z_j$ (in blue) 
+				and $v_i \rightarrow v_{i+1} \rightarrow \cdots \rightarrow v \leadsto w \rightarrow z_2 \rightarrow \cdots \rightarrow z_{j-1}$ (in red). 
+				\label{fig:FPT-guessG6}}
+		\end{subfigure}
+	\quad
+	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
 		\resizebox{\linewidth}{!}{
 		\begin{tikzpicture}
