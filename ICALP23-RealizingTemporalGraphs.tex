@@ -646,6 +646,7 @@ $\{x^T,y^T\},\{x^T,y^F\}, \{x^F,y^T\},\{x^F,y^F\}$.
 \item For each clause $c$ in $\phi$ we add one edge for each literal. Let $x$ appear in $c$. If $X$ appears non-negated in $c$ we add edge $\{c,x^T\}$. If $x$ appears negated in $c$ we add edge $\{c, x^F\}$.
 \end{itemize}
 This finishes the construction of $G$.
+For an example see~\cref{fig:NP-example}.
 
 Now we specify the distances between all vertex pairs. Naturally, the distance between all pairs of adjacent vertices is one.
 \begin{itemize}
@@ -858,7 +859,8 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
 	where the 3-SAT formula $\phi$ is of form $\phi = (x_1 \vee \overline{x_2} \vee x_3) \wedge (\overline{x_1} \vee x_2 \vee x_4)$.
 For the simplicity we draw edges between vertices $x_i^T$ and $x_j^F$ (where $i \neg j$) with a dotted line.
 Presented is the labeling of $G_\phi$, corresponding to the assignment $x_1=x_2=\textsc{True}$ and $x_3,x_4=\textsc{False}$,
-where all unlabeled edges get the label $2$.}
+where all unlabeled edges get the label $2$.
+\label{fig:NP-example}}
 \end{figure}
 \end{proof}
 
@@ -1543,7 +1545,7 @@ We guess the following structures.
     \setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
 %
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
