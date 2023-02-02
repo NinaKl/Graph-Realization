@@ -633,137 +633,28 @@ Note, w.l.o.g. we can start determining the labeling $\lambda$ by setting $\lamb
 \end{theorem}
 
 \begin{proof}
-	We present a polynomial-time reduction from the NP-hard problem 3-SAT~\cite{Karp1972Reducibility}. Here, we are given a formula $\phi$ in conjunctive normal form, where each clause contains exactly 3 literals (with three distinct variables). We construct an instance $D^\phi$ of \deltaExact\ as follows.
+	We present a polynomial-time reduction from the NP-hard problem NAE 3-SAT~\cite{Schaefer1978complexity}. Here we are given a formula $\phi$ in conjunctive normal form, where each clause contains exactly 3 literals (with three distinct variables).
+    A NAE clause evaluates to \textsc{True} iff not all of its literals are equal.
+    We construct an instance $D^\phi$ of \deltaExact\ as follows.
 
  We start by describing the vertex set of the underlying graph $G$ of  $D^\phi$.
 \begin{itemize}
-\item For each variable $x$ in $\phi$, we create three variable vertices $x, x^T, x^F$.
+\item For each variable $x_i$ in $\phi$, we create three variable vertices $x_i, x_i^T, x_i^F$.
 \item For each clause $c$ in $\phi$, we create one clause vertex $c$.
 \item We add one additional super vertex $v$.
 \end{itemize}
 Next, we describe the edge set of $G$.
 \begin{itemize}
-\item For each variable $x$ in $\phi$ we add the following five edges: 
-$x x^T, x x^F, x^T x^F, x^T v$ and $ x^Fv$.
-\item For each pair of variables $x,y$ in $\phi$ with $x\neq y$ we add the following four edges: 
-$x^T y^T, x^Ty^F, x^Fy^T$ and $x^Fy^F$.
-\item For each clause $c$ in $\phi$ we add one edge for each literal. Let $x$ appear in $c$. If $x$ appears non-negated in $c$ we add edge $c x^T$. 
-If $x$ appears negated in $c$ we add edge $c x^F$.
+\item For each variable $x_i$ in $\phi$ we add the following five edges: 
+$x_i x_i^T, x_i x_i^F, x_i^T x_i^F, x_i^T v$ and $ x_i^Fv$.
+\item For each pair of variables $x_i,x_j$ in $\phi$ with $i \neq j$ we add the following four edges: 
+$x_i^T x_j^T, x_i^Tx_j^F, x_i^Fx_j^T$ and $x_i^Fx_j^F$.
+\item For each clause $c$ in $\phi$ we add one edge for each literal. Let $x_i$ appear in $c$. If $x_i$ appears non-negated in $c$ we add edge $c x_i^T$. 
+If $x_i$ appears negated in $c$ we add edge $c x_i^F$.
 \end{itemize}
 This finishes the construction of $G$.
 For an example see~\cref{fig:NP-example}.
 
-Now we specify the distances in the matrix $D^\phi$ between all vertex pairs.
-For the sake of simplicity we write $D^\phi _{x,y}$ as $d(x,y)$,
-where $x,y$ are two vertices. 
-We start by setting the value of $d(x,y) = 1$ where $x$ and $y$ are two adjacent vertices in $G$.
-\begin{itemize}
-    %\item For each variable $x$ in $\phi$ we specify the following distances between the non-adjacent variable vertices:
-    %$d(x_1,x_2)=2$. 
-    %\item For pair of variable $x,y$ in $\phi$ with $x\neq y$ we specify the following 
-    %$d(x_1,y^T)=d(x_1,y^F)=3$, $d(x_2,y^T)=d(x_2,y^F)=2$.
-    \item For each variable $x$ in $\phi$ we specify the following distance to the super vertex $v$:
-    $d(x,v)=2$. %, $d(x_2,v)=3$.
-
-    \item For each clause $c$ in $\phi$ we specify the following distance to the super vertex $v$:
-    $d(c,v)=2$
-    \item Let $x$ be a variable that appears in clause $c$, then  we specify the following distance:
-    $d(c,x)=2$.
-    If $x$ appears non-negated in $c$ we specify the following distance:
-    $d(c,x^F)=2$.
-    If $x$ appears negated in $c$ we specify the following distance:
-    $d(c,x^T)=2$.
-    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we specify the following distance:
-    $d(c,x^T)=d(c,x^F)=2$.
-\end{itemize}
-All distances between non-adjacent vertex pairs that are not defined above are set to $\infty$.
-
-This finishes the construction of an instance $D^\phi$ of \deltaExact\, which can clearly be done in polynomial time. In the remainder we show that $D^\phi$ is a yes-instance if and only if $\phi$ is satisfiable.
-
-$(\Rightarrow)$: Assume the constructed instance $D^\phi$ of \deltaExact\ is a yes-instance. 
-Then there exist a label $\lambda(e)$ for each edge $e\in E(G)$ such that for each vertex pair $u,w$ in the temporal graph $(G,\lambda)$ we have that a fastest temporal path from $u$ to $w$ is of duration $d(u,w)$. 
-%In particular, for any two vertices $u,w$ with $d(u,w)=\infty$ we have that there does not exist a temporal path from $u$ to $w$ in $(G,\lambda)$.
-
-We construct a satisfying assignment for $\phi$ as follows. For each variable $x$, if $\lambda(x x^T)=\lambda(x^T v)$, then we set $x$ to \textsc{True}, otherwise we set $x$ to \textsc{False}.
-
-To show that this yields a satisfying assignment, we need to show some following properties of $\lambda$.
-First, observe that adding some integer $t$ to all time labels does not change the duration of any temporal path. Second, observe that if for two vertices $u,w$ we have that $d(u,w)$ equals the distance between $u$ and $w$ in $G$, then there is a shortest path from $u$ to $w$ in $G$ such that $\lambda$ puts consecutive time labels on the edges of that shortest path. 
-
-
-Let $\lambda(x x^T)=t$ and $\lambda(x x^F)=t'$, for an arbitrary variable $x$. 
-If both $\lambda(x^T v)\neq t+1$ and $\lambda(x^F v)\neq t'+1$, then $d(x,v)>2$, which is a contradiction. 
-Thus, for every variable $x$, we have that $\lambda(x^T v)= t+1$ or $\lambda(x^F v)= t'+1$ (or both). 
-In particular, this means that if $\lambda(x x^F)=\lambda(x^F v)$, then we set $x$ to \textsc{False}, since in this case $\lambda(x x^T)\neq\lambda(x^T v)$.
-
-%Furthermore, we have that if $x$ appears non-negated in clause $c$, then $\lambda(\{c,x^T\})=t-1$, otherwise we have $d(c,x^T)>2$. Symmetrically, we have that if $x$ appears negated in clause $c$, then $\lambda(\{c,x^F\})=t'-1$, otherwise we have $d(c,x^F)>2$.
-
-Now assume for contradiction that the described assignment is not satisfying. Then there exists a clause $c$ that is not satisfied. Recall that we require $d(c,v)=2$. Hence, we must have a temporal path consisting of two edges from $c$ to $v$ such that the two edges have consecutive labels. By construction of $G$ there are three candidates for such a path, one for each literal of $c$. 
-Assume w.l.o.g\ that $x$ appears in $c$ non-negated (the case of a negated appearance of $x$ is symmetrical) and that the temporal path realizing $d(c,v)=2$ goes through vertex $x^T$. 
-Then we have that $\lambda(c x^T)=\lambda(x^T v)-1$. Furthermore, since $d(c,x)=2$ we also have that $\lambda(c x^T)=\lambda(x x^T)-1$. It follows that $\lambda(x x^T)=\lambda(x^T v)$. However, this implies that $x$ is set to \textsc{True} in the satisfying assignment and thus the clause $c$ is satisfied, a contradiction. 
-
-
-%Assume w.l.o.g.\ that variable $x$ appears non-negated in clause $c$. Then we have that $\{c,x^T\}\in E(G)$. Assume that $\lambda(\{c,x^T\})=t$. Recall that we have specified $d(c,x_2)=2$. Hence we have that $\lambda(\{x_2,x^T\})=t+1$.
-
-$(\Leftarrow)$: Assume that $\phi$ is satisfiable. Then there exists a satisfying assignment for the variables in $\phi$.
-
-We construct a labeling $\lambda$ as follows.
-\begin{itemize}
-    \item All edges incident with a clause vertex $c$ obtain label one.
-    %\item For each variable $x$, we set $\lambda(\{x^T,x^F\})=1$.
-    \item If variable $x$ is set to \textsc{True}, we set $\lambda(x^F v)=3$.
-    \item If variable $x$ is set to \textsc{False}, we set $\lambda(x^T v)=3$.
-    \item We set the labels of all other edges to two.
-\end{itemize}
-
-Next, we verify that all distances are realized.
-\begin{itemize}
-    \item For each variable $x$ in $\phi$ we have $d(x,v)=2$: 
-    
-    If $x$ is set to \textsc{True}, then there is a temporal path from $x$ to $v$ via $x^F$ such that $\lambda(x x^F)=2$ and $\lambda(x^F v)=3$. If $x$ is set to \textsc{False}, then there is a temporal path from $x$ to $v$ via $x^T$ such that $\lambda(x x^T)=2$ and $\lambda(x^T v)=3$.
-
-    \item For each clause $c$ in $\phi$ we have that $d(c,v)=2$:
-
-    Since we have a satisfying assignment there is a variable $x$ appearing in $c$ that is set to a truth-value that satisfies $c$. If $x$ appears non-negated in $c$ (and hence is set to \textsc{True}), then there is a temporal path from $c$ to $v$ through $x^T$ such that $\lambda(c x^T)=1$ and $\lambda(x^T v)=2$. If $x$ appears negated in $c$ (and hence is set to \textsc{False}), then there is a temporal path from $c$ to $v$ through $x^F$ such that $\lambda(c x^F)=1$ and $\lambda(x^F v)=2$.
-    \item Let $x$ be a variable that appears in clause $c$.
-    If $x$ appears non-negated in $c$ we have $d(c,x)=d(c,x_F)=2$:
-
-    There is a temporal path from $c$ to $x$ via $x^T$ and also a temporal path from $c$ to $x^F$ via $x^T$ such that $\lambda(c x^T)=1$ and $\lambda(x x^T)=\lambda(x^T x^F)=2$.
-
-    If $x$ appears negated in $c$ we have $d(c,x)=d(c,x_T)=2$:
-
-    There is a temporal path from $c$ to $x$ via $x^F$ and also a temporal path from $c$ to $x^T$ via $x^F$ such that $\lambda(c x^F)=1$ and $\lambda(x x^F)=\lambda(x^T x^F)=2$.
-    \item Let $x$ be a variable that does \emph{not} appear in clause $c$, then we have $d(c,x^T)=d(c,x^F)=2$:
-
-    Let $y$ be a variable that appears non-negated in $c$ (the case where $y$ appears negated is symmetrical). Then there is a temporal path from $c$ to $x^T$ via $y^T$ and also a temporal path from $c$ to $x^F$ via $y^T$ such that $\lambda(c y^T)=1$ and $\lambda(y^T x^T)=\lambda(y^T x^F)=2$.
-\end{itemize}
-Lastly, we show that all non-adjacent vertex pairs $u,w$ with $d(u,w)=\infty$ are not temporally connected in $(G,\lambda)$.
-\begin{itemize}
-\item For all pairs of clause vertices $c,c'$ we have $d(c,c')=\infty$: 
-\todo[inline]{New matrix entries D for period Delta: d(c,c')=Delta+1 (using three edges, with labels L, L+1, L).}
-
-Since all edges incident with clause vertices have label one and clause vertices are pairwise non-adjacent, there cannot be a temporal path from one clause vertex to another.
-\item For all variable vertices $x$ and clause vertices $c$ we have $d(x,c)=\infty$:
-\todo[inline]{New matrix entries D for period Delta: if x appears (negated or not) in c, then d(x,c)=Delta (using two edges, with label L+1, L). Otherwise D(x,c)=2Delta (using three edges, with labels L, L, L-1).}
-
-Since all edges incident with variable vertices $x$ have label two and all edges incident with clause vertices $c$ have label one, there cannot be a temporal path from a variable vertex $x$ to a clause vertex $c$.
-\item For all pairs of variable vertices $x,y$ we have $d(x,y)=\infty$:
-\todo[inline]{New matrix entries D for period Delta: d(x,y)=2Delta+1 (using three edges, each with the same label).}
-
-Since all edges incident with variable vertices $x$ have label two and variable vertices $x$ are pairwise non-adjacent, there cannot be a temporal path from one variable vertex to another.
-\item For all pairs of variable vertices $x,y$ we have $d(y^T,x)=d(y^F,x)=\infty$:
-\todo[inline]{New matrix entries D for period Delta: $d(y^T,x)=d(y^F,x)=Delta+1$ (using two edges, with equal labels).}
-
-Since all edges incident with variable vertices $x$ have label two and all edges incident with variable vertices $y^T, y^F$ have labels two or three and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from a variable vertex $y^T$ or $y^F$ to variable vertex $x$.
-\item For all pairs of variable vertices $x,y$ we have $d(x,y^T)=d(x,y^F)=\infty$:
-\todo[inline]{New matrix entries D for period Delta: $d(x,y^T)=d(x,y^F)=Delta+1$ (using two edges, with equal labels).}
-
-Observe that edges incident with $y^T, y^F$ that have label three connect $y^T, y^F$ to $v$. Furthermore, $v$ has distance two from $x$ in the underlying graph $G$. Since all edges incident with variable vertices $x$ have label two, there is no temporal path starting at $x$ and arriving at $v$ at time two, that could then continue to $y_T$ or $y_F$ using an edge with label three. Hence, there is no temporal path from $x$ to $y^T, y^F$ using an edge with label three. Since all edges incident with $x$ have label two and variable vertices $x$ are non-adjacent to variable vertices $y^T,y^F$, there cannot be a temporal path from variable vertex $x$ to variable vertex $y^T$ or $y^F$.
-\item For all variable vertices $x$ and clause vertices $c$ we have $d(v,x)=d(v,c)=\infty$:
-\todo[inline]{New matrix entries D for period Delta: d(v,x)=Delta (using two edges, with labels L+1,L). 
-New matrix entries D for period Delta: d(v,c)=Delta (using two edges, with labels L,L-1).}
-
-All edges incident with $v$ have labels two or three. All edges incident with $x$ have label two and all edges incident with $c$ have label one. We immediately have that there is no temporal path from $v$ to $c$. Furthermore, since $x$ and $v$ are non-adjacent, we also have that there is no temporal path from $v$ to $x$.
-\end{itemize}
 %
 \begin{figure}[htb]
 	\noindent
@@ -857,11 +748,238 @@ All edges incident with $v$ have labels two or three. All edges incident with $x
 }
 \caption{Example of the temporal graph $(G_\phi,\lambda)$ from the NP-hardness reduction, 
 	where the 3-SAT formula $\phi$ is of form $\phi = (x_1 \vee \overline{x_2} \vee x_3) \wedge (\overline{x_1} \vee x_2 \vee x_4)$.
-For the simplicity we draw edges between vertices $x_i^T$ and $x_j^F$ (where $i \neg j$) with a dotted line.
+For the simplicity we draw edges between vertices $x_i^T$ and $x_j^F$ (where $i \neq j$) with a dotted line.
 Presented is the labeling of $G_\phi$, corresponding to the assignment $x_1=x_2=\textsc{True}$ and $x_3,x_4=\textsc{False}$,
 where all unlabeled edges get the label $2$.
 \label{fig:NP-example}}
 \end{figure}
+%
+Now we specify the distances in the matrix $D^\phi$ between all vertex pairs.
+For the sake of simplicity we write $D^\phi _{u,v}$ as $d(u,v)$,
+where $u,v$ are two vertices of $G$. 
+We start by setting the value of $d(u,v) = 1$ where $u$ and $v$ are two adjacent vertices in $G$.
+\begin{itemize}
+    %\item For each variable $x$ in $\phi$ we specify the following distances between the non-adjacent variable vertices:
+    %$d(x_1,x_2)=2$. 
+    %\item For pair of variable $x,y$ in $\phi$ with $x\neq y$ we specify the following 
+    %$d(x_1,y^T)=d(x_1,y^F)=3$, $d(x_2,y^T)=d(x_2,y^F)=2$.
+    \item For each variable $x_i$ in $\phi$ and the super vertex $v$
+    we specify the following distances:
+    $d(x_i,v)=2$ and $d(v,x_i)= \Delta $. %, $d(x_2,v)=3$.
+    \item For each clause $c$ in $\phi$ and the super vertex $v$
+    we specify the following distances:
+    $d(c,v)=2$ and $d(v,c)= \Delta - 1$.
+    \item Let $x_i$ be a variable that appears in clause $c$, then  we specify the following distances:
+    $d(c,x_i)=2$ and $d(x_i,c)=\Delta$.
+    If $x_i$ appears non-negated in $c$ we specify the following distances:
+    $d(c,x_i^F)=2$ and $d(x_i^F,c)=\Delta$.
+    If $x_i$ appears negated in $c$ we specify the following distances:
+    $d(c,x_i^T)=2$ and $d(x_i^T,c)=\Delta$.
+    \item Let $x_i$ be a variable that does \emph{not} appear in clause $c$, then we specify the following distances:
+    $d(x_i,c)=\Delta$, $d(c,x_i)=2\Delta + 2$
+    and
+    $d(c,x_i^T)=d(c,x_i^F)=2$, $d(x_i^T,c)=d(x_i^F,c)=\Delta$. 
+    \item For each pair of variables $x_i \neq x_j$ in $\phi$ we specify the following distances:
+    $d(x_i,x_j)=2\Delta +1$ and
+    $d(x_i,x_j^T)=d(x_i,x_j^F)=\Delta + 1$.
+    \item For each pair of clauses $c_i \neq c_j$ in $\phi$ we specify the following distances:
+    $d(c_i,c_j)= \Delta + 1$.
+\end{itemize}
+This finishes the construction of an instance $D^\phi$ of \deltaExact\, which can clearly be done in polynomial time. In the remainder we show that $D^\phi$ is a yes-instance of \deltaExact\ if and only if NAE 3-SAT formula $\phi$ is satisfiable.
+
+$(\Rightarrow)$: Assume the constructed instance $D^\phi$ of \deltaExact\ is a yes-instance. 
+Then there exist a label $\lambda(e)$ for each edge $e\in E(G)$ such that for each vertex pair $u,w$ in the temporal graph $(G,\lambda)$ we have that a fastest temporal path from $u$ to $w$ is of duration $d(u,w)$. 
+%In particular, for any two vertices $u,w$ with $d(u,w)=\infty$ we have that there does not exist a temporal path from $u$ to $w$ in $(G,\lambda)$.
+
+We construct a satisfying assignment for $\phi$ as follows. For each variable $x_i$, 
+if $\lambda(x_i x_i^T)=\lambda(x_i^T v)$, then we set $x_i$ to \textsc{True}, otherwise we set $x_i$ to \textsc{False}.
+
+To show that this yields a satisfying assignment, we need to prove some properties of the labeling $\lambda$.
+First, observe that adding an integer $t$ to all time labels does not change the duration of any temporal paths. 
+Second, observe that if for two vertices $u,w$ we have that $d(u,w)$ equals the distance between $u$ and $w$ in $G$
+(\ie the duration of the fastest temporal path from $u$ to $w$ equals the distance of the shortest path between $u$ and $w$), 
+then there is a shortest path $P$ from $u$ to $w$ in $G$ such that 
+the labeling $\lambda$ assigns consecutive time labels to the edges of $P$.
+
+
+Let $\lambda(x_i x_i^T)=t$ and $\lambda(x_i x_i^F)=t'$, for an arbitrary variable $x_i$. 
+If both $\lambda(x_i^T v)\neq t+1$ and $\lambda(x_i^F v)\neq t'+1$, then $d(x_i,v)>2$, which is a contradiction. 
+Thus, for every variable $x_i$, we have that $\lambda(x_i^T v)= t+1$ or $\lambda(x_i^F v)= t'+1$ (or both). 
+In particular, this means that if $\lambda(x_i x_i^F)=\lambda(x_i^F v)$, then we set $x_i$ to \textsc{False}, since in this case $\lambda(x_i x_i^T)\neq\lambda(x_i^T v)$.
+
+%Furthermore, we have that if $x$ appears non-negated in clause $c$, then $\lambda(\{c,x^T\})=t-1$, otherwise we have $d(c,x^T)>2$. Symmetrically, we have that if $x$ appears negated in clause $c$, then $\lambda(\{c,x^F\})=t'-1$, otherwise we have $d(c,x^F)>2$.
+
+Now assume for a contradiction that the described assignment is not satisfying. Then there exists a clause $c$ that is not satisfied. 
+Suppose that $x_1, x_2, x_3$ are three variables that appear in $c$.
+Recall that we require $d(c,v)=2$ and $d(v,c)=\Delta -1$. 
+The fact that $d(c,v)=2$ implies that we must have a temporal path consisting of two edges from $c$ to $v$, 
+such that the two edges have consecutive labels. 
+By construction of $G$ there are three candidates for such a path, one for each literal of $c$. 
+Assume w.l.o.g\ that $x_1$ appears in $c$ non-negated (the case of a negated appearance of $x_1$ is symmetrical) and that the temporal path realizing $d(c,v)=2$ goes through vertex $x_1^T$. 
+Let us denote with $t = \lambda(x_1^T v)$.
+It follows that $\lambda(x_1^T c)=\lambda(x_1^T v)-1 = t - 1$.
+Furthermore, since $d(c,x_1)=2$ we also have that $\lambda(x_1^T c)=\lambda(x_1 x_1^T)-1$. 
+Therefore $\lambda(x_1 x_1^T)=\lambda(x_1^T v) = t$. 
+Which implies that $x_1$ is set to \textsc{True}.
+%
+Let us observe paths from $v$ to $c_1$.
+We know that $d(v,c)=\Delta -1$.
+The underlying path of the fastest temporal path from $v$ to $c$, that goes through $x_1^T$ is the path $P = (v,x_1^T,c)$.
+Since $\lambda(x_1^Tc) > \lambda(x_1^T v)$ we get that the duration of the temporal path $(P,\lambda)$ is equal to 
+$d(P,\lambda)= (\Delta + t-1) - t + 1 = \Delta$.
+This implies that
+the fastest temporal path from $v$ to $c$ is not $(P,\lambda)$ and therefore does not pass through $x_1^T$.
+Since there are only two other vertices connected to $c$, 
+we have only two other edges incident to $c$, that can be used on a fastest temporal path
+$v$ to $c$.
+Suppose now w.l.o.g\ that also $x_2$ appears in $c$ non-negated (the case of a negated appearance of $x_2$ is symmetrical) and that the temporal path realizing $d(v,c)=\Delta$ goes through vertex $x_2^T$.
+Let us denote with $t' = \lambda(x_2^T v)$.
+Since the fastest temporal path from $v$ to $c$ is of the duration $\delta - 1$,
+and the edge $x_2^T c$ is the only edge incident to vertex $c$ and edge $ x_2^T v$,
+it follows that $\lambda(x_2^T c) \geq \lambda(x_2^T v) - 2 = t' - 2$.
+Since $d(x_2,v) = 2$ it follows that $\lambda(x_2 x_2^T) = \lambda (x_2^T v) - 1 = t' - 1$.
+Knowing this and the fact that $d(x_2,c)=2$, we get that $\lambda(x_2^T c)$ must be equal to $t'-2$.
+Therefore the fastest temporal path from $v$ to $c$ passes through edges $ x_2^Tv$ and $x_2^Tc$.
+In the above we have also determined that $\lambda(x_2x_2^T) \neq \lambda ( x_2^Tv)$,
+which implies that $x_2$ is set to \textsc{True}.
+But now we have that $x_1,x_2$ both appear in $c$, where one of them is \textsc{True}, while the other is \textsc{False},
+which implies that the clause $c$ is satisfied, a contradiction. 
+
+
+%Assume w.l.o.g.\ that variable $x$ appears non-negated in clause $c$. Then we have that $\{c,x^T\}\in E(G)$. Assume that $\lambda(\{c,x^T\})=t$. Recall that we have specified $d(c,x_2)=2$. Hence we have that $\lambda(\{x_2,x^T\})=t+1$.
+
+$(\Leftarrow)$: Assume that $\phi$ is satisfiable. Then there exists a satisfying assignment for the variables in $\phi$.
+
+We construct a labeling $\lambda$ as follows.
+\begin{itemize}
+    \item All edges incident with a clause vertex $c$ obtain label one.
+    %\item For each variable $x$, we set $\lambda(\{x^T,x^F\})=1$.
+    \item If variable $x_i$ is set to \textsc{True}, we set $\lambda(x_i^F v)=3$.
+    \item If variable $x_i$ is set to \textsc{False}, we set $\lambda(x_i^T v)=3$.
+    \item We set the labels of all other edges to two.
+\end{itemize}
+For an example of the constructed temporal graph see~\cref{fig:NP-example}.
+We now verify that all distances are realized.
+\begin{itemize}
+    \item For each variable $x_i$ in $\phi$ we have to check that $d(x_i,v)=2$
+    and $d(v,x_i)=\Delta$. 
+    
+    If $x_i$ is set to \textsc{True}, then there is a temporal path from $x_i$ to $v$ via 
+    $x_i^F$ of duration $2$, since
+    $\lambda(x_i x_i^F)=2$ and $\lambda(x_i^F v)=3$.
+    For a temporal path from $v$ to $x_i$ we observe the following.
+    The only possible labels to leave the vertex $v$ are $2$ and $3$, which take us from $v$ to $x_j^T$ or $x_j^F$ of some variable $x_j$.
+    The only two edges incident to $x_i$ have labels $2$, therefore the fastest path from $v$ to $x_i$
+    cannot finish before the time $\Delta + 2$.
+    The fastest way to leave $v$ and enter to $x_i$ would then be to leave $v$ at edge $x_i^Fv$ with label $3$,
+    and continue to $x_i$ at time $\Delta + 2$,
+    which gives us the desired duration $\Delta$.
+    
+    If $x_i$ is set to \textsc{False}, then, by similar arguing, 
+    there is a temporal path from $x_i$ to $v$ via $x_i^T$ of duration $2$,
+    and a temporal path from $v$ to $x_i$, through $x_i^F$ of duration $\Delta$.
+
+    \item For each clause $c$ in $\phi$ we have to check that $d(c,v)=2$
+    and $d(v,c)=\Delta - 1$:
+
+    Suppose $x_i,x_j,x_k$ appear in $c$.
+    Since we have a satisfying assignment at least one of the literals in $c$ is set to \textsc{True} and at least one to \textsc{False}. 
+    Suppose $x_i$ is the variable of the literal that is \textsc{True} in $c$,
+    and $x_j$ is the variable of the literal that is \textsc{False} in $c$.
+    Let $x_i$ appear non-negated in $c$ and is therefore set to \textsc{True} (the case when $x_i$ appears negated in $c$ and is set to \textsc{False} is symmetric).
+    Then there is a temporal path from $c$ to $v$ through $x_i^T$ such that $\lambda(x_i^T c)=1$ and $\lambda(x_i^T v)=2$. 
+    Let $x_j$ appear non-negated in $c$ and is therefore set to \textsc{False} 
+    (the case when $x_j$ appears negated in $c$ and is set to \textsc{True} is symmetric).
+    Then there is a temporal path from $v$ to $c$ through $x_j^T$ such that $\lambda(x_j^T v)=3$ and $\lambda(x_j^T c)=1$,
+    which results in a temporal path from $v$ to $c$ of duration $\Delta -1$.
+    
+    \item Let $x_i$ be a variable that appears in clause $c$.
+    If $x_i$ appears non-negated in $c$ we have to check that $d(c,x_i)=d(c,x_i^F)=2$
+    and $d(x_i,c)=d(x_i^F,c)= \Delta$.
+
+    There is a temporal path from $c$ to $x_i$ via $x_i^T$ and also a temporal path from $c$ to $x_i^F$ via $x_i^T$ such that $\lambda(x_i^T c)=1$ and $\lambda(x_i x_i^T)=\lambda(x_i^T x_i^F)=2$,
+    which proves the first equality.
+    There are also the following two temporal paths,
+    first, from $x_i$ to $c$ through $x_i^T$ and
+    second, from $x_i^F$ to $c$ through $x_i^T$.
+    Both of the temporal paths start on the edge with label $2$, as 
+    $\lambda(x_i x_i^T) = \lambda (x_i^T x_i^F)=2$ and 
+    finish on the edge with label $1$, as $\lambda(x_i^T c) = 1$.
+
+    If $x$ appears negated in $c$ we have to check that 
+    $d(c,x_i)=d(c,x_i^T)=2$
+    and $d(x_i,c)=d(x_i^T,c)= \Delta$.
+
+    There is a temporal path from $c$ to $x$ via $x^F$ and also a temporal path from $c$ to $x^T$ via $x^F$ such that $\lambda(c x^F)=1$ and $\lambda(x x^F)=\lambda(x^T x^F)=2$,
+    which proves the first inequality.
+    There are also the following two temporal paths,
+    first, from $x_i$ to $c$ through $x_i^F$ and
+    second, from $x_i^T$ to $c$ through $x_i^F$.
+    Both of the temporal paths start on the edge with label $2$, as 
+    $\lambda(x_i x_i^F) = \lambda (x_i^T x_i^F)=2$ and 
+    finish on the edge with label $1$, as $\lambda(x_i^F c) = 1$.
+    Which proves the second equality.
+    
+    \item Let $x_i$ be a variable that does \emph{not} appear in clause $c$, then we have to check that
+    first,
+    $d(c,x_i^T)=d(c,x_i^F)=2$,
+    second, $d(x_i^T, c) = d(x_i^F,c)=\Delta$,
+    third, $d(x_i,c)=\Delta$,
+    and fourth $d(c,x_i)=2 \Delta + 2$.
+
+    Let $x_j$ be a variable that appears non-negated in $c$ (the case where $x_j$ appears negated is symmetric). 
+    Then there is a temporal path 
+    from $c$ to $x_i^T$ via $x_j^T$ and also a temporal path 
+    from $c$ to $x_i^F$ via $x_j^T$ such that $\lambda(x_j^T c)=1$ and $\lambda(x_j^T x_i^T)=\lambda(x_j^T x_i^F)=2$,
+    which proves the first equality.
+    Using the same temporal path in the opposite direction,
+    \ie first the edge $x_j^T c$ and then one of the edges $x_j^T x_i^F$ or $x_j^T x_i^T$,
+    yields the second equality.
+    For a temporal path from $c$ to $x_i$ we traverse the following three edges 
+    $x_j^T c, x_j^T x_i^F$ and $x_i^Fx_i$,
+    with labels $1, 2, 2$ respectively.
+    This proves the second equality.
+    Now for the case of a temporal path from $x_i$ to $c$,
+    we use the same three edges, but in the opposite direction,
+    namely $x_i^Fx_i, x_j^T x_i^F$ and $x_j^T c$,
+    again with labels $2, 2, 1$, respectively,
+    which proves the last equality.
+    Note that all of the above temporal paths are also the shortest possible, 
+    and since the labels of first and last edges (of these paths) are unique,
+    it follows that we cannot find faster temporal paths.
+    
+    \item For each pair of variables $x_i \neq x_j$ in $\phi$ we have to check that
+    $d(x_i,x_j)=2\Delta +1$ and
+    $d(x_i,x_j^T)=d(x_i,x_j^F)=\Delta + 1$.
+
+    There is a path from $x_i$ to $x_j$ that passes first through one of the vertices 
+    $x_i^T$ or $x_i^F$, 
+    and then through one of the vertices $x_j^T$ or $x_j^F$.
+    This temporal path is of length $3$, where all of the edges have label $2$,
+    which proves the first equality.
+    Now, a temporal path from $x_i$ to $x_j^T$ (resp.~$x_j^F$),
+    passes through one of the vertices $x_i^T$ or $x_i^F$.
+    This path is of length two, where all of the edges have label $2$,
+    which proves the second equality.
+    Note that all of the above temporal paths are also the shortest possible, 
+    and since the labels of first and last edges (of these paths) are unique,
+    it follows that we cannot find faster temporal paths.
+    
+    \item For each pair of clauses $c_i \neq c_j$ in $\phi$ we have to check that
+    $d(c_i,c_j)= \Delta + 1$.
+
+    Let $x_k$ be a variable that appears non-negated in $c_i$
+    and $x_\ell$ the variable that appears non-negated in $c_j$
+    (all other cases are symmetric).
+    There is a path of length three from $c_i$ to $c_j$
+    that passes first through vertex $x_k^T$ and then through vertex $x_\ell^T$.
+    Therefore the temporal path from $c_i$ to $c_j$
+    uses the edges $x_k^T c_i, x_\ell ^T c_j, x_k^T x_\ell ^T$, with labels $1,2,1$, respectively,
+    which proves the desired equality.
+    Note also that this is the shortest path between $c_i$ and $c_j$, and that the first and the last edge must have the label $1$,
+    therefore it follows that this is the fastest temporal path.
+\end{itemize}
+%
 \end{proof}
 
 
@@ -899,24 +1017,24 @@ where all unlabeled edges get the label $2$.
     \subparagraph{Verification Gadget.} For each color $i$, we introduce the following vertices. What we describe in the following will be used as a \emph{verification gadget for color $i$}.
     \begin{itemize}
         \item We have one vertex $y^i$, one vertex $v^i_0$, and $k-1$ vertices $v^i_\ell$ for $\ell\in[k]\setminus\{i\}$.
-        \item For every $\ell\in[m]$ and every $j\in[k]\setminus\{i\}$ we have $n$ vertices $a^{i,j,\ell}_1,a^{i,j,\ell}_2,\ldots,a^{i,j,\ell}_{n}$ and $n$ vertices $b^{i,j,\ell}_1,b^{i,j,\ell}_2,\ldots,b^{i,j,\ell}_{n}$.
+        \item For every $\ell\in[m]$ and every $j\in[k]\setminus\{i\}$ we have $5n$ vertices $a^{i,j,\ell}_1,a^{i,j,\ell}_2,\ldots,a^{i,j,\ell}_{5n}$ and $5n$ vertices $b^{i,j,\ell}_1,b^{i,j,\ell}_2,\ldots,b^{i,j,\ell}_{5n}$.
         \item If $1\neq i\neq k$, then we have a set $\hat{U}_i$ of $n+3$ additional vertices $\hat{u}^i_1,\hat{u}^i_2,\ldots,\hat{u}^i_{n+3}$.
     \end{itemize}
     We add the following edges. We add edge $\{y^i,v^i_0\}$.
     %For every $j\in[k]\setminus\{i,i+1\}$ and every $\ell\in[m]$ we add edge $\{v^i_{j-1},\hat{u}^{i,j,\ell}_1\}$. For every $\ell\in[m]$ we add edge $\{\hat{u}^i_{n+3},\hat{u}^{i,i+1,\ell}_1\}$.
-    For every $\ell\in[m]$, every $j\in[k]\setminus\{i\}$, and every $\ell'\in[n-1]$ we add edge $\{a^{i,j,\ell}_{\ell'},a^{i,j,\ell}_{\ell'+1}\}$ and we add edge $\{b^{i,j,\ell}_{\ell'},b^{i,j,\ell}_{\ell'+1}\}$.
+    For every $\ell\in[m]$, every $j\in[k]\setminus\{i\}$, and every $\ell'\in[5n-1]$ we add edge $\{a^{i,j,\ell}_{\ell'},a^{i,j,\ell}_{\ell'+1}\}$ and we add edge $\{b^{i,j,\ell}_{\ell'},b^{i,j,\ell}_{\ell'+1}\}$.
     %Assume $1\neq i \neq k$. We describe the two cases $i=1$ and $i=k$ afterwards. 
     %If $i\neq 1$, let $e_\ell\in F_{1,i}$ let $w^i_{\ell'}\in W_i$ be incident with $e_\ell$. Then we add edge $\{v^i_0,u^\ell_{\ell'}\}$ between $v^i_0$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $1,i$. 
     
-    Let $1\le j<i$ (skip if $i=1$), let $e_\ell^{j,i}\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{j,i}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and we add edge $\{a^{i,j,\ell}_{n},u^\ell_{\ell'-1}\}$ between $a^{i,j,\ell}_{n}$ and the vertex $u^\ell_{\ell'-1}$ of the edge selection gadget of color combination $j,i$.
-    Furthermore, we add edge $\{v_{j}^i,b^{i,j,\ell}_{1}\}$ and edge $\{b^{i,j,\ell}_{n},u^\ell_{\ell'}\}$ between $b^{i,j,\ell}_{n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $j,i$.
+    Let $1\le j<i$ (skip if $i=1$), let $e_\ell^{j,i}\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{j,i}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and we add edge $\{a^{i,j,\ell}_{5n},u^\ell_{\ell'-1}\}$ between $a^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{\ell'-1}$ of the edge selection gadget of color combination $j,i$.
+    Furthermore, we add edge $\{v_{j}^i,b^{i,j,\ell}_{1}\}$ and edge $\{b^{i,j,\ell}_{5n},u^\ell_{\ell'}\}$ between $b^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $j,i$.
 
     If $1\neq i\neq k$, then we add edge $\{v^i_{i-1},\hat{u}^i_1\}$ and for all $\ell\in[n+2]$ we add edge $\{\hat{u}^i_\ell,\hat{u}^i_{\ell+1}\}$. 
-    Let $e_\ell^{i,i+1}\in F_{i,i+1}$ and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,i+1}$. If $i\neq 1\neq k$, then we add edge $\{\hat{u}^i_{n+3},a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$. If $i=1$, then we add edge $\{v^i_0,a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$.
-Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1,\ell}_{n},u^\ell_{\ell'}\}$ between $b^{i,i+1,\ell}_{n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $i,i+1$.
+    Let $e_\ell^{i,i+1}\in F_{i,i+1}$ and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,i+1}$. If $i\neq 1\neq k$, then we add edge $\{\hat{u}^i_{n+3},a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$. If $i=1$, then we add edge $\{v^i_0,a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$.
+Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1,\ell}_{5n},u^\ell_{\ell'}\}$ between $b^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $i,i+1$.
 
-    Let $i+1<j\le k$ (skip if $i=k$), let $e_\ell^{i,j}\in F_{i,j}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,j}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and edge $\{a^{i,j,\ell}_{n},u^\ell_{n+\ell'-1}\}$ between $a^{i,j,\ell}_{n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,j$.
-    Furthermore, we add edge $\{v_{j}^i,b^{i,j,\ell}_{1}\}$ and edge $\{b^{i,j,\ell}_{n},u^\ell_{n+\ell'}\}$ between $b^{i,j,\ell}_{n}$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,j$.
+    Let $i+1<j\le k$ (skip if $i=k$), let $e_\ell^{i,j}\in F_{i,j}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,j}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and edge $\{a^{i,j,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,j$.
+    Furthermore, we add edge $\{v_{j}^i,b^{i,j,\ell}_{1}\}$ and edge $\{b^{i,j,\ell}_{5n},u^\ell_{n+\ell'}\}$ between $b^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,j$.
 
 
     \subparagraph{Connector Gadget.} Next, we describe \emph{connector gadgets}. Intuitively, these gadgets will be used to connect many vertex pairs by short paths, which will make arguing about possible labelings in yes-instances much easier. Connector gadgets consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$. 
@@ -930,7 +1048,7 @@ Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1
         \item An edge between $\hat{v}_1$ and each vertex in $V^\star$.
         \item An edge between $\hat{v}_2$ and each vertex in $V^\star$.
     \end{itemize}
-    We add two connector gadgets for each edge selection gadget and one connector gadget for each validation gadget.
+    We add two connector gadgets for each edge selection gadget and two connector gadgets for each validation gadget.
     
     The \emph{first connector gadget for the edge selection gadget of color combination $i,j$} with $i<j$ has the following sets.
     \begin{itemize}
@@ -946,10 +1064,15 @@ Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1
         %\item Set $B$ contains all vertices from all edge selection gadgets and all validation gadgets.
         \item Set $B$ is empty.
     \end{itemize}
-    The \emph{connector gadget for the verification gadget of color $i$} has the following sets.
+    The \emph{first connector gadget for the verification gadget of color $i$} has the following sets.
     \begin{itemize}
-        \item Set $A$ contains all vertices of the verification gadget. % and all vertices from edge selection gadgets that are neighbor of a vertex in the verification gadget.
-        \item Set $B$ contains all vertices vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_{n+3}$ (if exists).
+        %\item Set $A$ contains all vertices of the verification gadget. % and all vertices from edge selection gadgets that are neighbor of a vertex in the verification gadget.
+        \item Sets $A$ and $B$ contain all vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_{n+3}$ (if exists).
+    \end{itemize}
+The \emph{second connector gadget for the verification gadget of color $i$} has the following sets.
+    \begin{itemize}
+        \item Set $A$ contains all vertices of the verification gadget except vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_{n+3}$ (if exists).
+        \item Set $B$ is empty.
     \end{itemize}
 
 \subparagraph{Alignment Gadget.} Lastly, we introduce an \emph{alignment gadget}. It consists of one vertex $w^\star$ and a set of vertices $\hat{W}$ containing one vertex for each edge selection gadget and one vertex for each connector gadget. Vertex $w^\star$ is connected to each vertex in $\hat{W}$.
@@ -966,7 +1089,7 @@ forms a feedback vertex set in $G$ with size $O(k^2)$.
 
 \subparagraph{Distance Matrix.} We proceed with describing the distance matrix $D$. For a more convenient presentation, we use the notation $d(v,v'):= D_{v,v'}$. For all vertices $v,v'$ that are neighbors in $G$ we have that $d(v,v')=1$ and $d(v',v)=1$.
 
-Next, consider a connector gadget consisting of vertices $\hat{v}_0,\hat{v}_1,\hat{v}_2,\hat{v}_3$ and with sets $A$ and $B$. Informally, the connector gadget makes sure that all vertices in $A$ can reach all other vertices (of edge selection gadgets and validation gadgets) except the ones in $B$. We set the following distances. Recall that $V^\star$ denotes the set of all vertices from all edge selection gadgets and all validation gadgets.
+Next, consider a connector gadget consisting of vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and with sets $A$ and $B$. Informally, the connector gadget makes sure that all vertices in $A$ can reach all other vertices (of edge selection gadgets and validation gadgets) except the ones in $B$. We set the following distances. Recall that $V^\star$ denotes the set of all vertices from all edge selection gadgets and all validation gadgets.
 \begin{itemize}
     \item We set $d(\hat{v}_0,\hat{v}_2)=d(\hat{v}_3,\hat{v}_1)=d(\hat{v}_2,\hat{v}_0')=d(\hat{v}_1,\hat{v}_3')=2$, and $d(\hat{v}_0,\hat{v}_0')=d(\hat{v}_3,\hat{v}_3')=d(\hat{v}_0,\hat{v}_3')=d(\hat{v}_3,\hat{v}_0')=3$.
     \item Let $v\in A$, then we set $d(v,\hat{v}_0')=3$ and $d(v,\hat{v}_3')=3$.
@@ -984,7 +1107,7 @@ Now consider two connector gadgets, one with vertices $\hat{v}_0,\hat{v}_0',\hat
 Next, consider the edge selection gadget for color combination $i,j$ with $i<j$.
 \begin{itemize}
     \item Let $1\le \ell<\ell'\le m$. We set $d(x_\ell,x_{\ell'})=2n\cdot (i+j)\cdot(\ell'-\ell)+1$.
-    \item For all $\ell\in[m]$ we set $d(x_\ell,v_{i,j}^{\star\star})=4n+3$.
+    \item For all $\ell\in[m]$ we set $d(x_\ell,v_{i,j}^{\star\star})=4n+5$.
 \end{itemize}
 
 Next, consider the validation gadget for color $i$. 
@@ -996,31 +1119,34 @@ Next, consider the validation gadget for color $i$.
 %
 For all $0\le j<j'<i$ and all $i<j<j'\le k$ we set the following.
 \begin{itemize}
-    \item We set $d(v^i_j,v^i_{j'})=(2n+2)(j'-j)-1$.
+    \item We set $d(v^i_j,v^i_{j'})=(20n+2)(j'-j)-1$.
 \end{itemize}
 The next cases are only relevant if $1\neq i \neq k$. 
-For all $0\le j<i$ and $\ell\in[n+3]$ we set the following.
+For all $0\le j<i$ %and $\ell\in[n+3]$ 
+we set the following.
 \begin{itemize}
-    \item We set $d(v^i_j,\hat{u}^i_{\ell})=(2n+2)(i-j-1)+2\ell-1$.
+    \item We set $d(v^i_j,\hat{u}^i_{n+3})=(20n+2)(i-j-1)+2n+5$.
 \end{itemize}
-For all $\ell,\ell'\in[n+3]$ with $\ell<\ell'$ we set the following.
-\begin{itemize}
-    \item We set $d(\hat{u}^i_{\ell},\hat{u}^i_{\ell'})=2(\ell'-\ell)-1$.
-\end{itemize}
+%For all $\ell,\ell'\in[n+3]$ with $\ell<\ell'$ we set the following.
+%\begin{itemize}
+%    \item We set $d(\hat{u}^i_{\ell},\hat{u}^i_{\ell'})=2(\ell'-\ell)-1$.
+%\end{itemize}
 For all $0\le j<i$ and all $i<j'\le k$ we set the following.
 \begin{itemize}
-    \item We set $d(v^i_j,v^i_{j'})=(2n+2)(j'-j)+2n-1$.
+    \item We set $d(v^i_j,v^i_{j'})=(20n+2)(j'-j)+2n+5$.
 \end{itemize}
-For all $\ell\in[n+3]$ and $i<j\le k$ we set the following.
+For all 
+%$\ell\in[n+3]$ and 
+$i<j\le k$ we set the following.
 \begin{itemize}
-    \item We set $d(\hat{u}^i_{\ell},v^i_j)=(2n+2)(j-i)+2(n-\ell)+5$.
+    \item We set $d(\hat{u}^i_{n+3},v^i_j)=(20n+2)(j-i)-1$.
 \end{itemize}
 
 Finally, we consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$ and let $w\in \hat{W}$ denote the neighbor of $x_1$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the first connector gadget of the edge selection gadget for color combination $i,j$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the first one of the edge selection gadget for color combination $i,j$). 
 \begin{itemize}
-    \item We set $d(w^\star,x_1)=(2n+2)(i+j)$.
-    \item We set $d(w^\star,\hat{v}_1)=n^7$, $d(w,\hat{v}_2)=n^7$, $d(w,\hat{v}_1)=n^7-(2n+2)(i+j)+1$, and $d(w,\hat{v}_2)=n^7-(2n+2)(i+j)+1$.
-    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we set $d(w^\star,v)=n^7+2$ and $d(w,v)=n^7-(2n+2)(i+j)+3$.
+    \item We set $d(w^\star,x_1)=(20n+2)(i+j)$.
+    \item We set $d(w^\star,\hat{v}_1)=n^7$, $d(w,\hat{v}_2)=n^7$, $d(w,\hat{v}_1)=n^7-(20n+2)(i+j)+1$, and $d(w,\hat{v}_2)=n^7-(20n+2)(i+j)+1$.
+    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we set $d(w^\star,v)=n^7+2$ and $d(w,v)=n^7-(20n+2)(i+j)+3$.
 \end{itemize}
 
 Let $y^i$ belong to the verification gadget of color $i$ and let $w'\in \hat{W}$ denote the neighbor of $y^i$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the connector gadget of the verification gadget for color $i$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the one of the verification gadget for color $i$). Let $V_i$ denote the set of all vertices of the verification gadget of color $i$.
@@ -1040,28 +1166,30 @@ All distances between non-adjacent vertex pairs that are not specified above are
 %\begin{center}
 \begin{tikzpicture}[line width=1pt, scale=.65]
 \scriptsize
-\node (A) at (12,0) {};
+\node (A) at (14,0) {};
 
-\draw[rounded corners, dashed, gray] (-13, 5) rectangle (8, 1.5) {};
+\draw[rounded corners, dashed, gray] (-13, 5) rectangle (10, 1.5) {};
 \node (A) at (-10.5,4.5) {alignment gadget};
 
 \draw[rounded corners, dotted, gray] (-14, -2.5) rectangle (-10.5, -9.5) {};
 \draw[rounded corners, dotted, gray] (-14, -12.5) rectangle (-10.5, -19.5) {};
 \draw[rounded corners, dotted, gray] (7.5, -2.5) rectangle (11, -9.5) {};
+\draw[rounded corners, dotted, gray] (7.5, -12.5) rectangle (11, -19.5) {};
 \node[rotate=90] (A) at (-14.5,-16) {connector gadget};
 
 \draw[rounded corners, dashed, gray] (-9.5, 1) rectangle (1.5, -26) {};
 \node (A) at (-4,-25.5) {edge selection gadget for $i,j$};
 
 \draw[rounded corners, dashed, gray] (3.5, 1) rectangle (6.5, -26) {};
-\node[rotate=-90] (A) at (7,-16) {verification gadget for $j$};
+\node[rotate=-90] (A) at (7,-23) {verification gadget for $j$};
 
     \node[vert,label=above:$w^\star$, fill=gray] (W) at (-2,4) {};
     \node[vert] (W1) at (-6.5,2) {};
     \node[vert] (W2) at (-10,2) {};
     \node[vert] (W3) at (-12,2) {};
     \node[vert] (W4) at (7,2) {}; 
-    \node[vert] (W5) at (3.5,2) {}; 
+    \node[vert] (W5) at (3.5,2) {};
+    \node[vert] (W6) at (9,2) {}; 
 
 
     \node[vert,label=left:$\hat{v}_0$] (VH11) at (-11,-3) {}; 
@@ -1084,6 +1212,13 @@ All distances between non-adjacent vertex pairs that are not specified above are
     \node[vert,label=right:$\hat{v}_2$, fill=gray] (VH33) at (9,-7) {}; 
     \node[vert,label=right:$\hat{v}_3$] (VH34) at (8,-9) {};  
     \node[vert,label=right:$\hat{v}_3'$] (VH344) at (10,-9) {}; 
+
+    \node[vert,label=right:$\hat{v}_0$] (VH41) at (8,-13) {}; 
+    \node[vert,label=right:$\hat{v}_0'$] (VH411) at (10,-13) {}; 
+    \node[vert,label=right:$\hat{v}_1$, fill=gray] (VH42) at (9,-15) {}; 
+    \node[vert,label=right:$\hat{v}_2$, fill=gray] (VH43) at (9,-17) {}; 
+    \node[vert,label=right:$\hat{v}_3$] (VH44) at (8,-19) {};  
+    \node[vert,label=right:$\hat{v}_3'$] (VH444) at (10,-19) {}; 
     
     \node[vert,label=above:$x_1$] (X1) at (-8,0) {}; 
     \node[vert,label=above:$x_2$] (X2) at (-6,0) {}; 
@@ -1177,15 +1312,15 @@ All distances between non-adjacent vertex pairs that are not specified above are
 	\draw[edge, line width=1.5pt] (U23) --node[timelabel] {$t_1+6$} (U13);
 	\draw[edge] (U2M) --node[timelabel] {$t_2+6$} (U1M);
 
-    \draw[edge] (UN1) --node[timelabel,sloped] {$t_3+2n+2$} (UN11);
-	\draw[edge] (UN2) --node[timelabel,sloped] {$t_m+2n+2$} (UN12);
-	\draw[edge, line width=1.5pt] (UN3) --node[timelabel,sloped] {$t_1+2n+2$} (UN13);
-	\draw[edge] (UNM) --node[timelabel,sloped] {$t_2+2n+2$} (UN1M);
+    \draw[edge] (UN1) --node[timelabel,sloped] {$t_3+2n+4$} (UN11);
+	\draw[edge] (UN2) --node[timelabel,sloped] {$t_m+2n+4$} (UN12);
+	\draw[edge, line width=1.5pt] (UN3) --node[timelabel,sloped] {$t_1+2n+4$} (UN13);
+	\draw[edge] (UNM) --node[timelabel,sloped] {$t_2+2n+4$} (UN1M);
  
-    \draw[edge] (U2N1) --node[timelabel,sloped] {$t_3+4n+2$} (VSS);
-	\draw[edge] (U2N2) --node[timelabel,sloped] {$t_m+4n+2$} (VSS);
-	\draw[edge, line width=1.5pt] (U2N3) --node[timelabel,sloped] {$t_1+4n+2$} (VSS);
-	\draw[edge] (U2NM) --node[timelabel,sloped] {$t_2+4n+2$} (VSS);
+    \draw[edge] (U2N1) --node[timelabel,sloped] {$t_3+4n+4$} (VSS);
+	\draw[edge] (U2N2) --node[timelabel,sloped] {$t_m+4n+4$} (VSS);
+	\draw[edge, line width=1.5pt] (U2N3) --node[timelabel,sloped] {$t_1+4n+4$} (VSS);
+	\draw[edge] (U2NM) --node[timelabel,sloped] {$t_2+4n+4$} (VSS);
 
     \draw[edge] (VH11) --node[timelabel,sloped] {$n^7$} (VH12);
 	\draw[edge] (VH12) --node[timelabel,sloped] {$n^7+1$} (VH111);
@@ -1204,6 +1339,12 @@ All distances between non-adjacent vertex pairs that are not specified above are
 	\draw[edge] (VH32) --node[timelabel] {$n^7+1$} (VH33);
     \draw[edge] (VH33) --node[timelabel,sloped] {$n^7$} (VH34);	
     \draw[edge] (VH33) --node[timelabel,sloped] {$n^7+1$} (VH344);
+
+    \draw[edge] (VH41) --node[timelabel,sloped] {$n^7$} (VH42);
+	\draw[edge] (VH42) --node[timelabel,sloped] {$n^7+1$} (VH411);
+	\draw[edge] (VH42) --node[timelabel] {$n^7+1$} (VH43);
+    \draw[edge] (VH43) --node[timelabel,sloped] {$n^7$} (VH44);	
+    \draw[edge] (VH43) --node[timelabel,sloped] {$n^7+1$} (VH444);
  
 	%\draw[edge] (VIJ1) --node[timelabel, near start] {$t_1+4$} (U13);
 	%\draw[edge] (VIJ) --node[timelabel, near start] {$t_1+8$} (U23);
@@ -1217,12 +1358,14 @@ All distances between non-adjacent vertex pairs that are not specified above are
 	\draw[edge] (W) --node[timelabel] {$1$} (W3);
 	\draw[edge] (W) --node[timelabel] {$1$} (W4);
 	\draw[edge] (W) --node[timelabel] {$1$} (W5);
+	\draw[edge] (W) --node[timelabel] {$1$} (W6);
  
 	\draw[edge] (X1) --node[timelabel] {$t_1$} (W1);
 	\draw[edge] (VH11) --node[timelabel] {$n^7$} (W2);
 	\draw[edge] (VH21) edge[bend left=50] node[timelabel] {$n^7$} (W3);
 	\draw[edge] (VH31) --node[timelabel] {$n^7$} (W4);
 	\draw[edge] (YI) --node[timelabel] {$n^6-1$} (W5);
+	\draw[edge] (VH41) edge[bend right=50] node[timelabel] {$n^7$} (W6);
 
 	\draw[edge] (YI) --node[timelabel] {$n^6$} (VI0);
  
@@ -1282,38 +1425,40 @@ Now we take a closer look at the edge selection gadgets. We make a number of obs
     For all $1\le i<j\le k$ and $\ell\in[m]$ we have that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})\le n^7+2$, where $u_\ell^{2n}$ belongs to the edge selection gadget for $i,j$.
 \end{claim}
 \begin{claimproof}
-    Consider the first connector gadget of the edge selection gadget for $i,j$ with vertices $\hat{v}_0$, $\hat{v}_1$, and $\hat{v}_2$ and sets $A,B$. Recall that $v_{i,j}^{\star\star}\in B$ and hence we have that $d(\hat{v}_0,v_{i,j}^{\star\star})=\infty$. Furthermore, we have that $u_\ell^{2n}\notin B$ and hence $d(\hat{v}_0,u_\ell^{2n})=3$. By \cref{claim:2} and the fact that $d(w^\star,\hat{v}_0)=n^7$ we have that both edges incident with $\hat{v}_0$ have label $n^7$. It follows that a fastest temporal path from $\hat{v}_0$ to $u_\ell^{2n}$ arrives at $u_\ell^{2n}$ at time $n^7+2$. Now assume for contradiction that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})> n^7+2$. Then there exists a temporal walk from $\hat{v}_0$ to $v_{i,j}^{\star\star}$ via $u_\ell^{2n}$, a contradiction to $d(\hat{v}_0,v_{i,j}^{\star\star})=\infty$.
+    Consider the first connector gadget of the edge selection gadget for $i,j$ with vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and sets $A,B$. Recall that $v_{i,j}^{\star\star}\in B$ and hence we have that $d(\hat{v}_0,v_{i,j}^{\star\star})=\infty$. Furthermore, we have that $u_\ell^{2n}\notin B$ and hence $d(\hat{v}_0,u_\ell^{2n})=3$. By \cref{claim:2} and the fact that $d(w^\star,\hat{v}_0)=n^7$ we have that both edges incident with $\hat{v}_0$ have label $n^7$. It follows that a fastest temporal path from $\hat{v}_0$ to $u_\ell^{2n}$ arrives at $u_\ell^{2n}$ at time $n^7+2$. Now assume for contradiction that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})> n^7+2$. Then there exists a temporal walk from $\hat{v}_0$ to $v_{i,j}^{\star\star}$ via $u_\ell^{2n}$, a contradiction to $d(\hat{v}_0,v_{i,j}^{\star\star})=\infty$.
 \end{claimproof}
 
 \begin{claim}\label{claim:4}
-    For all $1\le i<j\le k$ and $\ell\in[m]$ we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell +2)$, where $x_\ell$ belongs to the edge selection gadget for $i,j$.
+    For all $1\le i<j\le k$ and $\ell\in[m]$ we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell +18n+2)$, where $x_\ell$ belongs to the edge selection gadget for $i,j$.
 \end{claim}
 \begin{claimproof}
-    We first determine the label of $\{x_1,v_{i,j}^{\star}\}$, where $x_1$ belongs to the edge selection gadget for $i,j$. Note that $x_1$ is connected to the alignment gadget. Let $w\in \hat{W}$ be the vertex of the alignment gadget that is a neighbor of $x_1$. Since $d(w^\star,x_1)=(2n+2)(i+j)$ we have that $\lambda(\{w,x_1\})=(2n+2)(i+j)$. 
+    We first determine the label of $\{x_1,v_{i,j}^{\star}\}$, where $x_1$ belongs to the edge selection gadget for $i,j$. Note that $x_1$ is connected to the alignment gadget. Let $w\in \hat{W}$ be the vertex of the alignment gadget that is a neighbor of $x_1$. Since $d(w^\star,x_1)=(20n+2)(i+j)$ we have that $\lambda(\{w,x_1\})=(20n+2)(i+j)$. 
 
-    First, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})<(2n+2)(i+j)$. Then there is a temporal path from $v_{i,j}^\star$ to $w$ via $x_1$. However, we have that $d(x_{i,j^\star},w)=\infty$, a contradiction.
-    Next, assume that $(2n+2)(i+j)<\lambda(\{x_1,v_{i,j}^{\star}\})<n^7+2$. Then there is a temporal path from $w$ to $v_{i,j}$ via $x_1$ with duration strictly less than $n^7-(2n+2)(i+j)+3$. However, we have that $d(w,v_{i,j}^\star)=n^7-(2n+2)(i+j)+3$, a contradiction.
+    First, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})<(20n+2)(i+j)$. Then there is a temporal path from $v_{i,j}^\star$ to $w$ via $x_1$. However, we have that $d(x_{i,j^\star},w)=\infty$, a contradiction.
+    Next, assume that $(20n+2)(i+j)<\lambda(\{x_1,v_{i,j}^{\star}\})<n^7+2$. Then there is a temporal path from $w$ to $v_{i,j}$ via $x_1$ with duration strictly less than $n^7-(20n+2)(i+j)+3$. However, we have that $d(w,v_{i,j}^\star)=n^7-(20n+2)(i+j)+3$, a contradiction.
     Finally, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})\ge n^7+2$. Consider a fastest temporal path from $x_1$ to $v_{i,j}^{\star\star}$. This temporal path cannot visit $w$ as its first vertex, since from there it cannot continue. It follows by \cref{claim:2} and the just made assumption that the first edge of the temporal path has a label of at least $n^7$. However, by \cref{claim:2,claim:3} we have that all edges incident with $v_{i,j}^{\star\star}$ have a label of at most $n^7+2$. It follows that $d(x_1,v_{i,j}^{\star\star})\le 3$, a contradiction.
 
-    We can conclude that $\lambda(\{x_1,v_{i,j}^{\star}\})=(2n+2)(i+j)$. Now let $1<\ell\le m$. We have that $d(x_1,x_\ell)=2n\cdot (i+j)\cdot(\ell-1)+1$ which implies that $\lambda(\{x_\ell,v_{i,j}^{\star}\})\ge (i+j)\cdot (2n\ell +2)$. Assume that $(i+j)\cdot (2n\ell 2) <\lambda(\{x_\ell,v_{i,j}^{\star}\})\le n^7+2$. Then the temporal path from $x_1$ to $x_\ell$ via $v_{i,j}^\star$ is not a fastest temporal path from $x_1$ to $x_\ell$. Again, we have that a fastest temporal path from $x_1$ to $x_\ell$ cannot visit $w$ as its first vertex, since from there it cannot continue. By \cref{claim:2}, all other edges incident with $x_1$ (that is, all different from the one to $v_{i,j}^\star$ and the one to $w$) have a label of at least $n^7$ and at most $n^7+2$. Similarly, by \cref{claim:2} we have that all other edges incident with $x_\ell$ (that is, all different from the one to $v_{i,j}^\star$) have a label of at least $n^7$ and at most $n^7+2$. It follows that any temporal path from $x_1$ to $x_\ell$ that visits $v_{i,j}^\star$ as its first vertex has a duration strictly larger than $2n\cdot (i+j)\cdot(\ell-1)+1$. Any temporal path from $x_1$ to $x_\ell$ that visits a vertex different from $v_{i,j}^\star$ as its first vertex has duration of at most $3$. In both cases we have a contradiction. 
+    We can conclude that $\lambda(\{x_1,v_{i,j}^{\star}\})=(20n+2)(i+j)$. Now let $1<\ell\le m$. We have that $d(x_1,x_\ell)=2n\cdot (i+j)\cdot(\ell-1)+1$ which implies that $\lambda(\{x_\ell,v_{i,j}^{\star}\})\ge (i+j)\cdot (2n\ell +18n+2)$. Assume that $(i+j)\cdot (2n\ell +18n+2) <\lambda(\{x_\ell,v_{i,j}^{\star}\})\le n^7+2$. Then the temporal path from $x_1$ to $x_\ell$ via $v_{i,j}^\star$ is not a fastest temporal path from $x_1$ to $x_\ell$. Again, we have that a fastest temporal path from $x_1$ to $x_\ell$ cannot visit $w$ as its first vertex, since from there it cannot continue. By \cref{claim:2}, all other edges incident with $x_1$ (that is, all different from the one to $v_{i,j}^\star$ and the one to $w$) have a label of at least $n^7$ and at most $n^7+2$. Similarly, by \cref{claim:2} we have that all other edges incident with $x_\ell$ (that is, all different from the one to $v_{i,j}^\star$) have a label of at least $n^7$ and at most $n^7+2$. It follows that any temporal path from $x_1$ to $x_\ell$ that visits $v_{i,j}^\star$ as its first vertex has a duration strictly larger than $2n\cdot (i+j)\cdot(\ell-1)+1$. Any temporal path from $x_1$ to $x_\ell$ that visits a vertex different from $v_{i,j}^\star$ as its first vertex has duration of at most $3$. In both cases we have a contradiction. 
     Lastly, assume that $\lambda(\{x_\ell,v_{i,j}^{\star}\})> n^7+2$. Consider a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$. Now this temporal path has duration at most 3 since by \cref{claim:2} and the just made assumption all edges incident with $x_\ell$ have label at least $n^7$ whereas by \cref{claim:2,claim:3} all edges incident with $v_{i,j}^{\star\star}$ have label at most $n^7+2$, a contradiction. 
 \end{claimproof}
 
 \begin{claim}\label{claim:5}
-    For all $1\le i<j\le k$ there exist a permutation $\sigma_{i,j}:[m]\rightarrow [m]$ such that for all $\ell\in[m]$ we have that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell) +2)+4n+2$, where $u_\ell^{2n}$ belongs to the edge selection gadget for $i,j$.
+    For all $1\le i<j\le k$ there exist a permutation $\sigma_{i,j}:[m]\rightarrow [m]$ such that for all $\ell\in[m]$ we have that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell) +18n+2)+4n+4$, where $u_\ell^{2n}$ belongs to the edge selection gadget for $i,j$.
+
+    Furthermore, a fastest temporal path from $x_\ell$ (of the edge selection gadget for $i,j$) to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex, and $u_{\ell'}^{2n}$ with $\sigma_{i,j}(\ell')=\ell$ (of the edge selection gadget for $i,j$) as its second last vertex.
 \end{claim}
 \begin{claimproof}
-    For every $\ell\in[m]$ we have that $d(x_\ell,v_{i,j}^{\star\star})=4n+3$, where $x_\ell$ belongs to the edge selection gadget for $i,j$. From \cref{claim:2,claim:4} follows that all edges incident with $x_\ell$ have a label of at least $n^7$ except the one to $v_{i,j}^\star$ and, if $\ell=1$, the edge connecting $x_1$ to the alignment gadget. In the latter case, no temporal path from $x_1$ from $v_{i,j}^{\star\star}$ can continue to the neighbor of $x_1$ in the alignment gadget, since it cannot continue from there.
+    For every $\ell\in[m]$ we have that $d(x_\ell,v_{i,j}^{\star\star})=4n+5$, where $x_\ell$ belongs to the edge selection gadget for $i,j$. From \cref{claim:2,claim:4} follows that all edges incident with $x_\ell$ have a label of at least $n^7$ except the one to $v_{i,j}^\star$ and, if $\ell=1$, the edge connecting $x_1$ to the alignment gadget. In the latter case, no temporal path from $x_1$ from $v_{i,j}^{\star\star}$ can continue to the neighbor of $x_1$ in the alignment gadget, since it cannot continue from there.
 
     Now consider $v_{i,j}^{\star\star}$. By \cref{claim:2,claim:3} we have that all edges incident with $v_{i,j}^{\star\star}$ have a label of at most $n^7+2$. It follows that a fastest temporal path $P$ from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $v_{i,j}^\star$ after $x_\ell$, since otherwise we have $d(x_\ell,v_{i,j}^{\star\star})\le 2$, a contradiction.
 
     Furthermore, we have by \cref{claim:2} that all edges incident with $v_{i,j}^{\star\star}$ have a label of at least $n^7$ except the ones to $u_{\ell'}^{2n}$ for $\ell'\in[m]$. By \cref{claim:4} we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})\le 4n^4$.
-    It follows that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $u_{\ell'}^{2n}$ for some $\ell'\in[m]$ as its second last vertex. Otherwise, we have $d(x_\ell,v_{i,j}^{\star\star})> 4n+3$ (for sufficiently large $n$), a contradiction.
+    It follows that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $u_{\ell'}^{2n}$ for some $\ell'\in[m]$ as its second last vertex. Otherwise, we have $d(x_\ell,v_{i,j}^{\star\star})> 4n+5$ (for sufficiently large $n$), a contradiction.
 
-    We can conclude that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $v_{i,j}^\star$ as its second vertex and $u_{\ell'}^{2n}$ for some $\ell'\in[m]$ as its second last vertex. Recall that in a  temporal path, the difference between the labels of the first and last edge determine its duration (minus one). Hence, we have that $\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})-\lambda(\{x_\ell,v_{i,j}^{\star}\})+1=4n+3$.
-    By \cref{claim:4} we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell +2)$. It follows that $\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\ell +2)+4n+2$. We set $\sigma_{i,j}(\ell')=\ell$.
+    We can conclude that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $v_{i,j}^\star$ as its second vertex and $u_{\ell'}^{2n}$ for some $\ell'\in[m]$ as its second last vertex. Recall that in a  temporal path, the difference between the labels of the first and last edge determine its duration (minus one). Hence, we have that $\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})-\lambda(\{x_\ell,v_{i,j}^{\star}\})+1=4n+5$.
+    By \cref{claim:4} we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell+18n +2)$. It follows that $\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\ell +18n+2)+4n+4$. We set $\sigma_{i,j}(\ell')=\ell$.
 
-    Finally, we show that $\sigma_{i,j}$ is a permutation on $[m]$. Assume for contradiction that there are $\ell,\ell'\in[m]$ with $\ell\neq \ell'$ such that $\sigma_{i,j}(\ell)=\sigma_{i,j}(\ell')$. Then we have that $\lambda(\{u_{\ell}^{2n},v_{i,j}^{\star\star}\})=\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})$. However, by \cref{claim:4} we have that all edges from $v_{i,j}$ to a vertex in $X_{i,j}$ have distinct labels. Furthermore, we argued above that every fastest path from a vertex in $X_{i,j}$ to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex and a vertex from the set $\{u_{\ell''}^{2n}\mid \ell''\in[m]\}$ as its second last vertex. Since for all $x_{\ell''}$ with $\ell''\in[m]$ we have that $d(x_{\ell''},v_{i,j}^{\star\star})=4n+3$, we must have that all edges from vertices in $\{u_{\ell''}^{2n}\mid \ell''\in[m]\}$ to $v_{i,j}^{\star\star}$ must have distinct labels. Hence, we have a contradiction and can conclude that $\sigma_{i,j}$ is indeed a permutation.
+    Finally, we show that $\sigma_{i,j}$ is a permutation on $[m]$. Assume for contradiction that there are $\ell,\ell'\in[m]$ with $\ell\neq \ell'$ such that $\sigma_{i,j}(\ell)=\sigma_{i,j}(\ell')$. Then we have that $\lambda(\{u_{\ell}^{2n},v_{i,j}^{\star\star}\})=\lambda(\{u_{\ell'}^{2n},v_{i,j}^{\star\star}\})$. However, by \cref{claim:4} we have that all edges from $v_{i,j}$ to a vertex in $X_{i,j}$ have distinct labels. Furthermore, we argued above that every fastest path from a vertex in $X_{i,j}$ to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex and a vertex from the set $\{u_{\ell''}^{2n}\mid \ell''\in[m]\}$ as its second last vertex. Since for all $x_{\ell''}$ with $\ell''\in[m]$ we have that $d(x_{\ell''},v_{i,j}^{\star\star})=4n+5$, we must have that all edges from vertices in $\{u_{\ell''}^{2n}\mid \ell''\in[m]\}$ to $v_{i,j}^{\star\star}$ must have distinct labels. Hence, we have a contradiction and can conclude that $\sigma_{i,j}$ is indeed a permutation.
 \end{claimproof}
 
 For all $1\le i<j\le k$, let $\sigma_{i,j}$ be the permutation on $[m]$ as defined in \cref{claim:5}. We call $\sigma_{i,j}$ the \emph{permutation of color combination $i,j$}. 
@@ -1328,11 +1473,21 @@ From now on, denote $\{e_{i,j}\}=X\cap F_{i,j}$. We show that for all $i\in [k]$
 Before we proceed, we show some further properties of $\lambda$. First, we have a closer look at the labels on edges of the edge selection gadgets.
 
 \begin{claim}\label{claim:6}
-    For all $1\le i<j\le k$,  $\ell\in[m]$, and $\ell'\in[2n]$ we have that $\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\})=(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell) +2)+2\ell'$, where $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ belong to the edge selection gadget for $i,j$ and $\sigma_{i,j}$ is the permutation of color combination $i,j$.
+    For all $1\le i<j\le k$,  $\ell\in[m]$, and $\ell'\in[2n]$ we have that $\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\})=(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell) +18n+2)+2\ell'+2$, where $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ belong to the edge selection gadget for $i,j$ and $\sigma_{i,j}$ is the permutation of color combination $i,j$.
 \end{claim}
 \begin{claimproof}
-    To do.
-\end{claimproof}
+    Let $1\le i<j\le k$ and $\ell\in[m]$.
+    By \cref{claim:5} we know that a fastest temporal path from $x_{\sigma_{i,j}(\ell)}$ (of the edge selection gadget for $i,j$) to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex, and $u_{\ell}^{2n}$ (of the edge selection gadget for $i,j$) as its second last vertex. 
+    Furthermore, by \cref{claim:4} we have that $\lambda(\{x_{\sigma_{i,j}(\ell)},v_{i,j}^{\star}\})=(i+j)\cdot (2n\cdot {\sigma_{i,j}(\ell)}+18n +2)$ and by \cref{claim:5} we have that $\lambda(\{u_\ell^{2n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell)+18n +2)+4n+4$. It follows that there exist a temporal path $P$ from $v_{i,j}^\star$ to $u_\ell^{2n}$ that starts at $v_{i,j}^\star$ later than $(i+j)\cdot (2n\cdot {\sigma_{i,j}(\ell)} +18n+2)$ and arrives at $u_\ell^{2n}$ earlier than $(i+j)\cdot (2n\cdot \sigma_{i,j}(\ell) +18n+2)+4n+4$. Hence, the temporal path $P$ has duration at most $4n+3$.
+
+    We investigate the temporal path $P$ from its destination $u_\ell^{2n}$ back to its start vertex $v_{i,j}^\star$. Consider the neighbors of $u_\ell^{2n}$ that are different from $v_{i,j}^{\star\star}$. By \cref{claim:2} we have that all edges from $u_\ell^{2n}$ to neighbors of $u_\ell^{2n}$ that are vertices of connector gadgets have a label of at least $n^7$. Hence, $P$ does not visit any of those neighbors. Next, consider neighbors of $u_\ell^{2n}$ is verification gadgets. Assume $u_\ell^{2n}$ has a neighbor in the verification gadget of color $i'$ for some $i'\in[k]$. Then this neighbor is vertex $b^{i',j,\ell}_{5n}$. Note that if $P$ visits $b^{i',j,\ell}_{5n}$, then it also visits all of $\{b^{i',j,\ell}_{\ell'}\mid \ell'\in[5n]\}$, since all these vertices have degree two. However, then $P$ would have a duration larger than $4n+3$. We can conclude that $P$ does not visit $b^{i',j,\ell}_{5n}$. It follows that $P$ visits $u_\ell^{2n-1}$.
+    Here, we can make an analogous investigation. Additionally, we have to consider the case that $P$ visits a neighbor of $u_\ell^{2n-1}$ in verification gadget of color $i'$ for some $i'\in[k]$ that is vertex $a^{i',j,\ell}_{5n}$. However, we can exclude this by a similar argument as above. 
+
+    By repeating the above arguments, we can conclude that $P$ visits (exactly) all vertices in $\{u_\ell^{2n-1}\mid 0\le \ell'\le 2n\}$ and $v_{i,j}^\star$.
+    Consider the second connector gadget of the edge selection gadget of $i,j$ with set $A$ and $B$. Note that all vertices visited by $P$ are contained in $A\setminus B$. It follows that all pairs of non-adjacent vertices visited by $P$ have distance $3$. In particular, we have $d(u_\ell^{\ell'-1},u_\ell^{\ell'+1})=3$ for all $\ell'\in[2n-1]$ and $d(v_{i,j}^\star,u_\ell^{1})=3$. If follows that for every $\ell'\in[2n-1]$ we have that $\lambda(\{u_\ell^{\ell'},u_\ell^{\ell'+1}\})-\lambda(\{u_\ell^{\ell'-1},u_\ell^{\ell'}\})\ge 2$ and $\lambda(\{u_\ell^{1},u_\ell^{2}\})-\lambda(\{v_{i,j}^\star,u_\ell^{1}\})\ge 2$. 
+
+    By investigating the sets $A,B$ of the first connector gadget of $i,j$, we get that $d(x_{\sigma_{i,j}(\ell)},u_\ell^{1})=3$ and hence $\lambda(\{v_{i,j}^\star,u_\ell^{1}\})-\lambda(\{x_{\sigma_{i,j}(\ell)},v_{i,j}^\star\})\ge 2$. Furthermore, we get that $d(u_\ell^{2n-1},v_{i,j}^{\star\star})=3$ and hence $\lambda(\{v_{i,j}^{\star\star},u_\ell^{2n}\})-\lambda(\{u_\ell^{2n-1},u_\ell^{2n}\})\ge 2$. Considering that $P$ visits $2n+2$ vertices, we have that all mentioned inequalities of differences of labels have to be equalities, otherwise $P$ has a duration larger than $4n+3$ or we have that $\lambda(\{v_{i,j}^\star,u_\ell^{1}\})-\lambda(\{x_{\sigma_{i,j}(\ell)},v_{i,j}^\star\})< 2$ or $\lambda(\{v_{i,j}^{\star\star},u_\ell^{2n}\})-\lambda(\{u_\ell^{2n-1},u_\ell^{2n}\})< 2$. Since by \cref{claim:4,claim:5} the labels $\lambda(\{x_{\sigma_{i,j}(\ell)},v_{i,j}^\star\})$ and $\lambda(\{v_{i,j}^{\star\star},u_\ell^{2n}\})$ determined, all labels of edges traversed by $P$ are also determined and the claim follows.
+    \end{claimproof}
 
 Now, we investigate the labels of the verification gadgets.
 
@@ -1346,18 +1501,23 @@ Now, we investigate the labels of the verification gadgets.
 \begin{claim}\label{claim:8}
     %Let $i\in[k]$ %and $i<j\le k$ (resp.\ $1\le j< i$) 
     %and let $u^\ell_{\ell'}$ be a vertex of the edge selection gadget of color combination $1,i$ (or $1,2$ if $i=1$) for some $\ell\in[m]$ and $0\le\ell'\le 2n$ that is adjacent to vertex $v_0^i$ (of the verification gadget for color $i$). 
-    For all $1<i\le k$ and all $\ell\in[m]$ we have that $\lambda(\{v_0^i,a^{i,1,\ell}_{1})\le n^6$ or $\lambda(\{v_0^i,a^{i,1,\ell}_{1}\})\ge n^7+2$.
-    For all $i=1$ and all $\ell\in[m]$ we have that $\lambda(\{v_0^i,a^{i,2,\ell}_{1})\le n^6$ or $\lambda(\{v_0^i,a^{i,2,\ell}_{1}\})\ge n^7+2$.
+    For all $1<i\le k$ and all $\ell\in[m]$ we have that $\lambda(\{v_0^i,a^{i,1,\ell}_{1}\})\le n^6$ or $\lambda(\{v_0^i,a^{i,1,\ell}_{1}\})\ge n^7+2$.
+    For all $i=1$ and all $\ell\in[m]$ we have that $\lambda(\{v_0^i,a^{i,2,\ell}_{1}\})\le n^6$ or $\lambda(\{v_0^i,a^{i,2,\ell}_{1}\})\ge n^7+2$.
 \end{claim}
 \begin{claimproof}
-    Let $1<i\le k$ and $\ell\in[m]$. Assume that $n^6<\lambda(\{v_0^i,a^{i,1,\ell}_{1})< n^7+2$. The there is a temporal path from $w^\star$ to $a^{i,1,\ell}_{1}$ via $v_0^i$ that arrives at $a^{i,1,\ell}_{1}$ strictly earlier than $n^7+2$. However, we have $d(w^\star,a^{i,1,\ell}_{1})=n^7+2$, a contradiction. The argument for case where $i=1$ is analogous.
+    Let $1<i\le k$ and $\ell\in[m]$. Assume that $n^6<\lambda(\{v_0^i,a^{i,1,\ell}_{1}\})< n^7+2$. Then, since by \cref{claim:7} we have $\lambda(\{y^i,v_0^i\})=n^6$, there is a temporal path from $w^\star$ to $a^{i,1,\ell}_{1}$ via $v_0^i$ that arrives at $a^{i,1,\ell}_{1}$ strictly earlier than $n^7+2$. However, we have $d(w^\star,a^{i,1,\ell}_{1})=n^7+2$, a contradiction. The argument for case where $i=1$ is analogous.
 \end{claimproof}
 
 \begin{claim}\label{claim:9}
-    Let $i\in[k]$ and $i<j\le k$ (resp.\ $1\le j< i$) and let $u^\ell_{\ell'}$ be a vertex of the edge selection gadget of color combination $i,j$ (resp.\ $j,i$) for some $\ell\in[m]$ and $0\le\ell'\le 2n$ that is adjacent to vertex $v_k^i$ (of the verification gadget for color $i$). Then we have that $\lambda(\{v_k^i,u^\ell_{\ell'}\})\le n^7+2$.
+    For all $1\le i< k$ and all $\ell\in[m]$ we have that $\lambda(\{v_k^i,b^{i,k,\ell}_{1}\})\le n^7+2$.
+    For all $i=k$ and all $\ell\in[m]$ we have that $\lambda(\{v_{k-1}^i,b^{i,k-1,\ell}_{1}\})\le n^7+2$.
+%
+    %Let $i\in[k]$ and $i<j\le k$ (resp.\ $1\le j< i$) and let $u^\ell_{\ell'}$ be a vertex of the edge selection gadget of color combination $i,j$ (resp.\ $j,i$) for some $\ell\in[m]$ and $0\le\ell'\le 2n$ that is adjacent to vertex $v_k^i$ (of the verification gadget for color $i$). Then we have that $\lambda(\{v_k^i,u^\ell_{\ell'}\})\le n^7+2$.
 \end{claim}
 \begin{claimproof}
-    To do.
+    Let $1\le i< k$ and $\ell\in[m]$.
+    Consider the first connector gadget of verification gadget for color $i$ with vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and sets $A,B$. Recall that $v_k^i\in B$ and hence we have that $d(\hat{v}_0,v_k^i)=\infty$. Furthermore, we have that $b^{i,k,\ell}_{1}\notin B$ and hence $d(\hat{v}_0,b^{i,k,\ell}_{1})=3$. By \cref{claim:2} and the fact that $d(w^\star,\hat{v}_0)=n^7$ we have that both edges incident with $\hat{v}_0$ have label $n^7$. It follows that a fastest temporal path from $\hat{v}_0$ to $b^{i,k,\ell}_{1}$ arrives at $b^{i,k,\ell}_{1}$ at time $n^7+2$. Now assume for contradiction that $\lambda(\{v_k^i,b^{i,k,\ell}_{1}\})> n^7+2$. Then there exists a temporal walk from $\hat{v}_0$ to $v_k^i$ via $b^{i,k,\ell}_{1}$, a contradiction to $d(\hat{v}_0,v_k^i)=\infty$.
+    The argument for case where $i=k$ is analogous.
 \end{claimproof}
 
 Now we are ready to prove for all $i\in [k]$ that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|=1$. Assume for contradiction that for some color $i\in[k]$ we have that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|\neq 1$. 
