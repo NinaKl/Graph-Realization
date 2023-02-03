@@ -985,7 +985,7 @@ We now verify that all distances are realized.
 
 \section{W[1]-hardness}
 \begin{theorem}\label{thm:W1wrtFVS}
-    \deltaExactLong\ is W[1]-hard parameterized by the feedback vertex number.
+    \deltaExactLong\ is W[1]-hard when parameterized by the feedback vertex number.
 \end{theorem}
 \begin{proof}
     We present a parameterized reduction from the W[1]-hard problem \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval}.  Here, given a $k$-partite graph $H=(W_1\uplus W_2 \uplus\ldots\uplus W_k, F)$, we are asked whether $H$ contains a clique of size $k$. If $w\in W_i$, then we say that $w$ has \emph{color} $i$. W.l.o.g.\ we assume that $|W_1|=|W_2|=\ldots=|W_k|=n$ and that every vertex has at least one neighbor of every color. 
@@ -993,7 +993,9 @@ We now verify that all distances are realized.
     Let $F_{i,j}$ with $i<j$ denote the set of all edges between vertices from $W_i$ and $W_j$. We assume w.l.o.g.\ that $|F_{i,j}|=m$ for all $i< j$.
     Furthermore, for all $i<j$ we assume that the edges in $F_{i,j}$ are ordered in some arbitrary but fixed way, that is, $F_{i,j}=\{e^{i,j}_1,e^{i,j}_2,\ldots,e^{i,j}_m\}$.
 
-    Given an instance $H$ of \textsc{Multicolored Clique}, we construct an instance $D$ of \deltaExactLong\ as follows. To ease the presentation, we first describe the underlying graph $G$ that is implicitly defined by the entries $D_{v,v'}=1$, that is, the pairs of vertices $v,v'$ that should be connected by a temporal path of duration one, meaning that there needs to an edge connecting the two vertices. Afterwards, we describe the remaining entries of $D$.
+We give a reduction to a variant of \deltaExactLong\ where the period $\Delta$ is infinite (that is, there are no periods) and we allow $D$ to have infinity entries, meaning that the two respective vertices are not temporally connected. At the end of the proof we show how to obtain the result for finite $\Delta$ and a distance matrix $D$ that only has integer entries.
+
+    Given an instance $H$ of \textsc{Multicolored Clique}, we construct an instance $D$ of \deltaExactLong\ (with infinity entries and no periods) as follows. To ease the presentation, we first describe the underlying graph $G$ that is implicitly defined by the entries $D_{v,v'}=1$, that is, the pairs of vertices $v,v'$ that should be connected by a temporal path of duration one, meaning that there needs to an edge connecting the two vertices. Afterwards, we describe the remaining entries of $D$.
     We will construct $G$ using several gadgets. 
     
     \subparagraph{Edge Selection Gadget.} We first introduce an \emph{edge selection gadget for color combination $i,j$} with $i<j$. We start with describing the vertex set of the gadget.
@@ -1016,9 +1018,9 @@ We now verify that all distances are realized.
     
     \subparagraph{Verification Gadget.} For each color $i$, we introduce the following vertices. What we describe in the following will be used as a \emph{verification gadget for color $i$}.
     \begin{itemize}
-        \item We have one vertex $y^i$, one vertex $v^i_0$, and $k-1$ vertices $v^i_\ell$ for $\ell\in[k]\setminus\{i\}$.
+        \item We have one vertex $y^i$ and $k+1$ vertices $v^i_\ell$ for $0\le \ell\le k$.
         \item For every $\ell\in[m]$ and every $j\in[k]\setminus\{i\}$ we have $5n$ vertices $a^{i,j,\ell}_1,a^{i,j,\ell}_2,\ldots,a^{i,j,\ell}_{5n}$ and $5n$ vertices $b^{i,j,\ell}_1,b^{i,j,\ell}_2,\ldots,b^{i,j,\ell}_{5n}$.
-        \item If $1\neq i\neq k$, then we have a set $\hat{U}_i$ of $n+3$ additional vertices $\hat{u}^i_1,\hat{u}^i_2,\ldots,\hat{u}^i_{n+3}$.
+        \item We have a set $\hat{U}_i$ of $11n$ vertices $\hat{u}^i_1,\hat{u}^i_2,\ldots,\hat{u}^i_{11n}$.
     \end{itemize}
     We add the following edges. We add edge $\{y^i,v^i_0\}$.
     %For every $j\in[k]\setminus\{i,i+1\}$ and every $\ell\in[m]$ we add edge $\{v^i_{j-1},\hat{u}^{i,j,\ell}_1\}$. For every $\ell\in[m]$ we add edge $\{\hat{u}^i_{n+3},\hat{u}^{i,i+1,\ell}_1\}$.
@@ -1029,11 +1031,11 @@ We now verify that all distances are realized.
     Let $1\le j<i$ (skip if $i=1$), let $e_\ell^{j,i}\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{j,i}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and we add edge $\{a^{i,j,\ell}_{5n},u^\ell_{\ell'-1}\}$ between $a^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{\ell'-1}$ of the edge selection gadget of color combination $j,i$.
     Furthermore, we add edge $\{v_{j}^i,b^{i,j,\ell}_{1}\}$ and edge $\{b^{i,j,\ell}_{5n},u^\ell_{\ell'}\}$ between $b^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $j,i$.
 
-    If $1\neq i\neq k$, then we add edge $\{v^i_{i-1},\hat{u}^i_1\}$ and for all $\ell\in[n+2]$ we add edge $\{\hat{u}^i_\ell,\hat{u}^i_{\ell+1}\}$. 
-    Let $e_\ell^{i,i+1}\in F_{i,i+1}$ and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,i+1}$. If $i\neq 1\neq k$, then we add edge $\{\hat{u}^i_{n+3},a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$. If $i=1$, then we add edge $\{v^i_0,a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$.
-Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1,\ell}_{5n},u^\ell_{\ell'}\}$ between $b^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $i,i+1$.
+    We add edge $\{v^i_{i-1},\hat{u}^i_1\}$ and for all $\ell\in[11n-1]$ we add edge $\{\hat{u}^i_\ell,\hat{u}^i_{\ell+1}\}$. Furthermore, we add edge $\{\hat{u}^i_{11n},v^i_i\}$. 
+    %Let $e_\ell^{i,i+1}\in F_{i,i+1}$ and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,i+1}$. If $i\neq 1\neq k$, then we add edge $\{\hat{u}^i_{n+3},a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$. If $i=1$, then we add edge $\{v^i_0,a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$.
+%Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1,\ell}_{5n},u^\ell_{\ell'}\}$ between $b^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $i,i+1$.
 
-    Let $i+1<j\le k$ (skip if $i=k$), let $e_\ell^{i,j}\in F_{i,j}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,j}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and edge $\{a^{i,j,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,j$.
+    Let $i<j\le k$ (skip if $i=k$), let $e_\ell^{i,j}\in F_{i,j}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,j}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and edge $\{a^{i,j,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,j$.
     Furthermore, we add edge $\{v_{j}^i,b^{i,j,\ell}_{1}\}$ and edge $\{b^{i,j,\ell}_{5n},u^\ell_{n+\ell'}\}$ between $b^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'}$ of the edge selection gadget of color combination $i,j$.
 
 
@@ -1067,11 +1069,11 @@ Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1
     The \emph{first connector gadget for the verification gadget of color $i$} has the following sets.
     \begin{itemize}
         %\item Set $A$ contains all vertices of the verification gadget. % and all vertices from edge selection gadgets that are neighbor of a vertex in the verification gadget.
-        \item Sets $A$ and $B$ contain all vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_{n+3}$ (if exists).
+        \item Sets $A$ and $B$ contain all vertices $v^i_\ell$ with $0\le \ell\le k$.
     \end{itemize}
 The \emph{second connector gadget for the verification gadget of color $i$} has the following sets.
     \begin{itemize}
-        \item Set $A$ contains all vertices of the verification gadget except vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_{n+3}$ (if exists).
+        \item Set $A$ contains all vertices of the verification gadget except vertices $v^i_\ell$ with $0\le \ell \le k$.
         \item Set $B$ is empty.
     \end{itemize}
 
@@ -1081,7 +1083,7 @@ The vertex $x_1$ of each edge selection gadget is connected to exactly one verte
 \subparagraph{Feedback Vertex Number.} This finished the description of the underlying graph $G$. For an illustration see \cref{fig:hardness1}. We can observe that the vertex set containing
 \begin{itemize}
     \item vertices $v_{i,j}^\star$ and $v_{i,j}^{\star\star}$ of each edge selection gadget,
-    \item vertices $v^i_\ell$ with $\ell\in\{0,1,\ldots,i-1,i+1,\ldots,k\}$ and vertex $\hat{u}^i_{n+3}$ (if exists) of each verification gadget.
+    \item vertices $v^i_\ell$ with $0\le \ell\le k$ of each verification gadget.
     \item vertices $\hat{v}_1$ and $\hat{v}_2$ of each connector gadget, and
     \item vertex $w^\star$ of the alignment gadget
 \end{itemize}
@@ -1117,30 +1119,29 @@ Next, consider the validation gadget for color $i$.
     %\item We set $d(w^i_{\ell'},v^i_{j})=3$.
 %\end{itemize}
 %
-For all $0\le j<j'<i$ and all $i<j<j'\le k$ we set the following.
+For all $0\le j<j'<i$ and all $i\le j<j'\le k$ we set the following.
 \begin{itemize}
     \item We set $d(v^i_j,v^i_{j'})=(20n+2)(j'-j)-1$.
 \end{itemize}
-The next cases are only relevant if $1\neq i \neq k$. 
-For all $0\le j<i$ %and $\ell\in[n+3]$ 
-we set the following.
-\begin{itemize}
-    \item We set $d(v^i_j,\hat{u}^i_{n+3})=(20n+2)(i-j-1)+2n+5$.
-\end{itemize}
+%The next cases are only relevant if $1\neq i \neq k$. 
+%For all $0\le j<i$ %and $\ell\in[n+3]$ we set the following.
+%\begin{itemize}
+%    \item We set $d(v^i_j,\hat{u}^i_{n+3})=(20n+2)(i-j-1)+2n+5$.
+%\end{itemize}
 %For all $\ell,\ell'\in[n+3]$ with $\ell<\ell'$ we set the following.
 %\begin{itemize}
 %    \item We set $d(\hat{u}^i_{\ell},\hat{u}^i_{\ell'})=2(\ell'-\ell)-1$.
 %\end{itemize}
-For all $0\le j<i$ and all $i<j'\le k$ we set the following.
+For all $0\le j<i$ and all $i\le j'\le k$ we set the following.
 \begin{itemize}
-    \item We set $d(v^i_j,v^i_{j'})=(20n+2)(j'-j)+2n+5$.
+    \item We set $d(v^i_j,v^i_{j'})=(20n+2)(j'-j)+2n-1$.
 \end{itemize}
-For all 
+%For all 
 %$\ell\in[n+3]$ and 
-$i<j\le k$ we set the following.
-\begin{itemize}
-    \item We set $d(\hat{u}^i_{n+3},v^i_j)=(20n+2)(j-i)-1$.
-\end{itemize}
+%$i<j\le k$ we set the following.
+%\begin{itemize}
+%    \item We set $d(\hat{u}^i_{n+3},v^i_j)=(20n+2)(j-i)-1$.
+%\end{itemize}
 
 Finally, we consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$ and let $w\in \hat{W}$ denote the neighbor of $x_1$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the first connector gadget of the edge selection gadget for color combination $i,j$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the first one of the edge selection gadget for color combination $i,j$). 
 \begin{itemize}
@@ -1288,7 +1289,7 @@ All distances between non-adjacent vertex pairs that are not specified above are
     \node[vert,label=right:$\hat{u}_{1}^j$] (UI1) at (5,-16) {};
     \node[vert,label=right:$\hat{u}_{2}^j$] (UI2) at (5,-18) {};
     \node (A) at (5,-19.5) {$\vdots$};
-    \node[vert,label=right:$\hat{u}_{n+3}^j$, fill=gray] (UIN3) at (5,-21) {};
+    \node[vert,label=right:$v_{j}^j$, fill=gray] (UIN3) at (5,-21) {};
     \node (A) at (5,-22.5) {$\vdots$};
     \node[vert,label=right:$v_{k}^j$, fill=gray] (VIK) at (5,-24) {};
     
@@ -1502,7 +1503,7 @@ Now, we investigate the labels of the verification gadgets.
     %Let $i\in[k]$ %and $i<j\le k$ (resp.\ $1\le j< i$) 
     %and let $u^\ell_{\ell'}$ be a vertex of the edge selection gadget of color combination $1,i$ (or $1,2$ if $i=1$) for some $\ell\in[m]$ and $0\le\ell'\le 2n$ that is adjacent to vertex $v_0^i$ (of the verification gadget for color $i$). 
     For all $1<i\le k$ and all $\ell\in[m]$ we have that $\lambda(\{v_0^i,a^{i,1,\ell}_{1}\})\le n^6$ or $\lambda(\{v_0^i,a^{i,1,\ell}_{1}\})\ge n^7+2$.
-    For all $i=1$ and all $\ell\in[m]$ we have that $\lambda(\{v_0^i,a^{i,2,\ell}_{1}\})\le n^6$ or $\lambda(\{v_0^i,a^{i,2,\ell}_{1}\})\ge n^7+2$.
+    For $i=1$ we have that $\lambda(\{v_0^i,\hat{u}^i_1\})\le n^6$ or $\lambda(\{v_0^i,\hat{u}^i_1\})\ge n^7+2$.
 \end{claim}
 \begin{claimproof}
     Let $1<i\le k$ and $\ell\in[m]$. Assume that $n^6<\lambda(\{v_0^i,a^{i,1,\ell}_{1}\})< n^7+2$. Then, since by \cref{claim:7} we have $\lambda(\{y^i,v_0^i\})=n^6$, there is a temporal path from $w^\star$ to $a^{i,1,\ell}_{1}$ via $v_0^i$ that arrives at $a^{i,1,\ell}_{1}$ strictly earlier than $n^7+2$. However, we have $d(w^\star,a^{i,1,\ell}_{1})=n^7+2$, a contradiction. The argument for case where $i=1$ is analogous.
@@ -1510,7 +1511,7 @@ Now, we investigate the labels of the verification gadgets.
 
 \begin{claim}\label{claim:9}
     For all $1\le i< k$ and all $\ell\in[m]$ we have that $\lambda(\{v_k^i,b^{i,k,\ell}_{1}\})\le n^7+2$.
-    For all $i=k$ and all $\ell\in[m]$ we have that $\lambda(\{v_{k-1}^i,b^{i,k-1,\ell}_{1}\})\le n^7+2$.
+    For $i=k$ we have that $\lambda(\{v_{k}^i,\hat{u}^i_{11n}\})\le n^7+2$.
 %
     %Let $i\in[k]$ and $i<j\le k$ (resp.\ $1\le j< i$) and let $u^\ell_{\ell'}$ be a vertex of the edge selection gadget of color combination $i,j$ (resp.\ $j,i$) for some $\ell\in[m]$ and $0\le\ell'\le 2n$ that is adjacent to vertex $v_k^i$ (of the verification gadget for color $i$). Then we have that $\lambda(\{v_k^i,u^\ell_{\ell'}\})\le n^7+2$.
 \end{claim}
@@ -1521,9 +1522,70 @@ Now, we investigate the labels of the verification gadgets.
 \end{claimproof}
 
 Now we are ready to prove for all $i\in [k]$ that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|=1$. Assume for contradiction that for some color $i\in[k]$ we have that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|\neq 1$. 
-Consider the verification gadget for color $i$. We first consider the case that $1\neq i\neq k$.
+Consider the verification gadget for color $i$. Recall that $d(v_0^i,v_k^i)=k(20n+2)+2n-1$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$.
+We first argue that $P$ cannot visit any vertex of a connector gadget or the alignment gadget. 
+
+\begin{claim}\label{claim:10}
+Let $i\in[k]$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$. Then $P$ does not visit any vertex of a connector gadget.
+\end{claim}
+\begin{claimproof}
+Assume for contradiction that $P$ visits a vertex of a connector gadget. Then by \cref{claim:2} we have that the arrival time of $P$ is at least $n^7$. By \cref{claim:2} and \cref{claim:9} we have that the arrival time of $P$ is at most $n^7+2$. This means that the second vertex visited by $P$ cannot be a vertex from a connector gadget, because by \cref{claim:2} this would imply $d(v_0^i,v_k^i)\le 2$. Now we can deduce with \cref{claim:8} that $P$ must have a starting time of at most $n^6$. It follows that the arrival time of $P$ must be smaller than $n^7$, a contradiction to the assumption that $P$ visits a vertex of a connector gadget. 
+\end{claimproof}
+
+\begin{claim}\label{claim:11}
+Let $i\in[k]$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$. Then $P$ does not visit any vertex of the alignment gadget.
+\end{claim}
+\begin{claimproof}
+    Note that $P$ starts outside the alignment gadget. This means that if $P$ visits a vertex of the alignment gadget, then the first vertex of the alignment gadget visited by $P$ is a neighbor of $w^\star$. However, these vertices have degree two and the edge to $w^\star$ has label one. It follows that $P$ cannot continue from the vertex of the alignment gadget, a contradiction.
+\end{claimproof}
+
+It follows that the second vertex visited by $P$ is a vertex $a^{i,1,\ell}_{1}$ for some $\ell\in[m]$ or vertex $\hat{u}_1^i$ if $i=1$. In the former case, $P$ has to follow the path segment consisting of vertices in $\{a^{i,1,\ell}_{\ell'}\mid \ell'\in[5n]\}$ until it reaches the edge selection gadget of color combination $1,i$. From there it can reach vertex $v_1^i$ by traversing some path segment consisting of vertices $\{b^{i,1,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$. Alternatively, it can reach vertex $v^1_{i-1}$ or $v^1_{i}$ by traversing some path segment consisting of vertices $\{a^{1,i,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$ or $\{b^{1,i,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$, respectively. In the latter case ($i=1$), the temporal path $P$ has to follow the path segment consisting of vertices in $\{\hat{u}^i_\ell\mid \ell\in[11n]\}$ until it reaches $v^i_1$. More generally, we can make the following observation.
+\begin{claim}\label{claim:12}
+    Let $i,j\in\{0,1,\ldots,k\}$. Let $P$ be a temporal path starting at $v^i_j$ and visiting at most $11n+3$ vertices and no vertex of a connector gadget or the alignment gadget. Then $P$ cannot visit vertices in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$.
+\end{claim}
+\begin{claimproof}
+    Consider the edge selection gadget of color combination $i',j'$ for some $i',j'\in[k]$ and let $u^\ell_{\ell'}$ be a vertex of that gadget. Disregarding connections via connector gadgets and the alignment gadget, we have that $u^\ell_{\ell'}$ is (potentially) connected to the verification gadget for color $i'$ and the verification gadget of color $j'$.
+    More specifically, by construction of $G$, we have that $u^\ell_{\ell'}$ is potentially connected to 
+    \begin{itemize}
+        \item vertex $v^{i'}_{j'-1}$ by a path along vertices $\{a^{i',j',\ell}_{\ell''}\mid \ell''\in[5n]\}$,
+        \item vertex $v^{i'}_{j'}$ by a path along vertices $\{b^{i',j',\ell}_{\ell''}\mid \ell''\in[5n]\}$, 
+        \item vertex $v^{j'}_{i'-1}$ by a path along vertices $\{a^{j',i',\ell}_{\ell''}\mid \ell''\in[5n]\}$, and
+        \item vertex $v^{j'}_{i'}$ by a path along vertices $\{b^{j',i',\ell}_{\ell''}\mid \ell''\in[5n]\}$.
+    \end{itemize}
+    Furthermore, by construction of $G$, we have that the distance of $u^\ell_{\ell'}$ to any $v^{i''}_{j''}$ with $i'',j''\in\{0,1,\ldots,k\}$ not mentioned above is at least $10n$ (disregarding edges incident with connector gadgets or the alignment gadget).
+
+    Now consider $v^i_j$ and assume $i<j$ ($i>j$). This vertex is (if $j\neq i-1$ and $j\neq k$) connected to some vertex $u^\ell_{\ell'}$ in the edge selection gadget for color combination $i,j+1$ ($j+1,i$) via a path along vertices $\{a^{i,j,\ell}_{\ell''}\mid \ell''\in[5n]\}$. Furthermore, $v^i_j$ is (if $j\neq 0$ and $j\neq i$) connected to some vertex $u^{\ell'}_{\ell'''}$ in the edge selection gadget for color combination $i,j$ ($j,i$) via a path along vertices $\{b^{i,j,\ell'}_{\ell''}\mid \ell''\in[5n]\}$.
+
+    We can conclude that $v^i_j$ can reach a vertex $u^\ell_{\ell'}$ of the edge selection gadget for $i,j+1$ (or $j+1,i$) and a vertex $u^{\ell'}_{\ell'''}$ of the edge selection gadget for color combination $i,j$ (or $j,i$), each along paths of length at least $5n$. From $u^\ell_{\ell'}$ and $u^{\ell'}_{\ell'''}$ we have that any other vertex of the edge selection gadget for $i,j+1$ (or $j+1,i$) and the edge selection gadget for color combination $i,j$ (or $j,i$), respectively, can be reached by a path of length at most $n+3$. Together with the observation made in the beginning of the proof, we can conclude that $v^i_j$ can potentially reach any vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ by a path that visits at most $11n+3$ vertices. 
+    
+    Lastly, consider the case that $j=i-1$ or $j=i$. Then we have that $v^i_{i-1}$ and $v^i_i$ are connected via a path inside the verification gadget for color $i$, visiting the $11n$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[11n]\}$. The claim follows.
+\end{claimproof}
+Furthermore, we can make the following observation on the duration of the temporal paths characterized in \cref{claim:12}.
+\begin{claim}\label{claim:13}
+    Let $i,j\in\{0,1,\ldots,k\}$. Let $P$ be a temporal path from $v^i_j$ to a vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ and visiting no vertex of a connector gadget or the alignment gadget. Then $P$ has duration at least $20n$.
+\end{claim}
+\begin{claimproof}
+    As argued in the proof of \cref{claim:11}, a temporal path $P$ from $v^i_j$ to a vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ has to either traverse two segments of $5n$ vertices in $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ or $\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$ and $i',j'\in\{i-1,i,j,j+1\}$ or a segment of the $11n$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[11n]\}$. We analyse the former case first.
+    
+    Consider the second connector gadget of a verification gadget $i'$ with sets $A,B$, we have that all vertices $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}\cup\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}$ are contained in $A$ and are not contained in $B$. It follows that all non-adjacent pairs of vertices in $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}\cup\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}$ have distance (according to $D$) three. It follows that $|\lambda(\{a^{i',j',\ell}_{\ell'},a^{i',j',\ell}_{\ell'+1}\})-\lambda(\{a^{i',j',\ell}_{\ell'+1},a^{i',j',\ell}_{\ell'+2}\})|\ge 2$ for all $\ell'\in[5n-2]$ and $j'\in[k]\setminus\{i'\}$. Analogously, we have that $|\lambda(\{b^{i',j',\ell}_{\ell'},b^{i',j',\ell}_{\ell'+1}\})-\lambda(\{b^{i',j',\ell}_{\ell'+1},b^{i',j',\ell}_{\ell'+2}\})|\ge 2$ for all $\ell'\in[5n-2]$ and $j'\in[k]\setminus\{i'\}$. It follows that two segments of $5n$ vertices in $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ or $\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$ and $i',j'\in\{i-1,i,j,j+1\}$ traversed by $P$ both have duration $10n$ and hence $P$ has duration at least $20n$.
+
+    In the latter case, where $P$ traverses a segment of the $11n$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[11n]\}$, we can make an analogous argument, since all vertices in $\{\hat{u}^i_\ell\mid \ell\in[11n]\}$ are contained in the set $A$ of the second connector gadget of the verification gadget of color $i$ but not in the set $B$ of that connector gadget.
+\end{claimproof}
+
+Recall that $P$ denotes a fastest temporal path from $v_0^i$ to $v_k^i$ and that $d(v_0^i,v_k^i)=k(20n+2)+2n-1$. By \cref{claim:10,claim:11,claim:12} he have that $P$ needs to visit at least one vertex in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^i_0,v^i_k\}$. Next, we analyse which vertices in this set are visited by $P$.
+
+\begin{claim}\label{claim:14}
+Let $i\in[k]$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$. Then $P$ visits all vertices in $\{v^j_i\mid 0\le j\le k\}$ and no vertex in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^j_i\mid 0\le j\le k\}$.
+\end{claim}
+\begin{claimproof}
+    To do.
+\end{claimproof}
+
+Now we have by \cref{claim:12,claim:14} that we can divide $P$ into $k$ segments, the subpaths from $v^i_{j-1}$ to $v^i_j$ for $j\in [k]$. We show that all subpaths except the one from $v_{i-1}^i$ to $v_i^i$ have duration $20n+1$. The subpath from $v_{i-1}^i$ to $v_i^i$ has duration $22n+1$. To do.
 
 \subparagraph{$(\Leftarrow)$:} Assume $H$ is a yes-instance of \textsc{Multicolored Clique} and let $X$ be a solution. To do.
+
+\subparagraph{Infinity Gadget.} Finally, we show how to get rid of the infinity entries in $D$ and how to allow a finite $\Delta$. To this end, we introduce the \emph{infinity gadget}. To do.
 \end{proof}
 
 
