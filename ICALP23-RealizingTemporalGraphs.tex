@@ -217,8 +217,8 @@ what is the smallest number $|\lambda|$ of time-labels that we need to add to th
 
 Graph realization problems are fundamental graph-algorithmic questions where the objective is to (re)construct a graph, 
 given some constraints on some of its graph attributes. Among the most well studied such parameters for graph reconstruction 
-are the vertex degrees~\cite{}, distances~\cite{}, eccentricities~\cite{}, connectivity~\cite{}, etc. 
-The motivation for network realization problems stems from both ``verification'' applications where we attempt to reconstruct an existing network of unknown structure based on the outcomes of experimental measurements, and engineering applications related to network design~\cite{.....}. 
+are the vertex degrees~\cite{cai2000solution,rfgh611961hu,hakimi1962realizability,barNoy2019graphRealizations,barNoy2021selected}, distances~\cite{barNoy2022GraphRealization,barNoy2021composed,hakimi1965distance}, eccentricities~\cite{barNoy2020efficiently,hell2009linear}, connectivity~\cite{fulkerson1960zero,frank1992augmenting,chen1966realization,erdos1960graphs}, etc. 
+The motivation for network realization problems stems from both ``verification'' applications where we attempt to reconstruct an existing network of unknown structure based on the outcomes of experimental measurements, and engineering applications related to network design~\cite{augustine2022distributed}. 
 
 SKELETON:
 \begin{itemize}
@@ -259,7 +259,7 @@ where $G=(V,E)$ is an underlying (static) graph and $\lambda :E\rightarrow 2^\ma
 Let $G=(V,E)$ and $\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ be an edge-labeling function that assigns to every edge of $G$ one of the labels from $\{1,\ldots,\Delta\}$. 
 Then we denote by $(G,\lambda,\Delta)$ the \emph{$\Delta$-periodic temporal graph} $(G,\lambda_{\Delta})$, where for every edge $e\in E$ we have $\lambda_{\Delta}(e)=\{i\Delta + x : i\geq 0, x\in \lambda(e)\}$. 
 In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of $G$.
-When it is clear from the context, we drop $\Delta$ form the notation and say that $(G,\lambda)$ is $\Delta$ periodic temporal graph.
+When it is clear from the context, we drop $\Delta$ form the notation and say that $(G,\lambda)$ is a $\Delta$-periodic temporal graph.
 
 \begin{definition}[temporal path] \label{def:temporalPath+Duration}
 Let $(G,\lambda)$ be a temporal graph. A \emph{temporal path} $(P,\lambda)$ from $u=u_0$ to $v=u_k$ in $(G,\lambda)$ is a sequence $(u_0 u_1,t_1),(u_1 u_2,t_2),\ldots,(u_{k-1} u_k,t_k)$, 
@@ -316,11 +316,11 @@ Therefore, from now on we say that calculating (a row of) $D$ takes polynomial t
 \section{Motivation}
 
 	When considering the problem of finding shortest paths among vertices, one relies heavily on the optimal substructure of the problem,
-	which implies that if a shortest path $P$ from vertex $u$ to $v$ traverses the vertex $w$,
+	which states that if a shortest path $P$ from vertex $u$ to $v$ traverses the vertex $w$,
 	then the shortest path from $u$ to $w$ is a subpath of $P$.
 	After studying the problem of fastest temporal paths (\ie temporal paths of smallest duration),
-	one can see that this property does not carry over.
-	For an example see~\cref{fig:ftpExample}.
+	one can see that this property does not carry over
+	(for an example see~\cref{fig:ftpExample}).
 	Which makes all the standard intuition and work with these kind of paths, much harder.
 	
 	\begin{figure}[htb]
@@ -342,7 +342,7 @@ Therefore, from now on we say that calculating (a row of) $D$ takes polynomial t
 	(v1) edge[diredge2] [out=85,in=95,distance=2.1cm] node[pos=0.3,yshift=2,label=above:$P_{u,w}$] {} (v3) ;
 \end{tikzpicture}
 	\caption{An example of a temporal graph, where the fastest temporal path $P_{u,v}$ (in blue) from $u$ to $v$ is of duration $7$,
-		while the fastest temporal path $P_{u,w}$ (in red) from $u$ to a vertex $w$ that is on a path $P_{u,v}$ is of duration $1$ and is not a subpath of $P_{u,v}$.		
+		while the fastest temporal path $P_{u,w}$ (in red) from $u$ to a vertex $w$, that is on a path $P_{u,v}$, is of duration $1$ and is not a subpath of $P_{u,v}$.		
 		\label{fig:ftpExample}}
 	\end{figure}
 
@@ -1049,7 +1049,7 @@ We give a reduction to a variant of \deltaExactLong\ where the period $\Delta$ i
     \begin{itemize}
         \item We have one vertex $y^i$ and $k+1$ vertices $v^i_\ell$ for $0\le \ell\le k$.
         \item For every $\ell\in[m]$ and every $j\in[k]\setminus\{i\}$ we have $5n$ vertices $a^{i,j,\ell}_1,a^{i,j,\ell}_2,\ldots,a^{i,j,\ell}_{5n}$ and $5n$ vertices $b^{i,j,\ell}_1,b^{i,j,\ell}_2,\ldots,b^{i,j,\ell}_{5n}$.
-        \item We have a set $\hat{U}_i$ of $13n$ vertices $\hat{u}^i_1,\hat{u}^i_2,\ldots,\hat{u}^i_{13n}$.
+        \item We have a set $\hat{U}_i$ of $13n+1$ vertices $\hat{u}^i_1,\hat{u}^i_2,\ldots,\hat{u}^i_{13n+1}$.
     \end{itemize}
     We add the following edges. We add edge $\{y^i,v^i_0\}$.
     %For every $j\in[k]\setminus\{i,i+1\}$ and every $\ell\in[m]$ we add edge $\{v^i_{j-1},\hat{u}^{i,j,\ell}_1\}$. For every $\ell\in[m]$ we add edge $\{\hat{u}^i_{n+3},\hat{u}^{i,i+1,\ell}_1\}$.
@@ -1060,7 +1060,7 @@ We give a reduction to a variant of \deltaExactLong\ where the period $\Delta$ i
     Let $1\le j<i$ (skip if $i=1$), let $e_\ell^{j,i}\in F_{j,i}$, and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{j,i}$. Then we add edge $\{v_{j-1}^i,a^{i,j,\ell}_{1}\}$ and we add edge $\{a^{i,j,\ell}_{5n},u^\ell_{\ell'-1}\}$ between $a^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{\ell'-1}$ of the edge selection gadget of color combination $j,i$.
     Furthermore, we add edge $\{v_{j}^i,b^{i,j,\ell}_{1}\}$ and edge $\{b^{i,j,\ell}_{5n},u^\ell_{\ell'}\}$ between $b^{i,j,\ell}_{5n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $j,i$.
 
-    We add edge $\{v^i_{i-1},\hat{u}^i_1\}$ and for all $\ell\in[11n-1]$ we add edge $\{\hat{u}^i_\ell,\hat{u}^i_{\ell+1}\}$. Furthermore, we add edge $\{\hat{u}^i_{13n},v^i_i\}$. 
+    We add edge $\{v^i_{i-1},\hat{u}^i_1\}$ and for all $\ell\in[13n]$ we add edge $\{\hat{u}^i_\ell,\hat{u}^i_{\ell+1}\}$. Furthermore, we add edge $\{\hat{u}^i_{13n+1},v^i_i\}$. 
     %Let $e_\ell^{i,i+1}\in F_{i,i+1}$ and let $w^i_{\ell'}\in W_i$ be incident with $e_\ell^{i,i+1}$. If $i\neq 1\neq k$, then we add edge $\{\hat{u}^i_{n+3},a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$. If $i=1$, then we add edge $\{v^i_0,a^{i,i+1,\ell}_{1}\}$ and edge $\{a^{i,i+1,\ell}_{5n},u^\ell_{n+\ell'-1}\}$ between $a^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{n+\ell'-1}$ of the edge selection gadget of color combination $i,i+1$.
 %Furthermore, we add edge $\{v_{i+1}^i,b^{i,i+1,\ell}_{1}\}$ and edge $\{b^{i,i+1,\ell}_{5n},u^\ell_{\ell'}\}$ between $b^{i,i+1,\ell}_{5n}$ and the vertex $u^\ell_{\ell'}$ of the edge selection gadget of color combination $i,i+1$.
 
@@ -1150,12 +1150,12 @@ Next, consider the validation gadget for color $i$.
 %
 For all $0\le j<j'<i$ and all $i\le j<j'\le k$ we set the following.
 \begin{itemize}
-    \item We set $d(v^i_j,v^i_{j'})=(20n+2)(j'-j)-1$.
+    \item We set $d(v^i_j,v^i_{j'})=(20n+6)(j'-j)-1$.
 \end{itemize}
 %The next cases are only relevant if $1\neq i \neq k$. 
 %For all $0\le j<i$ %and $\ell\in[n+3]$ we set the following.
 %\begin{itemize}
-%    \item We set $d(v^i_j,\hat{u}^i_{n+3})=(20n+2)(i-j-1)+2n+5$.
+%    \item We set $d(v^i_j,\hat{u}^i_{n+3})=(20n+6)(i-j-1)+2n+5$.
 %\end{itemize}
 %For all $\ell,\ell'\in[n+3]$ with $\ell<\ell'$ we set the following.
 %\begin{itemize}
@@ -1163,20 +1163,20 @@ For all $0\le j<j'<i$ and all $i\le j<j'\le k$ we set the following.
 %\end{itemize}
 For all $0\le j<i$ and all $i\le j'\le k$ we set the following.
 \begin{itemize}
-    \item We set $d(v^i_j,v^i_{j'})=(20n+2)(j'-j)+6n-1$.
+    \item We set $d(v^i_j,v^i_{j'})=(20n+6)(j'-j)+6n-1$.
 \end{itemize}
 %For all 
 %$\ell\in[n+3]$ and 
 %$i<j\le k$ we set the following.
 %\begin{itemize}
-%    \item We set $d(\hat{u}^i_{n+3},v^i_j)=(20n+2)(j-i)-1$.
+%    \item We set $d(\hat{u}^i_{n+3},v^i_j)=(20n+6)(j-i)-1$.
 %\end{itemize}
 
 Finally, we consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$ and let $w\in \hat{W}$ denote the neighbor of $x_1$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the first connector gadget of the edge selection gadget for color combination $i,j$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the first one of the edge selection gadget for color combination $i,j$). 
 \begin{itemize}
-    \item We set $d(w^\star,x_1)=(20n+2)(i+j)$.
-    \item We set $d(w^\star,\hat{v}_1)=n^9$, $d(w,\hat{v}_2)=n^9$, $d(w,\hat{v}_1)=n^9-(20n+2)(i+j)+1$, and $d(w,\hat{v}_2)=n^9-(20n+2)(i+j)+1$.
-    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we set $d(w^\star,v)=n^9+2$ and $d(w,v)=n^9-(20n+2)(i+j)+3$.
+    \item We set $d(w^\star,x_1)=(20n+6)(i+j)$.
+    \item We set $d(w^\star,\hat{v}_1)=n^9$, $d(w,\hat{v}_2)=n^9$, $d(w,\hat{v}_1)=n^9-(20n+6)(i+j)+1$, and $d(w,\hat{v}_2)=n^9-(20n+6)(i+j)+1$.
+    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we set $d(w^\star,v)=n^9+2$ and $d(w,v)=n^9-(20n+6)(i+j)+3$.
 \end{itemize}
 
 Let $y^i$ belong to the verification gadget of color $i$ and let $w'\in \hat{W}$ denote the neighbor of $y^i$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the connector gadget of the verification gadget for color $i$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the one of the verification gadget for color $i$). Let $V_i$ denote the set of all vertices of the verification gadget of color $i$.
@@ -1459,21 +1459,21 @@ Now we take a closer look at the edge selection gadgets. We make a number of obs
 \end{claimproof}
 
 \begin{claim}\label{claim:4}
-    For all $1\le i<j\le k$ and $\ell\in[m]$ we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell^2 +18n+2)$, where $x_\ell$ belongs to the edge selection gadget for $i,j$.
+    For all $1\le i<j\le k$ and $\ell\in[m]$ we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell^2 +18n+6)$, where $x_\ell$ belongs to the edge selection gadget for $i,j$.
 \end{claim}
 \begin{claimproof}
-    We first determine the label of $\{x_1,v_{i,j}^{\star}\}$, where $x_1$ belongs to the edge selection gadget for $i,j$. Note that $x_1$ is connected to the alignment gadget. Let $w\in \hat{W}$ be the vertex of the alignment gadget that is a neighbor of $x_1$. Since $d(w^\star,x_1)=(20n+2)(i+j)$ we have that $\lambda(\{w,x_1\})=(20n+2)(i+j)$. 
+    We first determine the label of $\{x_1,v_{i,j}^{\star}\}$, where $x_1$ belongs to the edge selection gadget for $i,j$. Note that $x_1$ is connected to the alignment gadget. Let $w\in \hat{W}$ be the vertex of the alignment gadget that is a neighbor of $x_1$. Since $d(w^\star,x_1)=(20n+6)(i+j)$ we have that $\lambda(\{w,x_1\})=(20n+6)(i+j)$. 
 
-    First, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})<(20n+2)(i+j)$. Then there is a temporal path from $v_{i,j}^\star$ to $w$ via $x_1$. However, we have that $d(x_{i,j^\star},w)=\infty$, a contradiction.
-    Next, assume that $(20n+2)(i+j)<\lambda(\{x_1,v_{i,j}^{\star}\})<n^9+2$. Then there is a temporal path from $w$ to $v_{i,j}$ via $x_1$ with duration strictly less than $n^9-(20n+2)(i+j)+3$. However, we have that $d(w,v_{i,j}^\star)=n^9-(20n+2)(i+j)+3$, a contradiction.
+    First, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})<(20n+6)(i+j)$. Then there is a temporal path from $v_{i,j}^\star$ to $w$ via $x_1$. However, we have that $d(x_{i,j^\star},w)=\infty$, a contradiction.
+    Next, assume that $(20n+6)(i+j)<\lambda(\{x_1,v_{i,j}^{\star}\})<n^9+2$. Then there is a temporal path from $w$ to $v_{i,j}$ via $x_1$ with duration strictly less than $n^9-(20n+6)(i+j)+3$. However, we have that $d(w,v_{i,j}^\star)=n^9-(20n+6)(i+j)+3$, a contradiction.
     Finally, assume that $\lambda(\{x_1,v_{i,j}^{\star}\})\ge n^9+2$. Consider a fastest temporal path from $x_1$ to $v_{i,j}^{\star\star}$. This temporal path cannot visit $w$ as its first vertex, since from there it cannot continue. It follows by \cref{claim:2} and the just made assumption that the first edge of the temporal path has a label of at least $n^9$. However, by \cref{claim:2,claim:3} we have that all edges incident with $v_{i,j}^{\star\star}$ have a label of at most $n^9+2$. It follows that $d(x_1,v_{i,j}^{\star\star})\le 3$, a contradiction.
 
-    We can conclude that $\lambda(\{x_1,v_{i,j}^{\star}\})=(20n+2)(i+j)$. Now let $1<\ell\le m$. We have that $d(x_1,x_\ell)=2n\cdot (i+j)\cdot(\ell^2-1)+1$ which implies that $\lambda(\{x_\ell,v_{i,j}^{\star}\})\ge (i+j)\cdot (2n\ell^2 +18n+2)$. Assume that $(i+j)\cdot (2n\ell^2 +18n+2) <\lambda(\{x_\ell,v_{i,j}^{\star}\})\le n^9+2$. Then the temporal path from $x_1$ to $x_\ell$ via $v_{i,j}^\star$ is not a fastest temporal path from $x_1$ to $x_\ell$. Again, we have that a fastest temporal path from $x_1$ to $x_\ell$ cannot visit $w$ as its first vertex, since from there it cannot continue. By \cref{claim:2}, all other edges incident with $x_1$ (that is, all different from the one to $v_{i,j}^\star$ and the one to $w$) have a label of at least $n^9$ and at most $n^9+2$. Similarly, by \cref{claim:2} we have that all other edges incident with $x_\ell$ (that is, all different from the one to $v_{i,j}^\star$) have a label of at least $n^9$ and at most $n^9+2$. It follows that any temporal path from $x_1$ to $x_\ell$ that visits $v_{i,j}^\star$ as its first vertex has a duration strictly larger than $2n\cdot (i+j)\cdot(\ell^2-1)+1$. Any temporal path from $x_1$ to $x_\ell$ that visits a vertex different from $v_{i,j}^\star$ as its first vertex has duration of at most $3$. In both cases we have a contradiction. 
+    We can conclude that $\lambda(\{x_1,v_{i,j}^{\star}\})=(20n+6)(i+j)$. Now let $1<\ell\le m$. We have that $d(x_1,x_\ell)=2n\cdot (i+j)\cdot(\ell^2-1)+1$ which implies that $\lambda(\{x_\ell,v_{i,j}^{\star}\})\ge (i+j)\cdot (2n\ell^2 +18n+6)$. Assume that $(i+j)\cdot (2n\ell^2 +18n+6) <\lambda(\{x_\ell,v_{i,j}^{\star}\})\le n^9+2$. Then the temporal path from $x_1$ to $x_\ell$ via $v_{i,j}^\star$ is not a fastest temporal path from $x_1$ to $x_\ell$. Again, we have that a fastest temporal path from $x_1$ to $x_\ell$ cannot visit $w$ as its first vertex, since from there it cannot continue. By \cref{claim:2}, all other edges incident with $x_1$ (that is, all different from the one to $v_{i,j}^\star$ and the one to $w$) have a label of at least $n^9$ and at most $n^9+2$. Similarly, by \cref{claim:2} we have that all other edges incident with $x_\ell$ (that is, all different from the one to $v_{i,j}^\star$) have a label of at least $n^9$ and at most $n^9+2$. It follows that any temporal path from $x_1$ to $x_\ell$ that visits $v_{i,j}^\star$ as its first vertex has a duration strictly larger than $2n\cdot (i+j)\cdot(\ell^2-1)+1$. Any temporal path from $x_1$ to $x_\ell$ that visits a vertex different from $v_{i,j}^\star$ as its first vertex has duration of at most $3$. In both cases we have a contradiction. 
     Lastly, assume that $\lambda(\{x_\ell,v_{i,j}^{\star}\})> n^9+2$. Consider a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$. Now this temporal path has duration at most 3 since by \cref{claim:2} and the just made assumption all edges incident with $x_\ell$ have label at least $n^9$ whereas by \cref{claim:2,claim:3} all edges incident with $v_{i,j}^{\star\star}$ have label at most $n^9+2$, a contradiction. 
 \end{claimproof}
 
 \begin{claim}\label{claim:5}
-    For all $1\le i<j\le k$ there exist a permutation $\sigma_{i,j}:[m]\rightarrow [m]$ such that for all $\ell\in[m]$ we have that $\lambda(\{u^\ell_{4n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+2)+8n+4$, where $u^\ell_{4n}$ belongs to the edge selection gadget for $i,j$.
+    For all $1\le i<j\le k$ there exist a permutation $\sigma_{i,j}:[m]\rightarrow [m]$ such that for all $\ell\in[m]$ we have that $\lambda(\{u^\ell_{4n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+6)+8n+4$, where $u^\ell_{4n}$ belongs to the edge selection gadget for $i,j$.
 
     Furthermore, a fastest temporal path from $x_\ell$ (of the edge selection gadget for $i,j$) to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex, and $u^{\ell'}_{4n}$ with $\sigma_{i,j}(\ell')=\ell$ (of the edge selection gadget for $i,j$) as its second last vertex.
 \end{claim}
@@ -1486,7 +1486,7 @@ Now we take a closer look at the edge selection gadgets. We make a number of obs
     It follows that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $u^{\ell'}_{4n}$ for some $\ell'\in[m]$ as its second last vertex. Otherwise, we have $d(x_\ell,v_{i,j}^{\star\star})> 8n+5$ (for sufficiently large $n$), a contradiction.
 
     We can conclude that a fastest temporal path from $x_\ell$ to $v_{i,j}^{\star\star}$ has to visit $v_{i,j}^\star$ as its second vertex and $u^{\ell'}_{4n}$ for some $\ell'\in[m]$ as its second last vertex. Recall that in a  temporal path, the difference between the labels of the first and last edge determine its duration (minus one). Hence, we have that $\lambda(\{u^{\ell'}_{4n},v_{i,j}^{\star\star}\})-\lambda(\{x_\ell,v_{i,j}^{\star}\})+1=8n+5$.
-    By \cref{claim:4} we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell^2+18n +2)$. It follows that $\lambda(\{u^{\ell'}_{4n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\ell^2 +18n+2)+8n+4$. We set $\sigma_{i,j}(\ell')=\ell$.
+    By \cref{claim:4} we have that $\lambda(\{x_\ell,v_{i,j}^{\star}\})=(i+j)\cdot (2n\ell^2+18n +2)$. It follows that $\lambda(\{u^{\ell'}_{4n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\ell^2 +18n+6)+8n+4$. We set $\sigma_{i,j}(\ell')=\ell$.
 
     Finally, we show that $\sigma_{i,j}$ is a permutation on $[m]$. Assume for contradiction that there are $\ell,\ell'\in[m]$ with $\ell\neq \ell'$ such that $\sigma_{i,j}(\ell)=\sigma_{i,j}(\ell')$. Then we have that $\lambda(\{u^{\ell}_{4n},v_{i,j}^{\star\star}\})=\lambda(\{u^{\ell'}_{4n},v_{i,j}^{\star\star}\})$. However, by \cref{claim:4} we have that all edges from $v_{i,j}$ to a vertex in $X_{i,j}$ have distinct labels. Furthermore, we argued above that every fastest path from a vertex in $X_{i,j}$ to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex and a vertex from the set $\{u^{\ell''}_{4n}\mid \ell''\in[m]\}$ as its second last vertex. Since for all $x_{\ell''}$ with $\ell''\in[m]$ we have that $d(x_{\ell''},v_{i,j}^{\star\star})=8n+5$, we must have that all edges from vertices in $\{u^{\ell''}_{4n}\mid \ell''\in[m]\}$ to $v_{i,j}^{\star\star}$ must have distinct labels. Hence, we have a contradiction and can conclude that $\sigma_{i,j}$ is indeed a permutation.
 \end{claimproof}
@@ -1503,12 +1503,12 @@ From now on, denote $\{e_{i,j}\}=X\cap F_{i,j}$. We show that for all $i\in [k]$
 Before we proceed, we show some further properties of $\lambda$. First, we have a closer look at the labels on edges of the edge selection gadgets.
 
 \begin{claim}\label{claim:6}
-    For all $1\le i<j\le k$,  $\ell\in[m]$, and $\ell'\in[4n]$ we have that $\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+2)+2\ell'+2$, where $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ belong to the edge selection gadget for $i,j$ and $\sigma_{i,j}$ is the permutation of color combination $i,j$.
+    For all $1\le i<j\le k$,  $\ell\in[m]$, and $\ell'\in[4n]$ we have that $\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+6)+2\ell'+2$, where $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ belong to the edge selection gadget for $i,j$ and $\sigma_{i,j}$ is the permutation of color combination $i,j$.
 \end{claim}
 \begin{claimproof}
     Let $1\le i<j\le k$ and $\ell\in[m]$.
     By \cref{claim:5} we know that a fastest temporal path from $x_{\sigma_{i,j}(\ell)}$ (of the edge selection gadget for $i,j$) to $v_{i,j}^{\star\star}$ visits $v_{i,j}^\star$ as its second vertex, and $u^{\ell}_{4n}$ (of the edge selection gadget for $i,j$) as its second last vertex. 
-    Furthermore, by \cref{claim:4} we have that $\lambda(\{x_{\sigma_{i,j}(\ell)},v_{i,j}^{\star}\})=(i+j)\cdot (2n\cdot {(\sigma_{i,j}(\ell))^2}+18n +2)$ and by \cref{claim:5} we have that $\lambda(\{u^\ell_{4n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2+18n +2)+8n+4$. It follows that there exist a temporal path $P$ from $v_{i,j}^\star$ to $u^\ell_{4n}$ that starts at $v_{i,j}^\star$ later than $(i+j)\cdot (2n\cdot {(\sigma_{i,j}(\ell))^2} +18n+2)$ and arrives at $u^\ell_{4n}$ earlier than $(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+2)+8n+4$. Hence, the temporal path $P$ has duration at most $8n+3$.
+    Furthermore, by \cref{claim:4} we have that $\lambda(\{x_{\sigma_{i,j}(\ell)},v_{i,j}^{\star}\})=(i+j)\cdot (2n\cdot {(\sigma_{i,j}(\ell))^2}+18n +2)$ and by \cref{claim:5} we have that $\lambda(\{u^\ell_{4n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2+18n +2)+8n+4$. It follows that there exist a temporal path $P$ from $v_{i,j}^\star$ to $u^\ell_{4n}$ that starts at $v_{i,j}^\star$ later than $(i+j)\cdot (2n\cdot {(\sigma_{i,j}(\ell))^2} +18n+6)$ and arrives at $u^\ell_{4n}$ earlier than $(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+6)+8n+4$. Hence, the temporal path $P$ has duration at most $8n+3$.
 
     We investigate the temporal path $P$ from its destination $u^\ell_{4n}$ back to its start vertex $v_{i,j}^\star$. Consider the neighbors of $u^\ell_{4n}$ that are different from $v_{i,j}^{\star\star}$. By \cref{claim:2} we have that all edges from $u^\ell_{4n}$ to neighbors of $u^\ell_{4n}$ that are vertices of connector gadgets have a label of at least $n^9$. Hence, $P$ does not visit any of those neighbors. Next, consider neighbors of $u^\ell_{4n}$ is verification gadgets. Assume $u^\ell_{4n}$ has a neighbor in the verification gadget of color $i'$ for some $i'\in[k]$. Then this neighbor is vertex $b^{i',j,\ell}_{5n}$. Note that if $P$ visits $b^{i',j,\ell}_{5n}$, then it also visits all of $\{b^{i',j,\ell}_{\ell'}\mid \ell'\in[5n]\}$, since all these vertices have degree two. 
    Now consider the second connector gadget of a verification gadget $i'$ with sets $A,B$, we have that all vertices $\{b^{i',j,\ell}_{\ell'}\mid \ell'\in[5n]\}$ are contained in $A$ and are not contained in $B$. Hence, we have that all non-adjacent pairs of vertices in $\{b^{i',j,\ell}_{\ell'}\mid \ell'\in[5n]\}$ have distance (according to $D$) three and that $|\lambda(\{b^{i',j,\ell}_{\ell'},b^{i',j,\ell}_{\ell'+1}\})-\lambda(\{b^{i',j,\ell}_{\ell'+1},b^{i',j,\ell}_{\ell'+2}\})|\ge 2$ for all $\ell'\in[5n-2]$.  
@@ -1542,7 +1542,7 @@ Now, we investigate the labels of the verification gadgets.
 
 \begin{claim}\label{claim:9}
     For all $1\le i< k$ and all $\ell\in[m]$ we have that $\lambda(\{v_k^i,b^{i,k,\ell}_{1}\})\le n^9+2$.
-    For $i=k$ we have that $\lambda(\{v_{k}^i,\hat{u}^i_{11n}\})\le n^9+2$.
+    For $i=k$ we have that $\lambda(\{v_{k}^i,\hat{u}^i_{13n+1}\})\le n^9+2$.
 %
     %Let $i\in[k]$ and $i<j\le k$ (resp.\ $1\le j< i$) and let $u^\ell_{\ell'}$ be a vertex of the edge selection gadget of color combination $i,j$ (resp.\ $j,i$) for some $\ell\in[m]$ and $0\le\ell'\le 2n$ that is adjacent to vertex $v_k^i$ (of the verification gadget for color $i$). Then we have that $\lambda(\{v_k^i,u^\ell_{\ell'}\})\le n^9+2$.
 \end{claim}
@@ -1553,7 +1553,7 @@ Now, we investigate the labels of the verification gadgets.
 \end{claimproof}
 
 Now we are ready to prove for all $i\in [k]$ that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|=1$. Assume for contradiction that for some color $i\in[k]$ we have that $|(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})|\neq 1$. 
-Consider the verification gadget for color $i$. Recall that $d(v_0^i,v_k^i)=k(20n+2)+6n-1$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$.
+Consider the verification gadget for color $i$. Recall that $d(v_0^i,v_k^i)=k(20n+6)+6n-1$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$.
 We first argue that $P$ cannot visit any vertex of a connector gadget or the alignment gadget. 
 
 \begin{claim}\label{claim:10}
@@ -1570,9 +1570,9 @@ Let $i\in[k]$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$. Then 
     Note that $P$ starts outside the alignment gadget. This means that if $P$ visits a vertex of the alignment gadget, then the first vertex of the alignment gadget visited by $P$ is a neighbor of $w^\star$. However, these vertices have degree two and the edge to $w^\star$ has label one. It follows that $P$ cannot continue from the vertex of the alignment gadget, a contradiction.
 \end{claimproof}
 
-It follows that the second vertex visited by $P$ is a vertex $a^{i,1,\ell}_{1}$ for some $\ell\in[m]$ or vertex $\hat{u}_1^i$ if $i=1$. In the former case, $P$ has to follow the path segment consisting of vertices in $\{a^{i,1,\ell}_{\ell'}\mid \ell'\in[5n]\}$ until it reaches the edge selection gadget of color combination $1,i$. From there it can reach vertex $v_1^i$ by traversing some path segment consisting of vertices $\{b^{i,1,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$. Alternatively, it can reach vertex $v^1_{i-1}$ or $v^1_{i}$ by traversing some path segment consisting of vertices $\{a^{1,i,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$ or $\{b^{1,i,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$, respectively. In the latter case ($i=1$), the temporal path $P$ has to follow the path segment consisting of vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n]\}$ until it reaches $v^i_1$. More generally, we can make the following observation.
+It follows that the second vertex visited by $P$ is a vertex $a^{i,1,\ell}_{1}$ for some $\ell\in[m]$ or vertex $\hat{u}_1^i$ if $i=1$. In the former case, $P$ has to follow the path segment consisting of vertices in $\{a^{i,1,\ell}_{\ell'}\mid \ell'\in[5n]\}$ until it reaches the edge selection gadget of color combination $1,i$. From there it can reach vertex $v_1^i$ by traversing some path segment consisting of vertices $\{b^{i,1,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$. Alternatively, it can reach vertex $v^1_{i-1}$ or $v^1_{i}$ by traversing some path segment consisting of vertices $\{a^{1,i,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$ or $\{b^{1,i,\ell'}_{\ell''}\mid \ell''\in[5n]\}$ for some $\ell'\in[m]$, respectively. In the latter case ($i=1$), the temporal path $P$ has to follow the path segment consisting of vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n+1]\}$ until it reaches $v^i_1$. More generally, we can make the following observation.
 \begin{claim}\label{claim:12}
-    Let $i,j\in\{0,1,\ldots,k\}$. Let $P$ be a temporal path starting at $v^i_j$ and visiting at most $13n$ vertices and no vertex of a connector gadget or the alignment gadget. Then $P$ cannot visit vertices in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$.
+    Let $i,j\in\{0,1,\ldots,k\}$. Let $P$ be a temporal path starting at $v^i_j$ and visiting at most $13n+1$ vertices and no vertex of a connector gadget or the alignment gadget. Then $P$ cannot visit vertices in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$.
 \end{claim}
 \begin{claimproof}
     Consider the edge selection gadget of color combination $i',j'$ for some $i',j'\in[k]$ and let $u^\ell_{\ell'}$ be a vertex of that gadget. Disregarding connections via connector gadgets and the alignment gadget, we have that $u^\ell_{\ell'}$ is (potentially) connected to the verification gadget for color $i'$ and the verification gadget of color $j'$.
@@ -1587,23 +1587,23 @@ It follows that the second vertex visited by $P$ is a vertex $a^{i,1,\ell}_{1}$ 
 
     Now consider $v^i_j$ and assume $i<j$ ($i>j$). This vertex is (if $j\neq i-1$ and $j\neq k$) connected to some vertex $u^\ell_{\ell'}$ in the edge selection gadget for color combination $i,j+1$ ($j+1,i$) via a path along vertices $\{a^{i,j,\ell}_{\ell''}\mid \ell''\in[5n]\}$. Furthermore, $v^i_j$ is (if $j\neq 0$ and $j\neq i$) connected to some vertex $u^{\ell'}_{\ell'''}$ in the edge selection gadget for color combination $i,j$ ($j,i$) via a path along vertices $\{b^{i,j,\ell'}_{\ell''}\mid \ell''\in[5n]\}$.
 
-    We can conclude that $v^i_j$ can reach a vertex $u^\ell_{\ell'}$ of the edge selection gadget for $i,j+1$ (or $j+1,i$) and a vertex $u^{\ell'}_{\ell'''}$ of the edge selection gadget for color combination $i,j$ (or $j,i$), each along paths of length at least $5n$. From $u^\ell_{\ell'}$ and $u^{\ell'}_{\ell'''}$ we have that any other vertex of the edge selection gadget for $i,j+1$ (or $j+1,i$) and the edge selection gadget for color combination $i,j$ (or $j,i$), respectively, can be reached by a path of length at most $3n$. Together with the observation made in the beginning of the proof, we can conclude that $v^i_j$ can potentially reach any vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ by a path that visits at most $13n$ vertices. 
+    We can conclude that $v^i_j$ can reach a vertex $u^\ell_{\ell'}$ of the edge selection gadget for $i,j+1$ (or $j+1,i$) and a vertex $u^{\ell'}_{\ell'''}$ of the edge selection gadget for color combination $i,j$ (or $j,i$), each along paths of length at least $5n$. From $u^\ell_{\ell'}$ and $u^{\ell'}_{\ell'''}$ we have that any other vertex of the edge selection gadget for $i,j+1$ (or $j+1,i$) and the edge selection gadget for color combination $i,j$ (or $j,i$), respectively, can be reached by a path of length at most $3n$. Together with the observation made in the beginning of the proof, we can conclude that $v^i_j$ can potentially reach any vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ by a path that visits at most $13n+1$ vertices. 
     
-    Lastly, consider the case that $j=i-1$ or $j=i$. Then we have that $v^i_{i-1}$ and $v^i_i$ are connected via a path inside the verification gadget for color $i$, visiting the $13n$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n]\}$. The claim follows.
+    Lastly, consider the case that $j=i-1$ or $j=i$. Then we have that $v^i_{i-1}$ and $v^i_i$ are connected via a path inside the verification gadget for color $i$, visiting the $13n+1$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n+1]\}$. The claim follows.
 \end{claimproof}
 Furthermore, we can make the following observation on the duration of the temporal paths characterized in \cref{claim:12}.
 \begin{claim}\label{claim:13}
     Let $i,j\in\{0,1,\ldots,k\}$. Let $P$ be a temporal path from $v^i_j$ to a vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ and visiting no vertex of a connector gadget or the alignment gadget. Then $P$ has duration at least $20n$.
 \end{claim}
 \begin{claimproof}
-    As argued in the proof of \cref{claim:12}, a temporal path $P$ from $v^i_j$ to a vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ has to either traverse two segments of $5n$ vertices in $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ or $\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$ and $i',j'\in\{i-1,i,j,j+1\}$ or a segment of the $13n$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n]\}$. We analyse the former case first.
+    As argued in the proof of \cref{claim:12}, a temporal path $P$ from $v^i_j$ to a vertex in $\{v^i_{j-1},v^i_j,v^i_{j+1},v^j_{i-1},v^j_i,v^{j+1}_{i-1},v^{j+1}_i\}$ has to either traverse two segments of $5n$ vertices in $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ or $\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$ and $i',j'\in\{i-1,i,j,j+1\}$ or a segment of the $13n+1$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n+1]\}$. We analyse the former case first.
     
     Consider the second connector gadget of a verification gadget $i'$ with sets $A,B$, we have that all vertices $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}\cup\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}$ are contained in $A$ and are not contained in $B$. It follows that all non-adjacent pairs of vertices in $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}\cup\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n],j'\in[k]\setminus\{i'\}\}$ have distance (according to $D$) three. It follows that $|\lambda(\{a^{i',j',\ell}_{\ell'},a^{i',j',\ell}_{\ell'+1}\})-\lambda(\{a^{i',j',\ell}_{\ell'+1},a^{i',j',\ell}_{\ell'+2}\})|\ge 2$ for all $\ell'\in[5n-2]$ and $j'\in[k]\setminus\{i'\}$. Analogously, we have that $|\lambda(\{b^{i',j',\ell}_{\ell'},b^{i',j',\ell}_{\ell'+1}\})-\lambda(\{b^{i',j',\ell}_{\ell'+1},b^{i',j',\ell}_{\ell'+2}\})|\ge 2$ for all $\ell'\in[5n-2]$ and $j'\in[k]\setminus\{i'\}$. It follows that two segments of $5n$ vertices in $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ or $\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$ and $i',j'\in\{i-1,i,j,j+1\}$ traversed by $P$ both have duration $10n$ and hence $P$ has duration at least $20n$.
 
-    In the latter case, where $P$ traverses a segment of the $13n$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n]\}$, we can make an analogous argument, since all vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n]\}$ are contained in the set $A$ of the second connector gadget of the verification gadget of color $i$ but not in the set $B$ of that connector gadget.
+    In the latter case, where $P$ traverses a segment of the $13n+1$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n+1]\}$, we can make an analogous argument, since all vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n+1]\}$ are contained in the set $A$ of the second connector gadget of the verification gadget of color $i$ but not in the set $B$ of that connector gadget.
 \end{claimproof}
 
-Recall that $P$ denotes a fastest temporal path from $v_0^i$ to $v_k^i$ and that $d(v_0^i,v_k^i)=k(20n+2)+6n-1$. By \cref{claim:10,claim:11,claim:12} he have that $P$ needs to visit at least one vertex in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^i_0,v^i_k\}$. Next, we analyse which vertices in this set are visited by $P$.
+Recall that $P$ denotes a fastest temporal path from $v_0^i$ to $v_k^i$ and that $d(v_0^i,v_k^i)=k(20n+6)+6n-1$. By \cref{claim:10,claim:11,claim:12} he have that $P$ needs to visit at least one vertex in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^i_0,v^i_k\}$. Next, we analyse which vertices in this set are visited by $P$.
 
 \begin{claim}\label{claim:14}
 Let $i\in[k]$. Let $P$ be a fastest temporal path from $v_0^i$ to $v_k^i$. Then $P$ visits all vertices in $\{v^j_i\mid 0\le j\le k\}$ and no vertex in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}\setminus\{v^j_i\mid 0\le j\le k\}$.
@@ -1611,7 +1611,7 @@ Furthermore, $P$ visits the vertices in order $v^i_0, v^i_1, v^i_2, \ldots, v^i_
 \end{claim}
 \begin{claimproof}
 Let $X\subseteq \{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}$ denote the set of vertices in $\{v^{i'}_{j'}\mid i',j'\in \{0,1,\ldots,k\}\}$ that are visited by $P$.
-By \cref{claim:12,claim:13} we have that $|X|\le k+1$, since otherwise the duration of $P$ would be at least $20n(k+1)>k(20n+2)+6n-1$, a contradiction.
+By \cref{claim:12,claim:13} we have that $|X|\le k+1$, since otherwise the duration of $P$ would be at least $20n(k+1)>k(20n+6)+6n-1$, a contradiction.
 
     To prove the claim, we use the notion of a \emph{potential $p^i$ with respect to $i$} of a vertex $v^{i'}_j$.
     %and a \emph{second potential $p^i_2$ with respect to $i$} of a vertex $v^{i'}_j$. 
@@ -1635,7 +1635,7 @@ The last vertex of the edge selection gadget visited by the path segment is (bef
 Investigating the second connector gadget of the edge selection gadget for $i',j+1$ we can see that a temporal path from $u^\ell_{\ell''}$ and $u^{\ell'}_{\ell'''}$ has duration at least $6n$.
 
 It follows that the temporal path segment from $v^{i'}_j$ to $v^{j+1}_{i'}$ (with $j\neq i'-1$) has duration at least $26n$.
-Furthermore, recall that $P$ starts at $v^i_0$ and ends at $v^i_k$. We have that if $P$ contains a path segment from some $v^{i'}_j$ to $v^{j+1}_{i'}$ some (with $j\neq i'-1$), then $P$ visits a vertex $v^{i''}_{j'}$ with $i''\neq i$. Hence, it needs to contain at least one additional path segment from some $v^{i'}_j$ to some $v^{j+1}_{i'}$ (with $j\neq i-1$). However, then we have that the duration of $P$ is at least $20kn+12n>k(20n+2)+6n-1$, a contradiction.
+Furthermore, recall that $P$ starts at $v^i_0$ and ends at $v^i_k$. We have that if $P$ contains a path segment from some $v^{i'}_j$ to $v^{j+1}_{i'}$ some (with $j\neq i'-1$), then $P$ visits a vertex $v^{i''}_{j'}$ with $i''\neq i$. Hence, it needs to contain at least one additional path segment from some $v^{i'}_j$ to some $v^{j+1}_{i'}$ (with $j\neq i-1$). However, then we have that the duration of $P$ is at least $20kn+12n>k(20n+6)+6n-1$, a contradiction.
 
 We can conclude that $P$ only contains temporal path segments from $v^{i}_{j-1}$ to $v^i_{j}$ for $j\in[k]$ and the claim follows.
 %
@@ -1643,20 +1643,20 @@ We can conclude that $P$ only contains temporal path segments from $v^{i}_{j-1}$
     %
     \end{claimproof}
 
-Now we have by \cref{claim:12,claim:14} that we can divide $P$ into $k$ segments, the subpaths from $v^i_{j-1}$ to $v^i_j$ for $j\in [k]$. We show that all subpaths except the one from $v_{i-1}^i$ to $v_i^i$ have duration $20n+1$. The subpath from $v_{i-1}^i$ to $v_i^i$ has duration $26n+1$. To do.
+Now we have by \cref{claim:12,claim:14} that we can divide $P$ into $k$ segments, the subpaths from $v^i_{j-1}$ to $v^i_j$ for $j\in [k]$. We show that all subpaths except the one from $v_{i-1}^i$ to $v_i^i$ have duration $20n+5$. The subpath from $v_{i-1}^i$ to $v_i^i$ has duration $26n+5$. To do.
 
 \begin{claim}\label{claim:15}
-    Let $i\in[k]$ and $j\in[k]\setminus\{i\}$. Let $P$ be a temporal path from $v_{j-1}^i$ to $v_j^i$ that does not visit vertices from connector gadgets and the alignment gadget. If $P$ has duration at most $20n+1$, then it visits exactly two vertices $u^\ell_{\ell'-1},u^\ell_{\ell'}$ with $\ell\in[m]$, and $\ell'\in[4n]$ of the edge selection gadget for color combination $i,j$ (or $j,i$).
+    Let $i\in[k]$ and $j\in[k]\setminus\{i\}$. Let $P$ be a temporal path from $v_{j-1}^i$ to $v_j^i$ that does not visit vertices from connector gadgets and the alignment gadget. If $P$ has duration at most $20n+5$, then it visits exactly two vertices $u^\ell_{\ell'-1},u^\ell_{\ell'}$ with $\ell\in[m]$, and $\ell'\in[4n]$ of the edge selection gadget for color combination $i,j$ (or $j,i$).
 \end{claim}
 \begin{claimproof}
-    By the construction of $G$ (and as also argued in the proofs of \cref{claim:12,claim:13}), a temporal path $P$ with duration at most $20n+1$ that does not visit vertices from connector gadgets and the alignment gadget from $v_{j-1}^i$ to $v_j^i$ has to first traverse a segment of $5n$ vertices in $\{a^{i,j-1,\ell}_{\ell'}\mid \ell'\in[5n]\}$ and then a segment of $5n$ vertices $\{b^{i,j,\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$. By construction of $G$, the two vertices visited in the edge selection gadget for color combination $i,j$ (or $j,i$) are $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ for some $\ell'\in[4n]$. By inspecting the connector gadgets in an analogous way as in the proof of \cref{claim:13} we can deduce that all consecutive edges traversed by $P$ must have labels that differ by at least 2. If follows that if all consecutive edges have labels that differ by exactly two, then $P$ has duration $20n+1$.
+    By the construction of $G$ (and as also argued in the proofs of \cref{claim:12,claim:13}), a temporal path $P$ with duration at most $20n+5$ that does not visit vertices from connector gadgets and the alignment gadget from $v_{j-1}^i$ to $v_j^i$ has to first traverse a segment of $5n$ vertices in $\{a^{i,j-1,\ell}_{\ell'}\mid \ell'\in[5n]\}$ and then a segment of $5n$ vertices $\{b^{i,j,\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$. By construction of $G$, the two vertices visited in the edge selection gadget for color combination $i,j$ (or $j,i$) are $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ for some $\ell'\in[4n]$. By inspecting the connector gadgets in an analogous way as in the proof of \cref{claim:13} we can deduce that all consecutive edges traversed by $P$ must have labels that differ by at least 2. If follows that if all consecutive edges have labels that differ by exactly two, then $P$ has duration $20n+5$.
 \end{claimproof}
 
 \begin{claim}\label{claim:16}
-    Let $i\in[k]$. Let $P$ be a temporal path from $v_{i-1}^i$ to $v_i^i$ that does not visit vertices from connector gadgets and the alignment gadget. Then $P$ has duration at least $26n+1$.
+    Let $i\in[k]$. Let $P$ be a temporal path from $v_{i-1}^i$ to $v_i^i$ that does not visit vertices from connector gadgets and the alignment gadget. Then $P$ has duration at least $26n+5$.
 \end{claim}
 \begin{claimproof}
-    By construction of $G$ we have that $v^i_{i-1}$ and $v^i_i$ are connected via a path inside the verification gadget for color $i$, visiting the $13n$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n]\}$. Assume $P$ follows this path. By inspecting the connector gadgets of the verification gadget of color $i$, we can see that all consecutive edges traversed by $P$ must have labels that differ by at least two. It follows that $P$ has duration at least $26n+1$. By construction of $G$ we have that if $P$ does not follow the vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n]\}$ it has to visit at least three different edge selection gadgets: The one of color combination $i-1,i$, then one of $i-1,i+1$, and then the one of $i,i+1$. If follows that $P$ needs to visit at least four segments of length $5n$ composed of vertices $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ or $\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$ and $i',j'\in[k]$. By inspecting the connector gadgets of the verification gadgets we know that it takes at least $10n$ time steps to traverse such a segment. Hence, the duration of $P$ is at least $40n$.
+    By construction of $G$ we have that $v^i_{i-1}$ and $v^i_i$ are connected via a path inside the verification gadget for color $i$, visiting the $13n+1$ vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n+1]\}$. Assume $P$ follows this path. By inspecting the connector gadgets of the verification gadget of color $i$, we can see that all consecutive edges traversed by $P$ must have labels that differ by at least two. It follows that $P$ has duration at least $26n+5$. By construction of $G$ we have that if $P$ does not follow the vertices in $\{\hat{u}^i_\ell\mid \ell\in[13n+1]\}$ it has to visit at least three different edge selection gadgets: The one of color combination $i-1,i$, then one of $i-1,i+1$, and then the one of $i,i+1$. If follows that $P$ needs to visit at least four segments of length $5n$ composed of vertices $\{a^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ or $\{b^{i',j',\ell}_{\ell'}\mid \ell'\in[5n]\}$ for some $\ell\in[m]$ and $i',j'\in[k]$. By inspecting the connector gadgets of the verification gadgets we know that it takes at least $10n$ time steps to traverse such a segment. Hence, the duration of $P$ is at least $40n$.
 \end{claimproof}
 
 \begin{claim}\label{claim:17}
@@ -1668,8 +1668,8 @@ Let $i\in[k]$ and $0\le j\le k$. The absolute difference of labels of any two di
 
 From \cref{claim:10,claim:11,claim:14,claim:15,claim:16,claim:17} we get that a fastest path temporal path $P$ from $v^i_0$ to $v^i_k$ has the following properties.
 \begin{enumerate}
-    \item The path $P$ can be segmented into temporal path segments $P_j$ from $v^i_{j-1}$ to $v^i_j$ for $j\in[k]\setminus\{i\}$ such that $P_j$ is a temporal path from $v^i_{j-1}$ to $v^i_j$ that does not visit vertices from connector gadgets and the alignment gadget and has duration $20n+1$.
-    \item The segment of $P$ from $v^i_{i-1}$ to $v^i_i$ has duration $26n+1$.
+    \item The path $P$ can be segmented into temporal path segments $P_j$ from $v^i_{j-1}$ to $v^i_j$ for $j\in[k]\setminus\{i\}$ such that $P_j$ is a temporal path from $v^i_{j-1}$ to $v^i_j$ that does not visit vertices from connector gadgets and the alignment gadget and has duration $20n+5$.
+    \item The segment of $P$ from $v^i_{i-1}$ to $v^i_i$ has duration $26n+5$.
     \item The path $P$ dwells at each vertex $v^i_j$ with $j\in[k-1]$ for exactly two time steps, that is, the absolute difference of the labels on the edges incident with $v^i_j$ that are traversed by $P$ is exactly two.
 \end{enumerate}
 If any of the properties does not hold, then we can observe that $d(v^i_0,v^i_k)>8n+5$ would follow.
@@ -1677,25 +1677,25 @@ If any of the properties does not hold, then we can observe that $d(v^i_0,v^i_k)
 Now assume $i\in[k]$ and $j\in[k]\setminus\{i\}$ and consider a fastest temporal path $P_j$ from $v_{j-1}^i$ to $v_j^i$ that does not visit vertices from connector gadgets and the alignment gadget and a fastest temporal path $P_{j+1}$ from $v_{j}^i$ to $v_{j+1}^i$ that does not visit vertices from connector gadgets and the alignment gadget. 
 By \cref{claim:15} we know that $P_j$ visits vertices $u^\ell_{\ell'-1},u^\ell_{\ell'}$ with $\ell\in[m]$, and $\ell'\in[4n]$ of the edge selection gadget for color combination $i,j$. 
 %By construction of $G$ we have that $\ell'\in[n]$.
-By \cref{claim:6} we have that $\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+2)+2\ell'+2$, where $\sigma_{i,j}$ is the permutation of color combination $i,j$ (or $j,i$).
+By \cref{claim:6} we have that $\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+6)+2\ell'+2$, where $\sigma_{i,j}$ is the permutation of color combination $i,j$ (or $j,i$).
 Analogously, we have by \cref{claim:15} that $P_{j+1}$ visits vertices $u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}$ with $\ell''\in[m]$, and $\ell'''\in[4n]$ of the edge selection gadget for color combination $i,j+1$. 
 %By construction of $G$ we have that $\ell'\in[n]$.
-By \cref{claim:6} we have that $\lambda(\{u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}\})=(i+j+1)\cdot (2n\cdot (\sigma_{i,j+1}(\ell''))^2 +18n+2)+2\ell'''+2$, where $\sigma_{i,j+1}$ is the permutation of color combination $i,j+1$ (or $j+1,i$). We have that 
+By \cref{claim:6} we have that $\lambda(\{u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}\})=(i+j+1)\cdot (2n\cdot (\sigma_{i,j+1}(\ell''))^2 +18n+6)+2\ell'''+2$, where $\sigma_{i,j+1}$ is the permutation of color combination $i,j+1$ (or $j+1,i$). We have that 
 \begin{align*}
 %\[
 & \lambda(\{u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}\})-\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\}) = \\
 %\]
 %\[
-& (i+j+1)\cdot (2n\cdot (\sigma_{i,j+1}(\ell''))^2 +18n+2)+2\ell'''+2\\
-& -((i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+2)+2\ell'+2) = \\
+& (i+j+1)\cdot (2n\cdot (\sigma_{i,j+1}(\ell''))^2 +18n+6)+2\ell'''+2\\
+& -((i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell))^2 +18n+6)+2\ell'+2) = \\
 %\]
 %\[
-& (i+j+1)\cdot 2n\cdot (\sigma_{i,j+1}(\ell''))^2 - (i+j)\cdot 2n\cdot (\sigma_{i,j}(\ell))^2 + 2(\ell'''-\ell') + 18n + 2
+& (i+j+1)\cdot 2n\cdot (\sigma_{i,j+1}(\ell''))^2 - (i+j)\cdot 2n\cdot (\sigma_{i,j}(\ell))^2 + 2(\ell'''-\ell') + 18n + 6
 %\]
 \end{align*}
 By the arguments made before we also have that if $P_j$ and $P_{j+1}$ are both path segments of $P$, then 
 \[
-\lambda(\{u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}\})-\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\}) = 20n+2.
+\lambda(\{u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}\})-\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\}) = 20n+6.
 \]
 It follows that 
 \[
@@ -1709,14 +1709,14 @@ Note that if $i=1$ or $i=k$ we can already conclude that $|(\bigcap_{1\le j<i} e
 By construction of $G$ we have that for all $j\in[k]\setminus\{i\}$ that $v^i_{j-1}$ and $v^i_j$ are connected to $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ of the edge selection gadget of color combination $i,j$ (or $j,i$), respectively, via paths using vertices $\{a^{i,j,\ell}_{\ell''}\mid \ell''\in[5n]\}$ and $\{b^{i,j,\ell}_{\ell''}\mid \ell''\in[5n]\}$, respectively, if the vertex $w^i_{\ell'}\in W_i$ (for $i=k$, or vertex $w^i_{\ell'-3n}\in W_i$ for $i=1$) is incident with edge $e^{i,j}_\ell\in F_{i,j}$. Note that since $\sigma_{i,j}(\ell)=1$ we have that $e^{i,j}_\ell\in X$.
 Since $\ell'$ is independent from $\ell$ and $j$, it follows that $(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})=\{w^i_{\ell'}\}$ for $i=k$ and $(\bigcap_{1\le j<i} e_{j,i}) \cap (\bigcap_{i<j\le k} e_{i,j})=\{w^i_{\ell'-3n}\}$ for $i=1$.
 
-Assume now that $1\neq i\neq k$. By \cref{claim:16} we know that the duration of the path segment $P_i$ from $v^i_{i-1}$ to $v^i_i$ is $26n+1$. Consider the path segment $P^\star$ from $v^i_{i-2}$ to $v^i_{i+1}$. By the arguments above we know that $P^\star$ visits vertices $u^\ell_{\ell'-1},u^\ell_{\ell'}$ with $\sigma_{i-1,i}(\ell)=1$, and $\ell'\in[4n]$ of the edge selection gadget for color combination $i-1,i$ and afterwards $P^\star$ visits vertices $u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}$ with $\sigma_{i,i+1}(\ell'')=1$, and $\ell'''\in[4n]$ of the edge selection gadget for color combination $i,i+1$.
-By analogous arguments as above and the fact that the duration of $P_i$ is $26n+1$ we get that 
+Assume now that $1\neq i\neq k$. By \cref{claim:16} we know that the duration of the path segment $P_i$ from $v^i_{i-1}$ to $v^i_i$ is $26n+5$. Consider the path segment $P^\star$ from $v^i_{i-2}$ to $v^i_{i+1}$. By the arguments above we know that $P^\star$ visits vertices $u^\ell_{\ell'-1},u^\ell_{\ell'}$ with $\sigma_{i-1,i}(\ell)=1$, and $\ell'\in[4n]$ of the edge selection gadget for color combination $i-1,i$ and afterwards $P^\star$ visits vertices $u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}$ with $\sigma_{i,i+1}(\ell'')=1$, and $\ell'''\in[4n]$ of the edge selection gadget for color combination $i,i+1$.
+By analogous arguments as above and the fact that the duration of $P_i$ is $26n+5$ we get that 
 \[
-\lambda(\{u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}\})-\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\}) = 46n+2.
+\lambda(\{u^{\ell''}_{\ell'''-1},u^{\ell''}_{\ell'''}\})-\lambda(\{u^\ell_{\ell'-1},u^\ell_{\ell'}\}) = 46n+6.
 \]
 It follows that 
 \[
-(2i+1)\cdot (20n+2)+2\ell'''+2 -((2i-1)\cdot (20n+2)+2\ell'+2) = 46n+2,
+(2i+1)\cdot (20n+6)+2\ell'''+2 -((2i-1)\cdot (20n+6)+2\ell'+2) = 46n+6,
 \]
 and hence $\ell'''-\ell'=3n$.
 By construction of $G$ we have that $v^i_{i-2}$ and $v^i_{i-1}$ are connected to $u^\ell_{\ell'-1}$ and $u^\ell_{\ell'}$ of the edge selection gadget of color combination $i-1,i$, respectively, via paths using vertices $\{a^{i,i-1,\ell}_{\ell''''}\mid \ell''''\in[5n]\}$ and $\{b^{i,i-1,\ell}_{\ell''''}\mid \ell''''\in[5n]\}$, respectively, if the vertex $w^i_{\ell'}\in W_i$ is incident with edge $e^{i-1,i}_\ell\in F_{i-1,i}$. 
@@ -1727,14 +1727,14 @@ Since, again, $\ell'$ is independent from $\ell$ and $j$, it follows that $e^{i-
 
 We can conclude that indeed $\bigcup_{e\in X}e$ forms a multicolored clique in $H$.
 
-\subparagraph{$(\Leftarrow)$:} Assume $H$ is a yes-instance of \textsc{Multicolored Clique} and let $X$ be a solution. We construct the following labelling for $G$.
+\subparagraph{$(\Leftarrow)$:} Assume $H$ is a yes-instance of \textsc{Multicolored Clique} and let $X$ be a solution. We construct the following labelling for the underlying graph $G$, see also \cref{fig:hardness1} for an illustration.
 
 We start with the labels for edges from the alignment gadget. 
 \begin{itemize}
     \item For every $w\in\hat{W}$ we set $\lambda(\{w^\star,w\})=1$.
     \item Let $\hat{v}_0$ belong to some connector gadget and let $w\in\hat{W}$ be neighbor of $\hat{v}_0$. Then we set $\lambda(\{w,\hat{v}_0\})=n^9$.
-    \item Let $y^i$ belong to the verification gadget of color $i$ and let $w\in\hat{W}$ be neighbor of $y^i$. Then we set $\lambda(\{w,y^i\})=n^8-1$.
-    \item Let $x_1$ belong to the edge selection gadget for color combination $i,j$ and let $w\in\hat{W}$ be neighbor of $x_1$. Then we set $\lambda(\{w,x_1\})=(i+j)(20n+2)$.
+    \item Let $y^i$ belong to the verification gadget of color $i$ and let $w\in\hat{W}$ be neighbor of $y^i$. Then we set $\lambda(\{w,y^i\})=n^8-1$. Furthermore, we set $\lambda(\{y_i,v^i_0\})=n^8$.
+    \item Let $x_1$ belong to the edge selection gadget for color combination $i,j$ and let $w\in\hat{W}$ be neighbor of $x_1$. Then we set $\lambda(\{w,x_1\})=(i+j)(20n+6)$.
 \end{itemize}
 
 Next, consider a connector gadget with vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and set $A,B$.
@@ -1746,6 +1746,101 @@ Next, consider a connector gadget with vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,
     \item For all vertices $v\in B$ we set $\lambda(\{\hat{v}_1,v\})=\lambda(\{\hat{v}_2,v\})=n^9$.
     \item For all vertices $v\in V^\star\setminus A$ we set $\lambda(\{\hat{v}_1,v\})=\lambda(\{\hat{v}_2,v\})=n^9+2$. (Recall that $V^\star$ denotes the set of all vertices from all edge selection gadgets and all validation gadgets).
 \end{itemize}
+
+
+Recall that the following distance requirements were specified in the construction of the instance. It is straightforward to verify that distance requirements we recall in the following are all met, assuming no faster connections are introduced.
+\begin{itemize}
+    \item We have set $d(\hat{v}_0,\hat{v}_2)=d(\hat{v}_3,\hat{v}_1)=d(\hat{v}_2,\hat{v}_0')=d(\hat{v}_1,\hat{v}_3')=2$, and $d(\hat{v}_0,\hat{v}_0')=d(\hat{v}_3,\hat{v}_3')=d(\hat{v}_0,\hat{v}_3')=d(\hat{v}_3,\hat{v}_0')=3$.
+    \item Let $v\in A$, then we have set $d(v,\hat{v}_0')=3$ and $d(v,\hat{v}_3')=3$.
+    \item Let $v\in V^\star\setminus B$, then we have set $d(\hat{v}_0,v)=3$ and $d(\hat{v}_3,v)=3$.
+    \item Let $v\in A$ and $v'\in V^\star\setminus B$ such that $v$ and $v'$ are not neighbors, then we have set $d(v,v')=3$.
+\end{itemize}
+For two connector gadgets, one with vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and with sets $A$ and $B$, and one with vertices $\hat{v}_0',\hat{v}_0'',\hat{v}_1',\hat{v}_2',\hat{v}_3',\hat{v}_3''$ and with sets $A'$ and $B'$, we have set the following distances.
+\begin{itemize}
+    \item If there is a vertex $v\in A$ with $v\notin A'$, then we have set $d(\hat{v}_1,\hat{v}_1')=3$.
+    \item If there is a vertex $v\in A$ with $v\in A'\setminus B'$, then we have set $d(\hat{v}_1,\hat{v}_2')=3$.
+    \item If there is a vertex $v\in V^\star\setminus (A\setminus B)$ with $v\notin A'$, then we have set $d(\hat{v}_2,\hat{v}_1')=3$.    
+    \item If there is a vertex $v\in V^\star\setminus (A\setminus B)$ with $v\in A'\setminus B'$, then we have set $d(\hat{v}_2,\hat{v}_2')=3$.
+\end{itemize}
+
+ Next, consider the alignment gadget. Let $x_1$ belong to the edge selection gadget of color combination $i,j$ and let $w\in \hat{W}$ denote the neighbor of $x_1$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the first connector gadget of the edge selection gadget for color combination $i,j$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the first one of the edge selection gadget for color combination $i,j$). 
+\begin{itemize}
+    \item We have set $d(w^\star,x_1)=(20n+6)(i+j)$.
+    \item We have set $d(w^\star,\hat{v}_1)=n^9$, $d(w,\hat{v}_2)=n^9$, $d(w,\hat{v}_1)=n^9-(20n+6)(i+j)+1$, and $d(w,\hat{v}_2)=n^9-(20n+6)(i+j)+1$.
+    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus (X_{i,j}\cup \{v_{i,j}^{\star\star}\})$ we have set $d(w^\star,v)=n^9+2$ and $d(w,v)=n^9-(20n+6)(i+j)+3$.
+\end{itemize}
+
+Let $y^i$ belong to the verification gadget of color $i$ and let $w'\in \hat{W}$ denote the neighbor of $y^i$ in the alignment gadget. Let $\hat{v}_1$ and $\hat{v}_2$ belong to the connector gadget of the verification gadget for color $i$. Let $\hat{V}$ contain all vertices $\hat{v}_1$ and $\hat{v}_2$ belonging to the other connector gadgets (different from the one of the verification gadget for color $i$). Let $V_i$ denote the set of all vertices of the verification gadget of color $i$.
+\begin{itemize}
+    \item We have set $d(w^\star,y^i)=n^8-1$, $d(w',v^i_0)=2$, and $d(w^\star,v^i_0)=n^8$.
+    \item We have set $d(w^\star,\hat{v}_1)=n^9$, $d(w^\star,\hat{v}_2)=n^9$, $d(w',\hat{v}_1)=n^9-n^8$, and $d(w',\hat{v}_2)=n^9-n^8$.
+    \item For each vertex $v\in (V^\star\cup \hat{V})\setminus V_i$ we have set $d(w^\star,v)=n^9+1$, $d(w,v)=n^9-n^8+2$, and $d(y^i,v)=n^9-n^8+2$.
+\end{itemize}
+Let $\hat{v}_1$ belong to some connector gadget. We have set $d(w^\star,\hat{v}_1)=n^9$.
+
+We will make sure that no faster connections are introduced by only using even numbers as labels and labels that are strictly smaller than $n^8-1$. Furthermore, we can already see that no vertex except the ones in $\hat{W}$ can reach $w^\star$ and no two vertices $w,w'\in\hat{W}$ can reach each other, as required.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Next, consider the edge selection gadget for color combination $i,j$ with $i<j$.
+To describe the labels, we define a permutation $\sigma_{i,j}:[m]\rightarrow [m]$ as follows. Let $\{w^i_{\ell'}\}=X\cap W_i$ and $\{w^j_{\ell''}\}=X\cap W_j$. Then, since $X$ is a clique in $H$, we have that $\{w^i_{\ell'},w^j_{\ell''}\}=e^{i,j}_\ell\in F_{i,j}$. We set $\sigma_{i,j}(\ell)=1$ and $\sigma_{i,j}(1)=\ell$. For all $\ell'''\in[m]$ with $1\neq\ell'''\neq\ell$ we set $\sigma_{i,j}(\ell''')=\ell'''$.
+
+Let $x_1, x_2, \ldots, x_m$ belong to the edge selection gadget for color combination $i,j$.
+\begin{itemize}
+    \item For all $\ell'''\in[m]$ we set $\lambda(\{x_{\ell'''},v_{i,j}^{\star}\})=(i+j)\cdot (2n({\ell'''})^2 +18n+6)$.
+\end{itemize}
+Note that using these labels, we obey the following distance constraints.
+\begin{itemize}
+    \item For all $1\le \ell'''<\ell''''\le m$ we have set $d(x_{\ell'''},x_{\ell''''})=2n\cdot (i+j)\cdot((\ell'''')^2-(\ell''')^2)+1$.
+\end{itemize}
+Furthermore, we set the following labels.
+\begin{itemize}
+    \item  For all $\ell'''\in[m]$ we set $\lambda(\{u^{\ell'''}_{0},v_{i,j}^{\star}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell'''))^2 +18n+6)+2$, where $u^{\ell'''}_{0}$ belongs to the edge selection gadget for $i,j$.
+    \item For all $\ell'''\in[m]$ and $\ell''''\in[4n]$ we set $\lambda(\{u^{\ell'''}_{\ell''''-1},u^{\ell'''}_{\ell''''}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell'''))^2 +18n+6)+2\ell''''+2$, where $u^{\ell'''}_{\ell''''-1}$ and $u^{\ell'''}_{\ell''''}$ belong to the edge selection gadget for $i,j$.
+    \item  For all $\ell'''\in[m]$ we set $\lambda(\{u^{\ell'''}_{4n},v_{i,j}^{\star\star}\})=(i+j)\cdot (2n\cdot (\sigma_{i,j}(\ell'''))^2 +18n+6)+8n+4$, where $u^{\ell'''}_{4n}$ belongs to the edge selection gadget for $i,j$.
+\end{itemize}
+It is straightforward to verify that with these labels we get for all $\ell'''\in[m]$ that $d(x_{\ell'''},v_{i,j}^{\star\star})=8n+5$, as required.
+
+Finally, consider the validation gadget for color $i$. 
+For all $j\in[k]\setminus\{i\}$. Assume $j<i$, the case of $j>i$ is analogous. Let $\{w^i_{\ell'}\}=X\cap W_i$ and $\{w^j_{\ell''}\}=X\cap W_j$ and $\{w^i_{\ell'},w^j_{\ell''}\}=e^{j,i}_\ell\in F_{j,i}$. 
+Recall that we set $\sigma_{j,i}(\ell)=1$ and $\sigma_{j,i}(1)=\ell$. For all $\ell''\in[m]$ with $1\neq\ell''\neq\ell$ we set $\sigma_{j,i}(\ell'')=\ell''$.
+Recall that we set $\lambda(\{u^{\ell}_{\ell'-1},u^{\ell}_{\ell'}\})=(i+j)\cdot (20n+6)+2\ell+2$, where $u^{\ell}_{\ell'-1}$ and $u^{\ell}_{\ell'}$ belong to the edge selection gadget for $j,i$.
+Now we set for all $\ell''\in[5n-1]$ and all $\ell'''\in[m]$ the following.
+\begin{itemize}
+    \item $\lambda(\{a^{i,j,\ell'''}_{5n},u^{\ell'''}_{\ell''''}\})=(i+j)\cdot (20n+6)+2\ell-2$ for all $\ell''''$ such that this edge exists.
+    \item $\lambda(\{a^{i,j,\ell'''}_{1},v^i_{j-1}\})=(i+j)\cdot (20n+6)+2\ell-10n-4$.
+    \item $\lambda(\{a^{i,j,\ell'''}_{\ell''},a^{i,j,\ell'''}_{\ell''+1}\})=(i+j)\cdot (20n+6)+2\ell-2(5n-\ell'')$.
+    \item $\lambda(\{b^{i,j,\ell'''}_{5n},u^{\ell'''}_{\ell''''}\})=(i+j)\cdot (20n+6)+2\ell+6$ for all $\ell''''$ such that this edge exists.
+    \item $\lambda(\{b^{i,j,\ell'''}_{1},v^i_{j}\})=(i+j)\cdot (20n+6)+2\ell+10n+8$.
+    \item $\lambda(\{b^{i,j,\ell'''}_{\ell''},b^{i,j,\ell'''}_{\ell''+1}\})=(i+j)\cdot (20n+6)+2\ell+2(5n-\ell'')+6$.
+\end{itemize}
+
+
+For all $0\le j<j'<i$ and all $i\le j<j'\le k$ we set the following.
+\begin{itemize}
+    \item We set $d(v^i_j,v^i_{j'})=(20n+6)(j'-j)-1$.
+\end{itemize}
+For all $0\le j<i$ and all $i\le j'\le k$ we set the following.
+\begin{itemize}
+    \item We set $d(v^i_j,v^i_{j'})=(20n+6)(j'-j)+6n-1$.
+\end{itemize}
+
+
+
+
+
+
 
 \subparagraph{Infinity Gadget.} Finally, we show how to get rid of the infinity entries in $D$ and how to allow a finite $\Delta$. To this end, we introduce the \emph{infinity gadget}. We add four vertices $z_1, z_2, z_3, z_4$ to the graph and we set $\Delta=n^{11}$. Let $V$ denote the set of all remaining vertices. We set the following distances.
 \begin{itemize}
@@ -2279,9 +2374,11 @@ But since $P$ is the fastest temporal path from $u$ to $v$, we get that $d(P_2) 
 Now to label $P$ we use the fact that the fastest temporal path from $u$ to any $v_i \in P$ is a subpath of $P$, 
 therefore we can label each edge using \cref{obs:FirstLabelAndDuration},
 where the duration from $u$ to $v_i$ equals to $D_{u,v_i}$ and 
-we set the first label of $P$ to be a constant $c_{uv}$.
-This gives us a unique label for each edge of $P$, that depends on the value $c_{uv}$.
+we set the label of the first edge of $P$ to be a constant form $[\Delta]$.
+This gives us a unique label for each edge of $P$, that depends on the value $\lambda(u v_2)$.
 \end{proof}
+
+\todo[inline]{George proved it. Added proof inside. Check if OK?\\}
 
 \begin{lemma}\label{lemma:FPT-uv-LabelAlmostalledges}
     Let $u, v \in U$ be two arbitrary vertices of interest and suppose that $P = (u=v_1, v_2, \dots, v_p = v)$, where $p \geq 2$, 
@@ -2289,180 +2386,211 @@ This gives us a unique label for each edge of $P$, that depends on the value $c_
     Let $\ell_{u,v} \geq 1$ be the number of vertices of interest in $P$ different to $u,v$, namely $\ell_{u,v} = | v_i \in \{P \setminus \{u,v \} \} \cap U |$.
     We can determine the labeling $\lambda$ of all but $\ell_{u,v}$ edges of $P$, with respect to the label $\lambda(uv_2)$ of the first edge,
     such that the labeling $\lambda$ respects the values from $D$.
-    Moreover, for the labels of edges that cannot be determined precisely, we can get some extra restrictions.
+    Moreover, for the labels of edges that cannot be determined precisely, we introduce some extra restrictions.
 \end{lemma}
 
-\todo[inline]{George proved it. Added proof inside. Check if OK?\\
-Check the proof below and correct it/make it pretty.}
+For the proof of the above lemma, we first prove a weaker statement,
+for which we need to introduce some extra definitions and fix some notations.
+%
+In the following
+we only consider \emph{wasteless} temporal paths. 
+We call 
+a temporal path $P=((e_{1},t_{1}),\ldots ,(e_{k},t_{k}))$ a \emph{wasteless} temporal path, 
+if for every $i=1,2,\ldots ,k-1$, we have that $t_{i+1}$ is the first time after $t_{i}$ that the edge $e_{i+1}$ appears. 
 
-\begin{proof}
-We denote with $v_i \in U$ a vertex of interest in $P \setminus \{u,v\}$.
-There are two options, either $v_i$ is reached from $u$ using the subpath $P_i = (u, v_2, v_3, \dots, v_i)$ of $P$,
-or there exists a fastest temporal path $P' = (u, w_2, w_3, \dots, w_{p'} = v_i)$, for which $P \cap P' = \{u, v_i\}$.
-If the temporal path from $u$ to $v_i$ is a subpath of $P$, then we determine the labeling of $P$ using \cref{lemma:FPT-uv-Labelalledges}.
-So we can suppose that the fastest temporal path from $u$ to $v_i$ is of form $P'$.
+Let $u,v\in V$, and let $t\in \mathbb{N}$. 
+Given that a temporal path starts within the period $[t,t+\Delta -1]$,
+we denote with $A_{t}(u,v)$
+the \emph{arrival} of the fastest path in $(G,\lambda )$ from $u$ to $v$, and
+with $A_{t}(u,v,P)$,
+the \emph{arrival} along path $P$ in $(G,\lambda )$ from $u$ to $v$.
+%
+Whenever $t=1$, we may omit the index $t$, i.e. we may write 
+$A(u,v,P)=A_{1}(u,v,P)$ and $A(u,v)=A_{1}(u,v)$. 
 
-In the following, we only consider \emph{wasteless} temporal paths. A temporal path $P=((e_{1},t_{1}),\ldots ,(e_{k},t_{k}))$ is \emph{wasteless}
-if, for every $i=1,2,\ldots ,k-1$, we have that $t_{i+1}$ is the first time after $t_{i}$ that the edge $e_{i+1}$ appears.
+Suppose now that 
+we know the underlying path $P_{u,v} = (u=v_1, v_2, \dots, v_p = v)$ of the fastest temporal path among vertices of interest $u$ and $v$ in $G'$.
+Let $v_i \neq u,v$ be a vertex of interest on the path $P_{u,v}$.
+Suppose that $v_i$ is reached the fastest from $u$ by a path $P = (u = u_1, u_2, \dots, u_{j-1}, v_i)$.
+We split the path with $P_{u,v}$ into a path $ Q = (u=v_1, v_2, \dots, v_i)$ and $R = (v_i, v_{i+1}, \dots, v_p=v)$
+(for details see~\cref{fig:FPT-uv-Labelalledges}).
 
-
-	\begin{definition}
-		\label{arrival-duration-def}Let $u,v\in V$, and let $t\in 
-		%TCIMACRO{\U{2115} }%
-		%BeginExpansion
-		\mathbb{N}
-		%EndExpansion
-		$. Given that a temporal path starts within the period $[t,t+\Delta -1]$,
-		the \emph{arrival} of the fastest path in $(G,\lambda )$ from $u$ to $v$ is $%
-		A_{t}(u,v)$, and the \emph{arrival} along path $P$ in $(G,\lambda )$ from $u$
-		to $v$ is $A_{t}(u,v,P)$.
-	\end{definition}
-	
-	Whenever $t=1$, we may omit the index $t$, i.e. we may write $%
-	A(u,v,P)=A_{1}(u,v,P)$ and $A(u,v)=A_{1}(u,v)$. The following refers to
-	Figure~\ref{conj-fig}.
-	
-	Initial assumptions:
-	
+From the above we get the following assumptions:
 	\begin{enumerate}
-		\item $d(u_{0},u_{i})=d(u_{0},u_{i},P)\leq d(u_{0},u_{i},Q)$; denote $\delta
-		_{0}=d(u_{0},u_{i},Q)-d(u_{0},u_{i})\geq 0$.
-		
-		\item $d(u_{0},u_{k})=d(u_{0},u_{k},Q\cup R)\leq d(u_{0},u_{k},P\cup R)$.
+		\item \label{assumption1-FPT} $d(u,v_{i})=d(u,v_{i},P)\leq d(u,v_{i},Q)$, and
+		\item \label{assumption2-FPT} $d(u,v_p)=d(u,v_p,Q\cup R)\leq d(u,v_p,P\cup R)$.
 	\end{enumerate}
-	
-	General properties:
-	
+In the remainder, we denote with $\delta_{0}$ the difference $d(u,v_{i},Q) - d(u,v_{i})\geq 0$.
+It follows that:
 	\begin{itemize}
 		\item $A_{t}(u,v,P)=t_{0}+d(u,v,P)-1$, for every $u,v$, where $t_{0}\in
 		\lbrack t,t+\Delta -1]$ is the label of the first edge of the path $P$ from $%
 		u$ to $v$.
 	\end{itemize}
-	
-	\bigskip
-	
-	Let $t_{u_{1}}\in \lbrack 1,\Delta ]$ be the label of the edge $u_{0}u_{1}$,
-	and denote by $t_{v_{1}}$ the appearance of the edge $u_{0}v_{1}$ within the
-	period $[t_{u_{1}},t_{u_{1}}+\Delta -1]$. Note that $1\leq t_{u_{1}}\leq
-	\Delta $ and that $t_{u_{1}}\leq t_{v_{1}}\leq 2\Delta $. By the first
-	initial assumption, we have:
-	
+
+ Let $t_{v_2}\in \lbrack 1,\Delta ]$ be the label of the edge $uv_2$,
+	and denote by $t_{u_{2}}$ the appearance of the edge $uu_{2}$ within the
+	period $[t_{v_2},t_{v_2}+\Delta -1]$. Note that $1\leq t_{v_2}\leq
+	\Delta $ and that $t_{v_2}\leq t_{u_{2}}\leq 2\Delta $. 
+    From the assumption~\ref{assumption1-FPT} we get :
 	\begin{equation*}
 		\delta
-		_{0}=d(u_{0},u_{i},Q)-d(u_{0},u_{i})=A_{t_{u_{1}}}(u_{0},u_{i},Q)-A_{t_{u_{1}}}(u_{0},u_{i},P)+\left( t_{v_{1}}-t_{u_{1}}\right)
+		_{0}=d(u,v_{i},Q)-d(u,v_{i})=A_{t_{v_2}}(u,v_{i},Q)-A_{t_{v_2}}(u,v_{i},P)+\left( t_{u_{2}}-t_{v_2}\right)
 	\end{equation*}%
 	and thus%
 	\begin{equation}
-		A_{t_{u_{1}}}(u_{0},u_{i},P)-A_{t_{u_{1}}}(u_{0},u_{i},Q)=t_{v_{1}}-(t_{u_{1}}+\delta _{0})
+		A_{t_{v_2}}(u,v_{i},P)-A_{t_{v_2}}(u,v_{i},Q)=t_{u_{2}}-(t_{v_2}+\delta _{0}).
 		\label{basic-eq-1}
 	\end{equation}
-	
-	\begin{lemma}
-		\label{lem-1}If $t_{v_{1}}\neq t_{u_{1}}$ then $\delta _{0}\leq \Delta -2$
-		and $t_{v_{1}}\geq t_{u_{1}}+\delta _{0}+1$.
+
+\begin{figure}[h]
+	\centering
+	\begin{tikzpicture}[scale=.85]
+		%%%S_uv
+		\node[vert,label=below:$u{=} v_1$] (v1) at (1,0) {};
+		\node[vert, label=below:$v_2$] (v2) at (2,0) {};
+		\node[vert,label=below:$v_3$] (v3) at (3,0) {};
+		\node[vert,label=below:$v_{i-1}$] (vi-1) at (6,0) {};
+		\node[vert,label=below:$v_i$] (vi) at (7,0) {};
+		\node[vert,label=below:$v_{i+1}$] (vi+1) at (8,0) {};
+		\node[vert,label=below:$v_{p} {=} v$] (v) at (10,0) {};
+		
+		
+		\draw (v1) -- node[label={above:$t_{v_2}$},yshift=-5] {} (v2) -- (v3) -- (vi-1) -- node[label={above:$e$},yshift=-5] {} (vi) -- node[label={above:$f$},yshift=-5] {} (vi+1) -- (v);
+		
+		\draw (v1) to [out=80,in=100,distance=3cm]
+		node[pos=0.1,label={left:$t_{u_2}$}] {}
+		node[vert,pos=0.15,label=above:$u_2$] {}
+		node[vert,pos=0.3,label=above:$u_3$] {}
+		node[vert,pos=0.85,label=above:$u_{j-1}$] {}
+		node[pos=0.9,label={right:$g$}] {} (vi);
+		
+		%\draw[transform canvas={yshift=0mm}, blue]
+		%(v1) -- (v2) -- (v3) -- node[pos=0.3,yshift=-2,label=above:$P_{u,v}$] {} (vi-1) -- (vi) ;
+		
+		%\draw[red]
+		%(v1) edge[diredge2] [out=85,in=95,distance=2.1cm] node[pos=0.3,yshift=2,label=above:$P_{u,w}$] {} (v3) ;
+	\end{tikzpicture}
+	\caption{An example of the situation in \cref{lemma:FPT-uv-LabelAlmostalledges},
+		where we assume that the fastest temporal path from $u$ to $v$ is $P_{u,v} = (u=v_1, v_2, \dots v_p)$,
+		and the fastest temporal path from $u$ to $v_i$ in $P_{u,v}$ is $P = (u, u_2, u_3, \dots, v_i)$.
+		We denote with $Q = (u=v_1, v_2, \dots, v_i)$ and with $R = (v_i, v_{i+1}, \dots, v_p=v)$.
+		\label{fig:FPT-uv-Labelalledges}}
+\end{figure}
+ 
+We use all of the above discussion, to prove the following lemma.
+ 	\begin{lemma}
+		\label{lem-1}If $t_{u_{2}}\neq t_{v_2}$ then $\delta _{0}\leq \Delta -2$
+		and $t_{u_{2}}\geq t_{v_2}+\delta _{0}+1$.
 	\end{lemma}
 	
 	\begin{proof}
 		First assume that $\delta _{0}\geq \Delta -1$. Then, it follows by (\ref%
 		{basic-eq-1}) that $%
-		A_{t_{u_{1}}}(u_{0},u_{i},P)-A_{t_{u_{1}}}(u_{0},u_{i},Q)\leq
-		t_{v_{1}}-t_{u_{1}}-\Delta +1\leq 0$, and thus $A_{t_{u_{1}}}(u_{0},u_{i},P)%
-		\leq A_{t_{u_{1}}}(u_{0},u_{i},Q)$. Therefore, since we can traverse path $P$
-		from $u_{0}$ to $u_{i}$ by departing at time $t_{v_{1}}\geq t_{u_{1}}+1$ and
-		by arriving no later than traversing path $Q$, we have that $d(u_{0},u_{k},P\cup Q)<d(u_{0},u_{k},Q\cup R)$, which is a contradiction to the
+		A_{t_{v_2}}(u,v_{i},P)-A_{t_{v_2}}(u,v_{i},Q)\leq
+		t_{u_{2}}-t_{v_2}-\Delta +1\leq 0$, and thus $A_{t_{v_2}}(u,v_{i},P)%
+		\leq A_{t_{v_2}}(u,v_{i},Q)$. Therefore, since we can traverse path $P$
+		from $u$ to $v_{i}$ by departing at time $t_{u_{2}}\geq t_{v_2}+1$ and
+		by arriving no later than traversing path $Q$, we have that $d(u,v_p,P\cup Q)<d(u,v_p,Q\cup R)$, which is a contradiction to the
 		second initial assumption. Therefore $\delta _{0}\leq \Delta -2$.
 		
-		Now assume that $t_{u_{1}}+1\leq t_{v_{1}}\leq t_{u_{1}}+\delta _{0}$. Then,
-		it follows by (\ref{basic-eq-1}) that $A_{t_{u_{1}}}(u_{0},u_{i},P)\leq
-		A_{t_{u_{1}}}(u_{0},u_{i},Q)$ which is, similarly to the previous case, a
-		contradiction. Therefore $t_{v_{1}}\geq t_{u_{1}}+\delta _{0}+1$.
+		Now assume that $t_{v_2}+1\leq t_{u_{2}}\leq t_{v_2}+\delta _{0}$. Then,
+		it follows by (\ref{basic-eq-1}) that $A_{t_{v_2}}(u,v_{i},P)\leq
+		A_{t_{v_2}}(u,v_{i},Q)$ which is, similarly to the previous case, a
+		contradiction. Therefore $t_{u_{2}}\geq t_{v_2}+\delta _{0}+1$.
 	\end{proof}
-	
-	\medskip
-	
-	The next corollary follows immediately from Lemma \ref{lem-1}.
+
+ The next corollary follows immediately from Lemma \ref{lem-1}.
 	
 	
 	\begin{corollary}
-		\label{cor-1}If $t_{v_{1}}\neq t_{u_{1}}$ then $1\leq
-		A_{t_{u_{1}}}(u_{0},u_{i},P)-A_{t_{u_{1}}}(u_{0},u_{i},Q)\leq \Delta
+		\label{cor-1}If $t_{u_{2}}\neq t_{v_2}$ then $1\leq
+		A_{t_{v_2}}(u,v_{i},P)-A_{t_{v_2}}(u,v_{i},Q)\leq \Delta
 		-1-\delta _{0}$.
 	\end{corollary}
 	
-	\begin{lemma}
-		\label{lem-2}$d(u_{0},u_{i-1},P\cup \{u_{i}u_{i-1}\})>d(u_{0},u_{i-1},Q\setminus
-		\{u_{i}u_{i-1}\})$.
+	\begin{lemma}\label{lemma:FPT-twoPathsOneUnlabeledEdge}
+		\label{lem-2}$d(u,v_{i-1},P\cup \{v_{i}v_{i-1}\})>d(u,v_{i-1},Q\setminus
+		\{v_{i}v_{i-1}\})$.
 	\end{lemma}
-	
+We are now ready to prove the follwing result.
 	\begin{proof}
-		Let $e\in \lbrack 1,\Delta ]$ be the label of the edge $u_{i-1}u_{i}$, and
+		Let $e\in \lbrack 1,\Delta ]$ be the label of the edge $v_{i-1}v_{i}$, and
 		let $f\in \lbrack e+1,e+\Delta ]$ be the time of the first appearance of the
-		edge $u_{i}u_{i+1}$ after time $e$. Let $A_{t_{u_{i}}}(u_{0},u_{i},Q)=x%
-		\Delta +e$. Then $A_{t_{u_{i}}}(u_{0},u_{i+1},Q\cup\{u_{i}u_{i+1}\})=x\Delta +f$. Furthermore let $g$ be such
-		that $A_{t_{u_{i}}}(u_{0},u_{i},P)=x\Delta +g$. 
+		edge $v_{i}v_{i+1}$ after time $e$. Let $A_{t_{v_{i}}}(u,v_{i},Q)=x%
+		\Delta +e$. Then $A_{t_{v_{i}}}(u,v_{i+1},Q\cup\{v_{i}v_{i+1}\})=x\Delta +f$. Furthermore let $g$ be such
+		that $A_{t_{v_{i}}}(u,v_{i},P)=x\Delta +g$. 
 		
-		\emph{Case 1: }$t_{v_{1}}\neq t_{u_{1}}$\emph{.} Then Corollary \ref{cor-1}
+		\emph{Case 1: }$t_{u_{2}}\neq t_{v_2}$\emph{.} Then Corollary \ref{cor-1}
 		implies that $e+1\leq g\leq e+(\Delta -1-\delta _{0})$. Assume that $g<f$.
-		Then, we can traverse path $P$ from $u_{0}$ to $u_{i}$ by departing at time $%
-		t_{v_{1}}\geq t_{u_{1}}+1$ and by arriving at most at time $x\Delta +f-1$,
-		and thus $d(u_{0},u_{k},P\cup R)<d(u_{0},u_{k},Q\cup R)$, which is a
+		Then, we can traverse path $P$ from $u$ to $v_{i}$ by departing at time $%
+		t_{u_{2}}\geq t_{v_2}+1$ and by arriving at most at time $x\Delta +f-1$,
+		and thus $d(u,v_p,P\cup R)<d(u,v_p,Q\cup R)$, which is a
 		contradiction to the second initial assumption. Therefore $g\geq f$. That is,%
 		\begin{equation}
 			e+1\leq f\leq g\leq e+(\Delta -1-\delta _{0}).  \label{basic-eq-2}
 		\end{equation}
 		
-		Consider the path $P^{\ast }=P\cup \{u_{i}u_{i-1}\}$. Assume that we start
-		traversing $P^{\ast }$ at time $t_{v_{1}}$. Then we arrive at $u_{i}$ at
-		time $x\Delta +g$, and we continue by traversing edge $u_{i}u_{i-1}$ at time 
-		$(x+1)\Delta +e$. That is, $d(u_{0},u_{i-1},P^{\ast })=(x+1)\Delta
-		+e-t_{v_{1}}+1$. 
+		Consider the path $P^{\ast }=P\cup \{v_{i}v_{i-1}\}$. Assume that we start
+		traversing $P^{\ast }$ at time $t_{u_{2}}$. Then we arrive at $v_{i}$ at
+		time $x\Delta +g$, and we continue by traversing edge $v_{i}v_{i-1}$ at time 
+		$(x+1)\Delta +e$. That is, $d(u,v_{i-1},P^{\ast })=(x+1)\Delta
+		+e-t_{u_{2}}+1$. 
 		
-		Now consider the path $Q^{\ast }=Q\setminus \{u_{i}u_{i-1}\}$. Let $h\in
-		\lbrack 1,\Delta ]$ be such that $A_{t_{u_{i}}}(u_{0},u_{i-1},Q^{\ast
+		Now consider the path $Q^{\ast }=Q\setminus \{v_{i}v_{i-1}\}$. Let $h\in
+		\lbrack 1,\Delta ]$ be such that $A_{t_{v_{i}}}(u,v_{i-1},Q^{\ast
 		})=x\Delta +e-h$. That is, if we start traversing $Q^{\ast }$
-		at time $t_{u_{1}}$, we arrive at $u_{i-1}$ at time $x\Delta +e-h$, i.e. $%
-		d(u_{0},u_{i-1},Q^{\ast })=x\Delta +e-h-t_{u_{1}}+1$. Summarizing, we have:%
+		at time $t_{v_2}$, we arrive at $v_{i-1}$ at time $x\Delta +e-h$, i.e. $%
+		d(u,v_{i-1},Q^{\ast })=x\Delta +e-h-t_{v_2}+1$. Summarizing, we have:%
 		\begin{eqnarray*}
-			d(u_{0},u_{i-1},P^{\ast })-d(u_{0},u_{i-1},Q^{\ast }) &=&\Delta
-			+h-(t_{v_{1}}-t_{u_{1}}) \\
+			d(u,v_{i-1},P^{\ast })-d(u,v_{i-1},Q^{\ast }) &=&\Delta
+			+h-(t_{u_{2}}-t_{v_2}) \\
 			&\geq &(\Delta -\delta _{0})+h>0,
 		\end{eqnarray*}%
 		which proves the statement of the lemma.
 		
-		\emph{Case 2: }$t_{v_{1}}=t_{u_{1}}$\emph{.} Then, it follows by (\ref%
+		\emph{Case 2: }$t_{u_{2}}=t_{v_2}$\emph{.} Then, it follows by (\ref%
 		{basic-eq-1}) that $%
-		A_{t_{u_{1}}}(u_{0},u_{i},P)=A_{t_{u_{1}}}(u_{0},u_{i},Q)-\delta _{0}\leq
-		A_{t_{u_{1}}}(u_{0},u_{i},Q)$. Therefore $g\leq e$. Similarly to Case 1
-		above, consider the paths $P^{\ast }=P\cup \{u_{i}u_{i-1}\}$ and $Q^{\ast
-		}=Q\setminus \{u_{i}u_{i-1}\}$. Assume that we start traversing $P^{\ast }$
-		at time $t_{v_{1}}=t_{u_{1}}$. Then we arrive at $u_{i}$ at time $x\Delta +g$%
-		, and we continue by traversing edge $u_{i}u_{i-1}$, either at time $%
+		A_{t_{v_2}}(u,v_{i},P)=A_{t_{v_2}}(u,v_{i},Q)-\delta _{0}\leq
+		A_{t_{v_2}}(u,v_{i},Q)$. Therefore $g\leq e$. Similarly to Case 1
+		above, consider the paths $P^{\ast }=P\cup \{v_{i}v_{i-1}\}$ and $Q^{\ast
+		}=Q\setminus \{v_{i}v_{i-1}\}$. Assume that we start traversing $P^{\ast }$
+		at time $t_{u_{2}}=t_{v_2}$. Then we arrive at $v_{i}$ at time $x\Delta +g$%
+		, and we continue by traversing edge $v_{i}v_{i-1}$, either at time $%
 		(x+1)\Delta +e$ (in the case where $g=e$) or at time $x\Delta +e$ (in the
-		case where $g\neq e$). That is, $d(u_{0},u_{i-1},P^{\ast })\geq x\Delta
-		+e-t_{u_{1}}+1$.
+		case where $g\neq e$). That is, $d(u,v_{i-1},P^{\ast })\geq x\Delta
+		+e-t_{v_2}+1$.
 		
 		Similarly to Case 1, let $h\in \lbrack 1,\Delta ]$ be such that $%
-		A_{t_{u_{i}}}(u_{0},u_{i-1},Q^{\ast })=x\Delta +e-h$. That is, if we start
-		traversing $Q^{\ast }$ at time $t_{u_{1}}$, we arrive at $u_{i-1}$ at time $%
-		x\Delta +e-h$, i.e. $d(u_{0},u_{i-1},Q^{\ast })=x\Delta +e-h-t_{u_{1}}+1$.
+		A_{t_{v_{i}}}(u,v_{i-1},Q^{\ast })=x\Delta +e-h$. That is, if we start
+		traversing $Q^{\ast }$ at time $t_{v_{2}}$, we arrive at $v_{i-1}$ at time $%
+		x\Delta +e-h$, i.e. $d(u,v_{i-1},Q^{\ast })=x\Delta +e-h-t_{v_{1}}+1$.
 		Summarizing, we have:%
 		\begin{equation*}
-			d(u_{0},u_{i-1},P^{\ast })-d(u_{0},u_{i-1},Q^{\ast })\geq h\geq 1,
+			d(u,v_{i-1},P^{\ast })-d(u,v_{i-1},Q^{\ast })\geq h\geq 1,
 		\end{equation*}%
 		which proves the statement of the lemma.
 	\end{proof}
-	
-	\begin{figure}[htbp]
-		\centering
-		\includegraphics[width=0.6\linewidth]{conj-fig}
-		\caption{Figure of the conjecture.}
-		\label{conj-fig}
-	\end{figure}
-  
+
+ From the above it follows that if $P$ is a fastest path from $u$ to $v$,
+ then all vertices of $P$, with the exception of vertices of interest $v_i \in P\setminus \{u,v\}$,
+ are reached using the same path $P$.
+ We use this fact in the following proof.
+
+\begin{proof}[Proof of \cref{lemma:FPT-uv-LabelAlmostalledges}]
+For every vertex of interest $v_i \in U \cap (P \setminus \{u,v\})$
+we have two options.
+First, when the fastest temporal path $P'$ from $u$ to $v_i$ is
+a subpath of $P$.
+In this case we determine the labeling of $P'$ using \cref{lemma:FPT-uv-Labelalledges}.
+Second, when the fastest temporal path $P'$ from $u$ to $v_i$ is 
+not a subpath of $P$. 
+In this case we know exactly how to label all of the edges of $P$,
+with the exception of edges of from $v_{i-1}v_i$, that are incident to $v_i$ in $P$.
 \end{proof}
 
 %Observe also the following.
-\todo[inline]{Check all of the above and correct it/make it pretty.}
+\todo[inline]{Check all of the above and correct it}
 
 \begin{lemma}\label{lemma:FPT-unlabeldPaths-01}
     Suppose that
