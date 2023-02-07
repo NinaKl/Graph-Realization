@@ -3390,7 +3390,6 @@ We distinguish following cases.
 The procedure produces one equality constraint (for the fastest path) and $O(k^k)$ inequality constraints.
 
 \subsection{Solving ILP instances}
-\todo[inline]{HM: i think we should elaborate a little bit more on correctness. basically saying that because we do exhaustive search, we are not overlooking solutions. and because we add all constraints, we can be sure that if the ILP is a yes-instance, there is actually a labeling.}
 All of the above finishes our construction of ILP instances.
 We have created $f(k)$ instances (where $f$ is a double exponential function), 
 each with $O(k^2)$ variables and $n^2 g(k)$ constraints (again, $g$ is a double exponential function).
