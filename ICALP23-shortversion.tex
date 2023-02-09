@@ -275,7 +275,8 @@ As it turns out, the periodic temporal graph realization problem with respect to
 Formally, let $G=(V,E)$ and $\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ be an edge-labeling function that assigns to every edge of $G$ exactly one of the labels from $\{1,\ldots,\Delta\}$. 
 Then we denote by $(G,\lambda,\Delta)$ the \emph{$\Delta$-periodic temporal graph} $(G,L)$, where for every edge $e\in E$ we have $L(e)=\{i\Delta + x : i\geq 0, x\in \lambda(e)\}$. 
 In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of $G$. 
-When it is clear from the context, we drop $\Delta$ form the notation and say that $(G,\lambda)$ is a ($\Delta$-periodic) temporal graph.
+When it is clear from the context, we drop $\Delta$ form the notation and 
+we denote the ($\Delta$-periodic) temporal graph by $(G,\lambda)$.
 Given a duration matrix $D$, it is easy to observe that similar to the static case, if $D_{i,j}=1$, then $v_i$ and $v_j$ must be connected by an edge. We call the graph defined by those edges as the \emph{underlying graph} of $D$.
 
 
@@ -303,18 +304,24 @@ Building upon these initial results, we explore the possibilities to generalize 
 We obtain the following results. We show that \deltaExact\ is W[1]-hard when parameterized by the feedback vertex number of the underlying graph (\cref{thm:W1wrtFVS}). 
 To this end, we first give a reduction from \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval} to a variant of \deltaExact\ where the period $\Delta$ is infinite, that is, when the labeling is non-periodic. We use a special gadget (the ``infinity'' gadget) which allows us to transfer the result to a finite period $\Delta$. The latter construction is independent from the particular reduction we use, and can hence be treated as a reduction from the non-periodic to the periodic setting.
 
-We complement this result by showing that the problem is fixed-parameter tractable (FPT) with respect to the feedback edge number of the underlying graph (\cref{thm:FPTwrtFES}). 
-Our FPT algorithm preprocesses the input graph in a suitable way that allows us to efficiently guess desired structures. Then we create integer linear programs (ILPs) (with bounded number of variables) and add constraints to those instances by suitably partitioning the fastest paths among pairs of vertices belonging to a small number of interesting sets. The notion of segment is crucial for adding the necessary and sufficient number of linear constraints. We use Lenstra's Theorem~\cite{Lenstra1983Integer} to solve the ILPs efficiently.
+We complement this result by showing that the problem is fixed-parameter tractable (FPT) with respect to the feedback edge number $k$ of the underlying graph (\cref{thm:FPTwrtFES}). 
+Our FPT algorithm works as follows on a high level. 
+First we distinguish $O(k)$ vertices which we call ``interesting vertices''. 
+Then, we guess the fastest temporal paths for each pair of these interesting vertices; as we prove, the number of choices we have for all these guesses is upper bounded by a function of $k$. 
+Then we also make several further guesses (again using a bounded number of choices), which altogether leads us to specify a small (i.e.~bounded by a function of $k$) number of different configurations for the fastest paths between \emph{all pairs} of vertices. For each of these configurations, we must then make sure that the labels of our solution will not allow any other temporal path from a vertex $v_i$ to a vertex $v_j$ have a \emph{strictly smaller} duration than $D_{i,j}$.
+This naturally leads us to build one Integer Linear Program (ILP) for each of these configurations. We manage to formulate all these ILPs by having a number of variables that is upper-bounded by a function of $k$. Finally we use Lenstra's Theorem~\cite{Lenstra1983Integer} to solve each of these ILPs in FPT time. At the end, our initial instance is a \textsc{Yes}-instance if and only if at least one of these ILPs is feasible.
 
 
-Note that this provides a fairly complete picture of the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph that measure ``tree-likeness''. To obtain our results, we prove several properties of fastest temporal paths, which may be of independent interest.
+
+
+The above results provide a fairly complete picture of the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph which measure ``tree-likeness''. To obtain our results, we prove several properties of fastest temporal paths, which may be of independent interest.
 
 Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the Appendix.
 
 
 \subparagraph{Related work.} Graph realization problems on static graphs have been studied since the 1960s. We provide an overview of the literature in the introduction.
 
-To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. However, many other connectivity-related problems have been studied in the temporal setting~\cite{enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart.
+To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. However, many other connectivity-related problems have been studied in the temporal setting~\cite{Mertzios-transitivity21,Akrida-explorer-21,enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22,FuchsleMNR22}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart.
 
 There are two problem settings that share similarities with our setting, which we discuss in more detail in the following.
 
@@ -346,8 +353,9 @@ Let $v_1,v_2,\ldots,v_n$ be the $n$ vertices of the graph $G$.
 For simplicity of the presentation~--and with a slight abuse of notation--~we refer during the paper to the entry $D_{i,j}$ of the matrix $D$ as 
 $D_{a,b}$, where $a=v_i$ and $b=v_j$. That is, we put as indices of the matrix $D$ the corresponding vertices of $G$ whenever it is clear from the context.
 Many times we also refer to a path $P=(u=v_1, v_2, \dots, v_p=v)$ from $u$ to $v$ in $G$,
-as a temporal path in $(G,\lambda)$,
+as a temporal path in $(G,\lambda,\Delta)$,
 where we actually mean that $(P,\lambda,\Delta)$ is a temporal path with $P$ as its underlying (static) path.
+
 
 We remark that a fastest path between two vertices in a temporal graph can be computed in polynomial time~\cite{xuan_computing_2003,Wu2016Efficient}.
 %Wu et~al.~\cite{Wu2016Efficient} provide an algorithm that computes the duration of the fastest temporal path from a source vertex $v$, in a temporal graph $(G,\lambda)$, to all other vertices,
@@ -639,7 +647,7 @@ We give a reduction to a variant of \deltaExact\ where the period $\Delta$ is in
 
 \begin{comment}
 
-    \emph{Connector Gadget.} Next, we describe \emph{connector gadgets}. Intuitively, these gadgets will be used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{yes}-instances much easier. Connector gadgets consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$. 
+    \emph{Connector Gadget.} Next, we describe \emph{connector gadgets}. Intuitively, these gadgets will be used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{Yes}-instances much easier. Connector gadgets consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$. 
     %Each connector gadget is associated with four sets $A,A',B,B'$ containing vertices of other gadgets. 
     Each connector gadget is associated with two sets $A,B$ with $B\subseteq A$ containing vertices of other gadgets. 
     Let $V^\star$ denote the set of all vertices from all edge selection gadgets and all validation gadgets.
@@ -907,7 +915,7 @@ The vertex $x_1$ of each edge selection gadget, the vertex $y^i$ of each verific
 \end{figure}
 
 
-Furthermore, we use \emph{connector gadgets}, two for each edge selection gadget, and two for every verification gadget. They consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and, intuitively, are used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{yes}-instances much easier. Finally, we have an \emph{alignment gadget}, which is a star with a center vertex $w^\star$ and a leaf for every other gadget. Intuitively, this gadget is used to relate labels of different gadgets to each other. A formal description of these two gadgets is given in the Appendix.
+Furthermore, we use \emph{connector gadgets}, two for each edge selection gadget, and two for every verification gadget. They consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and, intuitively, are used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{Yes}-instances much easier. Finally, we have an \emph{alignment gadget}, which is a star with a center vertex $w^\star$ and a leaf for every other gadget. Intuitively, this gadget is used to relate labels of different gadgets to each other. A formal description of these two gadgets is given in the Appendix.
 
 This finished the description of the underlying graph $G$. For an illustration see \cref{fig:hardness1}. We can observe that the vertex set containing
 %\begin{itemize}
@@ -1054,7 +1062,7 @@ For an illustration see \cref{fig:hardness2}. It is easy to check that all durat
     \caption{Illustration of the infinity gadget. Gray vertices are added to the feedback vertex set.}\label{fig:hardness2}
 \end{figure}
 
-Lastly, consider two vertices $v,v'\in V$. Note that before the addition of the infinity gadget, by construction of $G$ we have that $d(v,v')\le n^9+2$ or $d(v,v')=\infty$. Furthermore, if $D$ is a yes-instance, we have shown in the correctness proof of the reduction that the difference between the smallest label and the largest label is at most $n^9+1$. This implies that for a vertex pair $v,v'\in V$ with $d(v,v')=\infty$ we have in the periodic case with $\Delta=n^{11}$, that $d(v,v')\ge n^{11}-n^9>n^{10}$. Which means, after adding the vertices and edges of the infinity gadget, we indeed have that $d(v,v')=n^{10}$. For all vertex pairs $v,v'$ where in the original construction we have $d(v,v')\neq\infty$, we can also see that adding the infinity gadget and setting $\Delta=n^{11}$ does not change the duration of a fastest path from $v$ to $v'$, since all newly added temporal paths have duration at least $n^{10}$. We can conclude that the originally constructed instance $D$ is a yes-instance if and only if it remains a yes-instance after adding the infinity gadget and setting $\Delta=n^{11}$.
+Lastly, consider two vertices $v,v'\in V$. Note that before the addition of the infinity gadget, by construction of $G$ we have that $d(v,v')\le n^9+2$ or $d(v,v')=\infty$. Furthermore, if $D$ is a \textsc{Yes}-instance, we have shown in the correctness proof of the reduction that the difference between the smallest label and the largest label is at most $n^9+1$. This implies that for a vertex pair $v,v'\in V$ with $d(v,v')=\infty$ we have in the periodic case with $\Delta=n^{11}$, that $d(v,v')\ge n^{11}-n^9>n^{10}$. Which means, after adding the vertices and edges of the infinity gadget, we indeed have that $d(v,v')=n^{10}$. For all vertex pairs $v,v'$ where in the original construction we have $d(v,v')\neq\infty$, we can also see that adding the infinity gadget and setting $\Delta=n^{11}$ does not change the duration of a fastest path from $v$ to $v'$, since all newly added temporal paths have duration at least $n^{10}$. We can conclude that the originally constructed instance $D$ is a \textsc{Yes}-instance if and only if it remains a \textsc{Yes}-instance after adding the infinity gadget and setting $\Delta=n^{11}$.
 \end{proof}
 
 
@@ -1225,7 +1233,7 @@ To overcome the above mentioned difficulties, we propose the following high-leve
 \begin{itemize}
     \item We identify a small number of ``interesting vertices'' between which we guess representative fastest paths.
     \item We show that we can determine most labels along each path up to an additive constant. We show that the number of labels we cannot determine along such a path is small. 
-    \item For each additive constant and each non-determined label along such a path we introduce a variable for an integer linear program (ILP). 
+    \item For each additive constant and each non-determined label along such a path we introduce a variable for an Integer Linear Program (ILP). 
     \item We use constraints in the ILP to ensure that alternative connections (not using the guessed fastest path) between vertex pairs are not too fast.
     \item We compute a solution to the ILP and construct a labeling from that solution. Since the ILP has few variables and not too many constraints, this computation can be done efficiently using Lenstra's Theorem~\cite{Lenstra1983Integer}.
 \end{itemize}
@@ -1260,9 +1268,9 @@ or our assumption holds (meaning that the guessed path is really a fastest path 
 %But, this would create $f(n,m)$ guesses (where $f(n,m)$ is an exponential function in $|V|=n$ and $|E| = m$), and the running time of the algorithm would be too big.
 We approach the problem using some special properties, which allow us to create $f(k)$ different guesses for certain fastest temporal paths (where $f$ will be a double exponential function in the feedback edge number $k$).
 We solve each guess by creating an ILP instance with $O(k^3)$ variables and $O(n^c)$ constraints, for some $c \in \mathbb{N}$.
-If the ILP instance is a \textsc{yes}-instance then we will show that also $D$ is a \textsc{yes}-instance of \deltaExact.
+If the ILP instance is a \textsc{Yes}-instance then we will show that also $D$ is a \textsc{Yes}-instance of \deltaExact.
 Moreover, from a positive solution of the ILP instance we then construct the desired labeling $\lambda$.
-If all constructed ILP instances are \textsc{no}-instances, then we will show that $D$ is a \textsc{no}-instance of \deltaExact.
+If all constructed ILP instances are \textsc{No}-instances, then we will show that $D$ is a \textsc{No}-instance of \deltaExact.
 Due to Lenstra's Theorem~\cite{Lenstra1983Integer} we know that an ILP instance can be solved in FPT time with respect to the number of variables.
 Therefore, we can solve each of our ILP instances in FPT time with respect to $k$.
 \end{comment}
