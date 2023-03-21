@@ -1411,7 +1411,7 @@ We first start with defining certain notions, that will be of use when solving t
         \begin{align*}
         \sum_{i = 1}^{p-1} \tau_{v_i}^{v_{i-1}v_i} + 1  
         &= \sum _{i = 1}^{p-1} (t_{i+1} - t_i) + 1 \\
-        & = (t_2 - t_1) + (t_3  t_2) + \cdots + (t_p - t_{p-1}) + 1  \\
+        & = (t_2 - t_1) + (t_3 - t_2) + \cdots + (t_p - t_{p-1}) + 1  \\
         & = t_{p-1} - t_1 + 1\\
         & = d(P)
         \end{align*}
@@ -1463,7 +1463,7 @@ Let $D$ be a matrix from \deltaExact\ and let the underlying graph $G$ of $D$ be
 Let $v_i,v_j$ be two arbitrary vertices in $G$. Then we know that there exists a unique (static) path $P$ among them.
 Consequently, it follows that the temporal paths $(P_{i,j},\lambda)$ from $v_i$ to $v_j$ and $(P_{j,i},\lambda)$ from $v_j$ to $v_i$ are also unique, up to modulo of the period $\Delta$ of the labeling $\lambda$,
 and therefore are the fastest.
-Then $D$ is of the following form:
+Then $D$ is of the following fo\rm:
 \begin{equation*}
     D_{i,j} =
     \begin{cases}

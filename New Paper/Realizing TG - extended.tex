@@ -1,4 +1,4 @@
-\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate,anonymous]{lipics-v2021}
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate]{lipics-v2021}
 %This is a template for producing LIPIcs articles. 
 %See lipics-v2021-authors-guidelines.pdf for further information.
 %for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
@@ -24,6 +24,7 @@
 \sloppy
 
 
+\usepackage{cleveref}
 \usepackage{amsthm}
 \usepackage{amssymb}
 \usepackage{amsfonts}
@@ -111,13 +112,14 @@
 	\end{center}
 }
 
-\newcounter{guesscounter}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROBLEMS NAMES
 %% One label per edge, period Delta, exact realization
 \newcommand{\deltaExactLong}{\textsc{Simple periodic Temporal Graph Realization}}
 \newcommand{\deltaExact}{\textsc{Simple TGR}}
+
+\newcommand{\deltaSymExactLong}{\textsc{Simple symmetric periodic Temporal Graph Realization}}
+\newcommand{\deltaSymExact}{\textsc{Simple Symmetric TGR}}
 
 %% k labels per edge, period Delta, exact realization
 \newcommand{\kDeltaExactLong}{\textsc{$(k,\Delta)$-periodic Exact Temporal Graph Realization}}
@@ -137,17 +139,19 @@
 
 %\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
 
-%\author{Nina Klobas}{Department of Computer Science, Durham University, UK}{nina.klobas@durham.ac.uk}{ https://orcid.org/0000-0002-8024-5782}{}
+\author{Nina Klobas}{Department of Computer Science, Durham University, UK}{nina.klobas@durham.ac.uk}{ https://orcid.org/0000-0002-8024-5782}{}
 
-%\author{George B. Mertzios}{Department of Computer Science, Durham University, UK}{george.mertzios@durham.ac.uk}{https://orcid.org/0000-0001-7182-585X}{Supported by the EPSRC grant EP/P020372/1.}
+\author{George B. Mertzios}{Department of Computer Science, Durham University, UK}{george.mertzios@durham.ac.uk}{https://orcid.org/0000-0001-7182-585X}{Supported by the EPSRC grant EP/P020372/1.}
 
-%\author{Hendrik Molter}{Department of Industrial Engineering and Management, Ben-Gurion~University~of~the~Negev, Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant No.~1070/20.}
+\author{Hendrik~Molter}{Department of Computer Science, Ben-Gurion~University~of~the~Negev, 
+	Beer-Sheva, 
+	Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant No.~1456/18, and the ERC, grant number 949707.}
 
-%\author{Paul G. Spirakis}{Department of Computer Science, University of Liverpool, UK}{p.spirakis@liverpool.ac.uk}{https://orcid.org/0000-0001-5396-3749}{Supported by the EPSRC grant EP/P02002X/1.}
+\author{Paul G. Spirakis}{Department of Computer Science, University of Liverpool, UK}{p.spirakis@liverpool.ac.uk}{https://orcid.org/0000-0001-5396-3749}{Supported by the EPSRC grant EP/P02002X/1.}
 
-%\authorrunning{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+\authorrunning{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
 
-%\Copyright{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+\Copyright{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
 
 \ccsdesc[500]{Theory of computation~Graph algorithms analysis}
 \ccsdesc[500]{Mathematics of computing~Discrete mathematics}
@@ -186,6 +190,171 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
+	\maketitle
+	
+\problemdef{\deltaSymExactLong\ (\deltaSymExact)}
+{An $n \times n$ symmetric matrix $D$, a positive integer $\Delta$.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
+	and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
+	for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is $D_{i,j}$?}
+	
+\problemdef{\kDeltaUpperBoundLong}
+{A static graph $G=(V,E)$ with $n$ vertices, $n \times n$ matrix $D$ of positive integers and a bijective mapping $\phi$ from vertices $V$ of $G$ to the rows/columns of the matrix $D$.}
+{Does there exist a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
+	for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{\phi(i),\phi(j)}$.}
+
+\section{Preliminaries and notation}
+\todo[inline]{This section is copied from our paper}
+
+An interval in $\mathbb N$ from $a$ to $b$ is denoted by $[a,b] = \{ i\in \mathbb N  :  a \leq i \leq b\}$; similarly, $[a] = [1,a]$.
+An undirected graph~$G=(V,E)$ consists of a set~$V$ of vertices 
+and a set~$E \subseteq V \times V$ of edges.
+For a graph~$G$, we also denote by~$V(G)$ and~$E(G)$ the vertex and edge set of~$G$, respectively.
+We denote an edge $e \in E$ between vertices $u,v \in V$ as a set $e=\{u,v\}$.
+For the sake of simplicity of the representation, an edge $e$ is sometimes also denoted by $uv$. 
+A path~$P$ in $G$ is a subgraph of $G$ with vertex set~$V(P)=\{v_1,\dots,v_k\}$ and edge set~$E(P)=\{\{v_i,v_{i+1}\} :  1\leq i<k\}$
+(we often represent path~$P$ by the tuple~$(v_1,v_2,\dots,v_k)$).
+
+Let $v_1,v_2,\ldots,v_n$ be the $n$ vertices of the graph $G$. 
+For simplicity of the presentation~--and with a slight abuse of notation--~we refer during the paper to the entry $D_{i,j}$ of the matrix $D$ as 
+$D_{a,b}$, where $a=v_i$ and $b=v_j$. That is, we put as indices of the matrix $D$ the corresponding vertices of $G$ whenever it is clear from the context.
+
+We denote with $d(u,v,P)$ the duration of the fastest temporal path from $u$ to $v$ along path $P$. Note that $d(u,v,P) \geq d(u,v)$.
+
+We remark that a fastest path between two vertices in a temporal graph can be computed in polynomial time~\cite{xuan_computing_2003,Wu2016Efficient}.
+Hence, given a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, we can compute in polynomial-time  the matrix $D$
+which consists of durations of fastest temporal paths among all pairs of vertices in $(G,\lambda,\Delta)$.
+
+
+\begin{definition}[Travel delays]
+	Let $(G, \lambda)$ be a $\Delta$-periodic temporal graph.
+	Let $e_1=uv$ and $e_2=vz$ be two incident edges in $G$ with $e_1 \cap e_2 = v$.
+	We define the \emph{travel delay} from $u$ to $z$ at vertex $v$, denoted with $\tau_v^{uz}$,
+	as the difference of the labels of $e_2$ and $e_1$, where we subtract the value of the label of $e_1$ from the label of $e_2$,  modulo~$\Delta$.
+	More specifically:
+	\begin{equation}\label{eq:def-VertexWaitingTime}
+		\tau_v^{uz} \equiv \lambda (e_2) - \lambda(e_1) \pmod \Delta.
+	\end{equation}
+	Similarly, $\tau_v^{zu} \equiv \lambda (e_1) - \lambda(e_2) \pmod \Delta$.
+\end{definition}
+Intuitively, the value of $\tau_v^{uz}$ represents how long a temporal path waits at vertex $v$ when first taking edge $e_1=uv$ and then edge $e_2 = vz$.
+
+
+
+
+
+\section{D is symmetric}
+Before studying the problem in general let us first focus on two restricted cases.
+\begin{theorem}
+	If the input graph $G$ of \deltaSymExact\ is a clique or a $C_4$ then the problem is polynomial-time solvable. 
+\end{theorem}
+
+\begin{proof}
+	We split the proof in two cases.
+	
+	First, when the input graph is a clique. In this case the desired labeling $\lambda$ can be arbitrary (i.e. $\lambda(e) \in [\Delta]$ for all $e \in E$), 
+	as all vertices are on distance (and duration) $1$ from each other.
+	Therefore 
+	\begin{equation*}
+		D_{i,j} =
+		\begin{cases}
+			0 & \text{if $i = j$}, \\
+			1 & \text{else}
+		\end{cases},
+	\end{equation*}
+	which is a symmetric matrix.
+	
+	Second, when the input graph $G$ is a $C_4$. Let $v_1, v_2, v_3, v_4$ be the vertices of $G$ with edges $e_1 = v_1 v_2, e_2 = v_2 v_3, e_3 = v_3 v_4, e_4 = v_4 v_1$.
+	Now we set $\lambda(e_1) = \lambda (e_3) = \alpha$ and $\lambda(e_2) = \lambda(e_4) = \beta$, where w.l.o.g. $\alpha > \beta$.
+	Let $\gamma = min \{ \alpha - \beta, \Delta + \beta - \alpha\}$,
+	i.e. $\gamma$ is the minimum travel delay at vertex $v_i$ when traversing edges $e_{i-1}, e_i$, where indices are taken modulo $4$.
+	We get that 
+	\begin{equation*}
+		D_{i,j} =
+		\begin{cases}
+			0 & \text{if $i = j$}, \\
+			1 & \text{if $v_i$ and $v_j$ are neighbors},\\
+			\gamma + 1 & \text{else}\\
+		\end{cases}
+	\end{equation*}
+	Note, if $\alpha = \beta$ then the values in $D$ of non-neighboring vertices (i.e. vertices on distance $2$ from each other)
+	are exactly $\Delta + 1$.
+\end{proof}
+
+
+Observe the following.
+\begin{claim}
+	Let $P = (u, v, w)$ be a path of length $2$, and let $(P,\lambda)$ be a $\Delta$-periodic temporal graph,
+	 then $D_{u,w} = D_{w,v}$ iff $\tau_v^{uw} = \tau_v^{wu}$. 
+\end{claim}
+\begin{proof}
+	Let us denote with $\alpha = \lambda(uv)$ and  $\beta = \lambda(vw)$,
+	w.l.o.g. we suppose also that $\alpha > \beta$.
+	Then $d(u,w) = \Delta + \beta - \alpha + 1$ 
+	and $d(w,u) = \alpha - \beta + 1$.
+	By the definition of travel delays we get $d(u,w) = \tau_v^{uw} + 1$ and $d(w,u) = \tau_v^{wu} + 1$. 
+	Since $D_{u,w} = D_{w,v}$ we get that $\tau_v^{uw} = \tau_v^{wu}$.
+\end{proof}
+
+From the above claim we get the following.
+
+\begin{claim}
+	Let $P = (u, v, w)$ be a path of length $2$, and let $(P,\lambda)$ be a $\Delta$-periodic temporal graph, 
+	then $D_{u,w} = D_{w,v}$
+	iff
+	$\lambda(e) \in \{\frac{\Delta}{2}, \Delta\}$, if $\Delta$ is even and
+	$\lambda(e) \in \{\Delta\}$, if $\Delta$ is odd,
+	for all $e \in E(P)$.
+\end{claim}
+
+\begin{proof}
+		Let us denote with $\alpha = \lambda(uv)$ and  $\beta = \lambda(vw)$,
+		w.l.o.g. we suppose also that $\alpha > \beta$.
+		Since
+		$\tau_v^{uw} = \tau_v^{wu}$
+		we get that
+		\begin{equation*}
+			\Delta + \beta - \alpha \equiv \alpha - \beta \pmod\Delta,
+		\end{equation*}
+		which is equivalent to
+		\begin{equation}\label{eq:sol-delta}
+			\Delta  \equiv 2 (\alpha - \beta) \pmod\Delta.
+		\end{equation}
+		Since $\alpha > \beta$, the only possible solution of \cref{eq:sol-delta} is when $\beta \equiv \frac{\alpha}{2} \pmod \Delta$, which exists only in the case when $\Delta$ is even.
+		If we now allow $\alpha = \beta$ then we get another solution of \cref{eq:sol-delta}.
+		
+		W.l.o.g. we can now suppose that $\alpha = \Delta$.
+		If $\Delta$ is odd, we have a unique solution with the value $\alpha=\beta = \Delta$,
+		while in the case when $\Delta$ is odd we get that $\alpha, \beta \in \{\Delta, \frac{\Delta}{2}\}$. 
+\end{proof}
+
+We can extend the above result to all graphs as we want to have a periodic labeling of a graph $G$, that gives rise to a symmetric matrix $D$. 
+Then the above has to hold for all pairs of vertices on distance $2$.
+Therefore we get the following two results.
+
+\begin{claim}\label{claim:symmetric-odd}
+	When $\Delta$ is odd, the only possibility of the matrix $D$, of all durations, being symmetric is when all labels of $G$ are the same.
+\end{claim}
+
+\begin{claim}\label{claim:symmetric-even}
+	When $\Delta$ is even, the only possibility of the matrix $D$, of all durations, being symmetric is when all labels of $G$ are from $\{\frac{\Delta}{2}, \Delta\}$.
+\end{claim}
+
+From all of the above we get the following result.
+\begin{theorem}
+	\deltaSymExact\ can be solved in polynomial time.
+\end{theorem}
+
+\begin{proof}
+	TODO
+\end{proof}
+
+\section{Upper bounds in the matrix D}
+
+	
+	
+\clearpage
+
 \section{Ideas}
 \begin{itemize}
     \item Symmetric distance matrix $D$: polytime?
@@ -204,8 +373,8 @@ for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ i
 \problemdef{\kDeltaUpperBoundLong}
 {An $n \times n$ matrix $D$ of positive integers and an integer $k\in \mathbb{N}$.}
 {Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ with $n+k-1$ edges 
-and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
-for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{i,j}$.}
+	and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
+	for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{i,j}$.}
 
 \problemdef{\kDeltaLowerBoundLong}
 {An $n \times n$ matrix $D$ of positive integers and an integer $k\in \mathbb{N}$.}
@@ -218,4 +387,6 @@ for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ i
 \todo[inline]{Check if the reduction works for the UPPER BOUNDED version (seems to work)}
 \todo[inline]{how to extend the poly algorithms of cycles? Easy candidate: FES, FVS, series-parallel graphs, or tw=2 graphs}
 \todo[inline]{FVS, $c$-factor approximation, hardness of approximation for $c<1.5$}
+
+\bibliography{../bibliography}	
 \end{document}
