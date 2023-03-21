@@ -1,0 +1,221 @@
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate,anonymous]{lipics-v2021}
+%This is a template for producing LIPIcs articles. 
+%See lipics-v2021-authors-guidelines.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+%for section-numbered lemmas etc., use "numberwithinsect"
+%for enabling cleveref support, use "cleveref"
+%for enabling autoref support, use "autoref"
+%for anonymousing the authors (e.g. for double-blind review), add "anonymous"
+%for enabling thm-restate support, use "thm-restate"
+%for enabling a two-column layout for the author/affilation part (only applicable for > 6 authors), use "authorcolumns"
+%for producing a PDF according the PDF/A standard, add "pdfa"
+
+%\pdfoutput=1 %uncomment to ensure pdflatex processing (mandatatory e.g. to submit to arXiv)
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+
+
+\usepackage{amsmath}
+%\let\proof\relax
+%\let\endproof\relax
+
+\sloppy
+
+
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{mathrsfs}
+\usepackage{wrapfig} %wrap the text around the picture
+
+
+\usepackage{thmtools} 
+\usepackage{thm-restate}
+
+\usepackage{caption} %for subfigure - join multiple figures and add captions
+\usepackage{subcaption}
+\usepackage{changepage} %inside figure we can put \begin{adjustwidth}{-1cm}{-1cm} \end{adjustwidth} and we can ignore the margins
+\usepackage{mathtools} % write text [under]{over} arrow $\xrightarrow[\text{world}]{\text{hello}}$
+
+\usepackage{graphicx}
+\graphicspath{{Figures/}}
+
+\usepackage{tikz}
+
+\usetikzlibrary{arrows,decorations.pathmorphing,decorations.pathreplacing,backgrounds,positioning,fit,matrix}
+\usetikzlibrary{shapes,calc,patterns,arrows.meta}
+\tikzset{
+	vert/.style={circle,inner sep=1.5,fill=white,draw,minimum size=.3cm},
+	edge/.style={color=black, thick},
+	diredge/.style={->,>={Stealth[width=8pt,length=8pt]},color=black, thick},
+	timelabel/.style={fill=white,font=\footnotesize, text centered},
+	wave/.style={decorate,decoration={coil,aspect=0}},
+	dirwave/.style={->, >={Stealth[width=8pt,length=8pt]},decorate,decoration={coil,aspect=0}},
+	diredge2/.style={->,>={Stealth[width=8pt,length=8pt]}}
+}
+
+%\usepackage{enumitem} %enumerate 
+\usepackage{enumerate}
+\usepackage{todonotes}
+\newcommand{\todonkl}[2][]{\todo[color=red!100!green!33,#1]{NKL:\\ #2}} %todo note that starts with NKL:
+\setlength{\marginparwidth}{3.7cm} %setting the length of todonote
+
+
+\usepackage{comment}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+
+%font encoding
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+
+\usepackage{hyperref}
+
+\crefname{claim}{Claim}{Claims}
+
+%\usepackage{natbib}
+
+\newcommand{\ie}{i.\,e.,\ }
+\renewcommand{\st}{s.\,t.,\ }
+\newcommand{\NP}{\textrm{NP}}
+\newcommand{\APX}{\textrm{APX}}
+\newcommand{\FPT}{\textrm{FPT}}
+\newcommand{\XP}{\textrm{XP}}
+
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\QQ}{\mathbb{Q}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Defining a problem
+%%%%%%%%%%%%%%%%%%\problemdef{NAME} {Input} {Output}
+\usepackage{tabularx}
+\newcommand{\problemdef}[3]{
+	\begin{center}
+		\begin{minipage}{0.95\textwidth}
+			\noindent
+			#1
+			\vspace{5pt}\\
+			\setlength{\tabcolsep}{3pt}
+			\begin{tabularx}{\textwidth}{@{}lX@{}}
+				\textbf{Input:}& #2 \\
+				\textbf{Question:}& #3
+			\end{tabularx}
+		\end{minipage}
+	\end{center}
+}
+
+\newcounter{guesscounter}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROBLEMS NAMES
+%% One label per edge, period Delta, exact realization
+\newcommand{\deltaExactLong}{\textsc{Simple periodic Temporal Graph Realization}}
+\newcommand{\deltaExact}{\textsc{Simple TGR}}
+
+%% k labels per edge, period Delta, exact realization
+\newcommand{\kDeltaExactLong}{\textsc{$(k,\Delta)$-periodic Exact Temporal Graph Realization}}
+\newcommand{\kDeltaExact}{\textsc{$(k,\Delta)$-TGR}}
+
+%% One label per edge, period Delta, upper-bounded realization
+\newcommand{\kDeltaUpperBoundLong}{\textsc{Simple $\Delta$-periodic Upper-Bounded Temporal Graph Realization}}
+%\newcommand{\deltaUpperBound}{}
+
+%% k labels per edge, period Delta, lower-bound realization
+\newcommand{\kDeltaLowerBoundLong}{\textsc{Simple $\Delta$-periodic Lower-Bounded Temporal Graph Realization}}
+
+
+\bibliographystyle{plainurl}% the mandatory bibstyle
+
+\title{Realizing temporal graphs from fastest travel times} %TODO Please add
+
+%\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
+
+%\author{Nina Klobas}{Department of Computer Science, Durham University, UK}{nina.klobas@durham.ac.uk}{ https://orcid.org/0000-0002-8024-5782}{}
+
+%\author{George B. Mertzios}{Department of Computer Science, Durham University, UK}{george.mertzios@durham.ac.uk}{https://orcid.org/0000-0001-7182-585X}{Supported by the EPSRC grant EP/P020372/1.}
+
+%\author{Hendrik Molter}{Department of Industrial Engineering and Management, Ben-Gurion~University~of~the~Negev, Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant No.~1070/20.}
+
+%\author{Paul G. Spirakis}{Department of Computer Science, University of Liverpool, UK}{p.spirakis@liverpool.ac.uk}{https://orcid.org/0000-0001-5396-3749}{Supported by the EPSRC grant EP/P02002X/1.}
+
+%\authorrunning{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+
+%\Copyright{Nina Klobas, George B. Mertzios, Hendrik Molter, and Paul G. Spirakis} %TODO mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\ccsdesc[500]{Theory of computation~Graph algorithms analysis}
+\ccsdesc[500]{Mathematics of computing~Discrete mathematics}
+%TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm 
+
+\keywords{Temporal graph, periodic temporal labeling, fastest temporal path, graph realization, temporal connectivity.} %TODO mandatory; please add comma-separated list of keywords
+
+\category{} %optional, e.g. invited paper
+
+\relatedversion{} %optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\relatedversiondetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93]{Classification (e.g. Full Version, Extended Version, Previous Version}{URL to related version} %linktext and cite are optional
+
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\supplementdetails[linktext={opt. text shown instead of the URL}, cite=DBLP:books/mk/GrayR93, subcategory={Description, Subcategory}, swhid={Software Heritage Identifier}]{General Classification (e.g. Software, Dataset, Model, ...)}{URL to related version} %linktext, cite, and subcategory are optional
+
+%\funding{(Optional) general funding statement \dots}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+
+%\acknowledgements{I want to thank \dots}%optional
+
+%\nolinenumbers %uncomment to disable line numbering
+
+
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\section{Ideas}
+\begin{itemize}
+    \item Symmetric distance matrix $D$: polytime?
+    \item Use $|D|_\infty$ (maximum value in $D$) + max degree $\Delta$ as parameter $\rightarrow$ should give FPT
+    \item FPT with feedback edge number
+    \item use as parameter $\max_{i,j} |D_{i,j}-D_{j,i}|$
+    \item approximation (additive or multiplicative), maybe with graph as input
+\end{itemize}
+
+\problemdef{\kDeltaExactLong\ (\kDeltaExact)}
+{An $n \times n$ matrix $D$ of positive integers.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ such that, 
+for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is equal to $D_{i,j}$.}
+
+\problemdef{\kDeltaUpperBoundLong}
+{An $n \times n$ matrix $D$ of positive integers and an integer $k\in \mathbb{N}$.}
+{Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ with $n+k-1$ edges 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
+for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{i,j}$.}
+
+\problemdef{\kDeltaLowerBoundLong}
+{An $n \times n$ matrix $D$ of positive integers and an integer $k\in \mathbb{N}$.}
+{Does there exist a graph $G=(V,E)$ on the vertices $\{v_1,\ldots,v_{n}\}$ with $n+k-1$ edges 
+and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
+for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at least} $D_{i,j}$.}
+\todo[inline]{NOT TEMPORALLY INTERESTING: the difficulty is to find a static graph with equal labels}
+
+\todo[inline]{The matrix $D$ is m x m, and capturing the distances from an edge e to an edge f (zoom 14 Nov 22, GH).}
+\todo[inline]{Check if the reduction works for the UPPER BOUNDED version (seems to work)}
+\todo[inline]{how to extend the poly algorithms of cycles? Easy candidate: FES, FVS, series-parallel graphs, or tw=2 graphs}
+\todo[inline]{FVS, $c$-factor approximation, hardness of approximation for $c<1.5$}
+\end{document}
