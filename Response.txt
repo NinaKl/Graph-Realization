@@ -1,0 +1,18 @@
+We would like to thank the reviewers for their work and comments.
+
+ANSWER TO REVIEWER 1:
+The main issue the reviewer had was with the motivation of the problem. It is remarked that the idea of extending the problem from a static case to the temporal is not interesting enough on its own, while this is one of the main approaches in the field of temporal graphs - how to (in the most natural way) extend the problems from static graphs to temporal, and then study the complexity of derived problem(s).
+We introduced the idea of periodic edges as this makes two vertices trivially connected, which makes the argument of finding a temporal path of fastest duration more interesting.
+We believe the idea of realizing fastest temporal paths is the most natural as it is easy to calculate these values and therefore check if temporal graph is really 'good' (in the opposite to proposed "minimization of the maximum/average duration under some constraints").
+
+Since we proved that the problem is NP-hard in general and polynomial-time solvable on trees, the next natural question is how can the tree-like structure help us with solving the problem exactly. We show that FPT is possible only in the case when parameter is FES (which we agree, it is not a 'good' parameter in practice), but we show that this is the smallest parameter that still gives us an FPT algorithm. In the case of parameterizing the problem already with the FVS we show that the problem is W[1]-hard. Therefore all other 'smaller' parameters, cannot give us an FPT result. 
+
+We thank the reviewer for suggesting the paper "Dynamic networks: models and algorithms" by Kuhn and Oshman, 
+we will cite it in our final version.
+
+ANSWER TO REVIEWER 2:
+Definition 13 defines segments as paths between two vertices of interest. There cannot exist more than two segments among the same pair of vertices of interest (where one is just an edge). As two vertices of interest are the endpoints of one edge (from FES), therefore one segment is an edge and the other is the rest of the cycle. In the case when vertices of interest have degree > 2 then there is a unique segment among each pair of them.
+
+ANSWER TO REVIEWER 3:
+Each connector gadget contributes 2 vertices to the FVS. We will add the missing edges to the figure.
+We will also define the MULTICOLORED CLIQUE problem, as suggested.
