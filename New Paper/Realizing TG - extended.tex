@@ -126,8 +126,8 @@
 \newcommand{\kDeltaExact}{\textsc{$(k,\Delta)$-TGR}}
 
 %% One label per edge, period Delta, upper-bounded realization
-\newcommand{\kDeltaUpperBoundLong}{\textsc{Simple $\Delta$-periodic Upper-Bounded Temporal Graph Realization}}
-%\newcommand{\deltaUpperBound}{}
+\newcommand{\DeltaUpperBoundLong}{\textsc{Simple $\Delta$-periodic Upper-Bounded Temporal Graph Realization}}
+\newcommand{\deltaUpperBound}{\textsc{Simple Upper-Bounded TGR}}
 
 %% k labels per edge, period Delta, lower-bound realization
 \newcommand{\kDeltaLowerBoundLong}{\textsc{Simple $\Delta$-periodic Lower-Bounded Temporal Graph Realization}}
@@ -198,7 +198,7 @@
 	and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 	for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is $D_{i,j}$?}
 	
-\problemdef{\kDeltaUpperBoundLong}
+\problemdef{\DeltaUpperBoundLong}
 {A static graph $G=(V,E)$ with $n$ vertices, $n \times n$ matrix $D$ of positive integers and a bijective mapping $\phi$ from vertices $V$ of $G$ to the rows/columns of the matrix $D$.}
 {Does there exist a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 	for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{\phi(i),\phi(j)}$.}
@@ -350,7 +350,78 @@ From all of the above we get the following result.
 \end{proof}
 
 \section{Upper bounds in the matrix D}
+We start by investigating the hardness of the problem on paths.
+We first reduce the input matrix $D$, by performing a series of modifications.
 
+Denote with $P = (v_1, v_2, \dots, v_n)$ a path on $n$ vertices,
+and let $D$ be the duration matrix with upper bounds.
+For any two vertices $v_i, v_j$ from $P$ we get that:
+\begin{itemize}
+	\item if the value of $D_{i,j} < D_{i,k}$, where $k \in [1+1,j-1]$
+	we set $D_{i,k} = D_{i,j}$.
+\end{itemize}
+%
+By the definition of temporal paths, it follows that $d(i,j) = d(i,k) + d(k-1, j) - 1$, where $i,j \in [n]$, with $i<j$ and $k \in [i+1,j-1]$.
+Therefore,
+\begin{itemize}
+	\item if $D_{i,j} > D_{i,k} + D_{k-1,j} -1$ we set the value of $D_{i,j}$ to $D_{i,k} + D_{k-1,j} -1$. 
+\end{itemize}
+%
+And lastly, to any $i$-th row of the matrix $D$, we make the following modifications:
+\begin{itemize}
+	\item if there are two entries $j< k$ with the same values, \ie $D_{i,j} = D_{i,k}$ where both $j,k$ are bigger than $i$ (resp.~smaller than $i$),
+	then we set $D_{i,j} = D_{i,k} - (k-j)$ (resp.~ $D_{i,k} = D_{i,j} - (k-j)$).
+\end{itemize}
+We iteratively repeat all of the above steps and produce a reduce matrix $D'$.
+It is easy to see that if there exists a labeling of $P$ for $D'$, then this labeling satisfies also $D$. 
+
+\begin{theorem}
+	\deltaUpperBound\ can be solved in polynomial time on paths.
+\end{theorem}
+
+\begin{proof}[Proof idea:]
+	Let $P = (v_1, v_2, \dots, v_n)$ be a path on $n$ vertices.
+	For the sake of simplicity we denote with $a_i$ label of edge $e_i =v_iv_{i+1}$, for all $i \in [n-1]$.
+	By the definition, for any two vertices $v_i,v_j \in P$, we have the following inequality:
+	\begin{equation*}
+		(a_{i+1} - a_i)_\Delta + (a_{i+2} - a_{i+1})_\Delta + \cdots + (a_{j-1} - a_{j-2})_\Delta + 1
+		\leq D_{i,j}.
+	\end{equation*}
+	For the sake of simplicity we refer to the inequality that a temporal path from $v_i$ to $v_j$ has to respect (\ie~the above inequality) 
+	as $I_{i,j}$.
+	Note that we can rewrite the inequality $I_{i,j}$ also without the modulo $\Delta$ part as:
+	\begin{equation*}
+		k_{i+1,i} \Delta + (a_{i+1} - a_i)+ k_{i+2,i+1} \Delta + (a_{i+2} - a_{i+1}) + \cdots + k_{j-1,j-2} \Delta + (a_{j-1} - a_{j-2})+ 1
+		\leq D_{i,j},
+	\end{equation*}
+	where all $k_{i,i+1} \in \{0,1\}$.
+	
+	W.l.o.g. we can assume also that $a_i \neq a_{i+1}$ for all $i \in [n-1]$,
+	this follows from the fact that the duration among two vertices $v_i, v_{i+2}$ on distance $2$ in $P$ equals to $\Delta + 1$ when the two consecutive labels are the same, but if the labels are not the same, the duration can be at most $\Delta$, which still satisfies the condition from before.
+	Therefore, for any two consecutive labels $a_i$ and $a_{i+1}$ (\ie for any two vertices $v_i, v_{i+2}$ on distance $2$ in $P$), 
+	it follows that 
+	$k_{i, i+1} = 1 - k_{i+1,i}$, where $k_{i+1,i} \in \{0,1\}$, which makes also $k_{i,i+1} \in \{0,1\}$, as required.
+	If we now sum up the two inequalities $I_{i,i+2}, I_{i+2,i}$ we get the following:
+	\begin{equation*}
+		(a_i-a_{i+1})_\Delta + (a_{i+1}-a_i)_\Delta +1 +1 = \Delta + 2.
+	\end{equation*}
+	It follows that for any two vertices $v_i, v_j$ in $P$, that are on distance $k$ apart, 
+	we get that $d(i,j) + d(j,i) = (k-1) \Delta + 2$.
+	
+	To satisfy the inequalities $I_{1,n}$ and $I_{n,1}$ we have to correctly determine which of $k_{i+1,i}$ have value $1$, and consequently set $k_{i,i+1} = 0$,
+	and vice versa.
+	
+	From the value $D_{1,n}$ (resp.~$D_{n,1}$) we can determine how many of $k_{i+1,i}$ (resp.$k_{i,i+1}$) can be non-zero. Suppose that there are $m$ non-zero ones (resp.~$n-m-1$).
+	Then to determine which $m$ of the $k_{i,i+1}$ are non-zero we look at every two vertices $v_i, v_{i+2}$ at the distance $2$ in $P$ 
+	and based on the inequalities $I_{i,i+2}, I_{i+2,i}$ determine if $k_{i+1,i}$ has a value $1$ or $0$,
+	i.e.~if $e_{i+1}$ is bigger or smaller than $e_i$.
+	We start determining the values $k_{i+1,i}$ from ``left to right'' (i.e~first we determine $k_{2,1}$, then $k_{3,2}$, \dots, and at last $k_{i-1,i-2}$).
+	Now that the relations of every two consecutive labels of $P$ are determined, 
+	we select the values for each label, such that the inequalities among them hold.
+	\begin{claim}
+		The above procedure produces a labeling of $P$ that satisfies durations from $D$.
+	\end{claim}
+\end{proof}
 	
 	
 \clearpage
@@ -370,7 +441,7 @@ From all of the above we get the following result.
 and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}^k$ such that, 
 for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is equal to $D_{i,j}$.}
 
-\problemdef{\kDeltaUpperBoundLong}
+\problemdef{\DeltaUpperBoundLong}
 {An $n \times n$ matrix $D$ of positive integers and an integer $k\in \mathbb{N}$.}
 {Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ with $n+k-1$ edges 
 	and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
