@@ -224,14 +224,18 @@ We show that our problem is W[1]-hard when parameterized by the \emph{feedback v
 \end{abstract}
 
 
+
 \section{Introduction}\label{intro-sec}
 
 The \emph{graph realization} problem with respect to a graph property $\mathcal{P}$ is to find a graph that satisfies property $\mathcal{P}$, or to decide that no such graph exists. 
-The motivation for graph realization problems stems both from ``verification'' applications, 
-where we attempt to reconstruct an existing network of unknown structure based on the outcomes of experimental measurements, 
-and from network design applications in engineering, where the goal is to design network topologies having a desired property~\cite{augustine2022distributed,grotschel1995design}.
+The motivation for graph realization problems stems both from ``verification'' and from network design applications in engineering. 
+In \emph{verification} applications, given the outcomes of some experimental measurements (resp.~some computations) on a network, 
+the aim is to (re)construct an input network which complies with them. 
+If such a reconstruction is not possible, this proves that the measurements are incorrect or implausible (resp.~that the algorithm which made the computations is incorrectly implemented). 
+One example of a graph realization (or reconstruction) problem is the recognition of probe interval graphs, in the context of the physical mapping of DNA, see~\cite{McMorris98,McConnellS02} and~\cite[Chapter 4]{GolumbicTrenk04}.
+In \emph{network design} applications, the goal is to design network topologies having a desired property~\cite{augustine2022distributed,grotschel1995design}.
 Analyzing the computational complexity of the graph realization problems for various natural and fundamental graph properties $\mathcal{P}$ requires a deep understanding of these properties.
-Among the most well studied such parameters for graph realization 
+Among the most studied such parameters for graph realization 
 are constraints on the distances between vertices~\cite{barNoy2022GraphRealization,barNoy2021composed,hakimi1965distance,chung2001distance,bixby1988almost,culberson1989fast}, 
 on the vertex degrees~\cite{GolovachM17,gomory1961multi,hakimi1962realizability,Bar-NoyCPR20,erdos1960graphs}, 
 %%%%barNoy2021selected,cai2000solution
@@ -240,7 +244,7 @@ on the eccentricities~\cite{barNoy2020efficiently,hell2009linear,behzad1976eccen
 
 In the simplest version of a graph realization problem with respect to vertex distances, 
 we are given a symmetric $n \times n$ matrix $D$ and we are looking for an $n$-vertex undirected and unweighted graph $G$ such that $D_{i,j}$ equals the distance between vertices $v_i$ and $v_j$ in~$G$. This problem can be trivially solved in polynomial time in two steps~\cite{hakimi1965distance}: First, we build the graph $G=(V,E)$ such that $v_i v_j \in E$ if and only if $D_{i,j}=1$. Second, from this graph $G$ we compute the matrix $D_G$ which captures the shortest distances for all pairs of vertices. If $D_G = D$ then $G$ is the desired graph, otherwise there is no graph having $D$ as its distance matrix. 
-Non-trivial variations this problem have been extensively studied, such as for weighted graphs~\cite{hakimi1965distance,Patrinos-Hakimi-72}, as well as for cases where the realizing graph has to belong to a specific graph family~\cite{hakimi1965distance, barNoy2021composed}. Other variations of the problem include the cases where every entry of the input matrix $D$ may contain a range of consecutive permissible values~\cite{barNoy2021composed,Rubei16,Tamura93}, or even an arbitrary set of acceptable values~\cite{barNoy2022GraphRealization} for the distance between the corresponding two vertices. 
+Non-trivial variations of this problem have been extensively studied, such as for weighted graphs~\cite{hakimi1965distance,Patrinos-Hakimi-72}, as well as for cases where the realizing graph has to belong to a specific graph family~\cite{hakimi1965distance, barNoy2021composed}. Other variations of the problem include the cases where every entry of the input matrix $D$ may contain a range of consecutive permissible values~\cite{barNoy2021composed,Rubei16,Tamura93}, or even an arbitrary set of acceptable values~\cite{barNoy2022GraphRealization} for the distance between the corresponding two vertices. 
 
 In this paper we make the first attempt to understand the complexity of the graph realization problem with respect to vertex distances in the context of \emph{temporal graphs}, i.e.~of graphs whose \emph{topology changes over time}. 
 
@@ -267,10 +271,38 @@ The duration of the \emph{fastest} temporal path from $u$ to $v$ is denoted by $
 
 %Other temporal analogues of a shortest path are temporal paths with the smallest total number of edges (\emph{shortest} temporal path), or the smallest earliest arrival time (\emph{foremost} temporal path), respectively. 
 
-In an arbitrary temporal graph $(G,\lambda)$ there can be pairs of vertices $u,v$ where there is no temporal path at all from $u$ to $v$, even if the underlying graph $G$ is undirected and connected. 
-In order to focus on the smallest duration of temporal graphs, rather than on temporal reachability between vertices, we consider in this paper only \emph{periodic} temporal graphs, i.e.~on temporal graphs in which the availability times of every edge are periodic (all edges having the same period $\Delta$)~\cite{casteigts2012time}. 
-Apart from the theoretical interest of periodic temporal graphs, which have not been well studied and understood in the literature, they capture naturally many application areas too, such as transportation or satellite networks, where entities move according to repeating schedules or time tables. For example, a fastest temporal path from vertex $u$ to vertex $v$ in the temporal graph defined by a transportation (resp.~satellite) network represents the shortest travel time (resp.~the shortest communication delay) from $u$ to $v$. 
+
+In this paper we consider \emph{periodic} temporal graphs, i.e.~temporal graphs in which the temporal availability of each edge of the underlying graph is periodic. 
+Many natural and technological systems exhibit a periodic temporal behavior. For example, in railway networks an edge is present at a time step $t$ if and
+only if a train is scheduled to run on the respective rail segment at time $t$~\cite{Arrighi2023Multi}. 
+Similarly, a satellite, which makes pre-determined periodic movements, can establish a communication link (i.e.~a temporal edge) with another satellite whenever they are sufficiently close to each other; the existence of these communication links is also periodic. 
+In a railway (resp.~satellite) network, a fastest temporal path from $u$ to $v$ represents the fastest railway connection between two stations 
+(resp.~the quickest communication delay between two moving satellites). 
+Furthermore, periodicity appears also in (the otherwise quite complex) social networks which describe the dynamics of people meeting~\cite{snapnets,sapiezynski2015tracking}, as every person individually follows mostly a daily routine~\cite{Arrighi2023Multi}. 
+
+
+Although periodic temporal graphs have already been studied 
+(see~\cite[Class 8]{casteigts2012time} and~\cite{Arrighi2023Multi,ErlebachS20,morawietz2021timecop,morawietz2020timecop}), 
+we make here the first attempt to understand the complexity of a graph realization problem in the context of temporal graphs. 
+Therefore, we focus in this paper on the most fundamental case, where all edges have the same period $\Delta$ 
+(while in the more general case, each edge $e$ in the underlying graph has a period $\Delta_e$).
 As it turns out, the periodic temporal graph realization problem with respect to a given $n \times n$ matrix $D$ of the fastest duration times has a very different computational complexity behavior than the classic graph realization problem with respect to shortest path distances in static graphs. 
+
+
+
+
+
+
+
+%In an arbitrary (non-periodic) temporal graph $(G,\lambda)$ there can be pairs of vertices $u,v$ where there is no temporal path at all from $u$ to $v$, even if the underlying graph $G$ is undirected and connected. 
+
+
+%In order to focus on the smallest duration of temporal paths, rather than on temporal reachability between vertices, we consider in this paper only \emph{periodic} temporal graphs, i.e.~on temporal graphs in which the availability times of every edge are periodic (all edges having the same period $\Delta$)~\cite{casteigts2012time}. 
+
+
+%Apart from the theoretical interest of periodic temporal graphs, which have not been well studied and understood in the literature, they capture naturally many application areas too, such as transportation or satellite networks, where entities move according to repeating schedules or time tables. For example, a fastest temporal path from vertex $u$ to vertex $v$ in the temporal graph defined by a transportation (resp.~satellite) network represents the shortest travel time (resp.~the shortest communication delay) from $u$ to $v$. 
+
+
 
 
 
@@ -287,7 +319,9 @@ Given a duration matrix $D$, it is easy to observe that similar to the static ca
 
 \subparagraph{Our contribution.}
 %In this work, 
-We initiate the study of naturally motivated graph realization problems in the temporal setting. To this end, we introduce and investigate the following problem, capturing the setting described above:
+We initiate the study of naturally motivated graph realization problems in the temporal setting. 
+Our target is not to model unreliable communication, but instead to \emph{verify} that particular measurements regarding fastest temporal paths in a periodic temporal graph are plausible (i.e.~``realizable''). 
+To this end, we introduce and investigate the following problem, capturing the setting described above:
 	
 	
 \problemdef{\deltaExactLong\ (\deltaExact)}
@@ -299,18 +333,19 @@ for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ i
 
 
 
-We start with showing NP-hardness of the problem (\cref{thm:NPhardness}), even if $\Delta$ is a small constant. To establish a baseline for tractability, we show that \deltaExact\ is polynomial-time solvable if the underlying graph is a tree (\cref{thm:deltaExact-PolyTimeTrees}).
+We focus on exact algorithms. We start with showing NP-hardness of the problem (\cref{thm:NPhardness}), even if $\Delta$ is a small constant. To establish a baseline for tractability, we show that \deltaExact\ is polynomial-time solvable if the underlying graph is a tree (\cref{thm:deltaExact-PolyTimeTrees}).
 
 Building upon these initial results, we explore the possibilities to generalize our polynomial-time algorithm using the \emph{distance-from-triviality} parameterization paradigm~\cite{FJR13,GHN04}. That is, we investigate the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph that measure its ``tree-likeness''.
 
 We obtain the following results. We show that \deltaExact\ is W[1]-hard when parameterized by the feedback vertex number of the underlying graph (\cref{thm:W1wrtFVS}). 
 To this end, we first give a reduction from \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval} to a variant of \deltaExact\ where the period $\Delta$ is infinite, that is, when the labeling is non-periodic. We use a special gadget (the ``infinity'' gadget) which allows us to transfer the result to a finite period $\Delta$. The latter construction is independent from the particular reduction we use, and can hence be treated as a reduction from the non-periodic to the periodic setting.
+Note that our parameterized hardness result rule out fixed-parameter tractability for several popular graph parameters such as treewidth and arboricity.
 
-We complement this result by showing that the problem is fixed-parameter tractable (FPT) with respect to the feedback edge number $k$ of the underlying graph (\cref{thm:FPTwrtFES}). 
+We complement this result by showing that the problem is fixed-parameter tractable (FPT) with respect to the feedback edge number $k$ of the underlying graph (\cref{thm:FPTwrtFES}), a parameter that is larger than the feedback vertex number. 
 Our FPT algorithm works as follows on a high level. 
 First we distinguish $O(k)$ vertices which we call ``interesting vertices''. 
-Then, we guess the fastest temporal paths for each pair of these interesting vertices; as we prove, the number of choices we have for all these guesses is upper bounded by a function of $k$. 
-Then we also make several further guesses (again using a bounded number of choices), which altogether leads us to specify a small (i.e.~bounded by a function of $k$) number of different configurations for the fastest paths between \emph{all pairs} of vertices. For each of these configurations, we must then make sure that the labels of our solution will not allow any other temporal path from a vertex $v_i$ to a vertex $v_j$ have a \emph{strictly smaller} duration than $D_{i,j}$.
+Then, we guess the fastest temporal paths for each pair of these interesting vertices; as we prove, the number of choices we have for all these guesses is upper bounded by a function of~$k$. 
+Then we also make several further guesses (again using a bounded number of choices), which altogether leads us to specify a small (i.e.~bounded by a function of $k$) number of different configurations for the fastest paths between \emph{all pairs} of vertices. For each of these configurations, we must then make sure that the labels of our solution will not allow any other temporal path from a vertex $v_i$ to a vertex $v_j$ have a \emph{strictly smaller} duration than~$D_{i,j}$.
 This naturally leads us to build one Integer Linear Program (ILP) for each of these configurations. We manage to formulate all these ILPs by having a number of variables that is upper-bounded by a function of $k$. Finally we use Lenstra's Theorem~\cite{Lenstra1983Integer} to solve each of these ILPs in FPT time. At the end, our initial instance is a \textsc{Yes}-instance if and only if at least one of these ILPs is feasible.
 
 
@@ -318,25 +353,31 @@ This naturally leads us to build one Integer Linear Program (ILP) for each of th
 
 The above results provide a fairly complete picture of the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph which measure ``tree-likeness''. To obtain our results, we prove several properties of fastest temporal paths, which may be of independent interest.
 
-%Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to Appendix.
+Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the Appendix.
 
 
-\subparagraph{Related work.} Graph realization problems on static graphs have been studied since the 1960s. We provide an overview of the literature in the introduction.
-
+\subparagraph{Related work.} Graph realization problems on static graphs have been studied since the 1960s. We provide an overview of the literature in the introduction. 
 To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. However, many other connectivity-related problems have been studied in the temporal setting~\cite{Mertzios-transitivity21,Akrida-explorer-21,enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22,FuchsleMNR22}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart.
 
-There are two problem settings that share similarities with our setting, which we discuss in more detail in the following.
+There are some problem settings that share similarities with ours, which we discuss now in more detail.
 
-Several problems have been studied where the goal is to assign labels to (sets of) edges of a given static graph in order to achieve certain connectivity-related properties~\cite{KlobasMMS22,MertziosMS19,akrida2017complexity,enright2021assigning}. The main difference to our problem setting is that in the mentioned works, the input is a graph and the sought labeling is not periodic. Furthermore, the investigated properties are temporal connectivity among all vertices~\cite{KlobasMMS22,MertziosMS19,akrida2017complexity}, temporal connectivity among a subset of vertices~\cite{KlobasMMS22}, or reducing reachability among the vertices~\cite{enright2021assigning}. In all cases the duration of the temporal connections is not of interest.
+Several problems have been studied where the goal is to assign labels to (sets of) edges of a given static graph in order to achieve certain connectivity-related properties~\cite{KlobasMMS22,MertziosMS19,akrida2017complexity,enright2021assigning}. The main difference to our problem setting is that in the mentioned works, the input is a graph and the sought labeling is not periodic. Furthermore, the investigated properties are temporal connectivity among all vertices~\cite{KlobasMMS22,MertziosMS19,akrida2017complexity}, temporal connectivity among a subset of vertices~\cite{KlobasMMS22}, or reducing reachability among the vertices~\cite{enright2021assigning}. In all these cases, the duration of the temporal paths has not been considered.
 
 
-The only work we are aware of that studies problems on periodic temporal graphs is work on the temporal cops and robber game~\cite{Morawietz021,MorawietzRW20,ErlebachS20}. The question here is (in its basic case) whether a certain number of cops are able to catch a robber, if everybody can move along one edge at every time step and the robber is considered caught if it occupies the same vertex as a cop at the same time. 
+%work on the temporal cops and robber game~\cite{morawietz2021timecop,morawietz2020timecop,ErlebachS20}. The question here is (in its basic case) whether a certain number of cops are able to catch a robber, if everybody can move along one edge at every time step and the robber is considered caught if it occupies the same vertex as a cop at the same time. Several other works on periodic temporal graphs were mentioned in the introduction.
+
+
+Finally, there are many models for dynamic networks in the context of distributed computing~\cite{Kuhn2011Dynamic}. 
+These models have some similarity to temporal graphs, in the sense that in both cases the edges appear and disappear over time. 
+However, there are notable differences. For example, one important assumption in the distributed setting 
+can be that the edge changes are adversarial or random (while obeying some constraints such as connectivity), 
+and therefore they are not necessarily known in advance~\cite{Kuhn2011Dynamic}. 
 
 
 
 
 \subparagraph{Preliminaries and notation.}
-We already introduced the most central notion and concepts. There are some additional definitions we need to present our proofs and results which we give in the following. 
+We already introduced the most central notion and concepts. There are some additional definitions we need, to present our proofs and results which we give in the following. 
 
 An interval in $\mathbb N$ from $a$ to $b$ is denoted by $[a,b] = \{ i\in \mathbb N  :  a \leq i \leq b\}$; similarly, $[a] = [1,a]$.
 An undirected graph~$G=(V,E)$ consists of a set~$V$ of vertices 
@@ -357,34 +398,13 @@ $D_{a,b}$, where $a=v_i$ and $b=v_j$. That is, we put as indices of the matrix $
 Many times we also refer to a path $P=(u=v_1, v_2, \dots, v_p=v)$ from $u$ to $v$ in $G$,
 as a temporal path in $(G,\lambda,\Delta)$,
 where we actually mean that $(P,\lambda,\Delta)$ is a temporal path with $P$ as its underlying (static) path.
-We denote with $d(u,v,P)$ the duration of the fastest temporal path from $u$ to $v$ along path $P$. Note that $d(u,v,P) \geq d(u,v)$.
+
 
 We remark that a fastest path between two vertices in a temporal graph can be computed in polynomial time~\cite{xuan_computing_2003,Wu2016Efficient}.
 %Wu et~al.~\cite{Wu2016Efficient} provide an algorithm that computes the duration of the fastest temporal path from a source vertex $v$, in a temporal graph $(G,\lambda)$, to all other vertices,
 %that runs in polynomial-time.
 Hence, given a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, we can compute in polynomial-time  the matrix $D$
 which consists of durations of fastest temporal paths among all pairs of vertices in $(G,\lambda,\Delta)$.
-
-\begin{comment}
-Let $(G,\lambda)$ be a temporal graph with  $n = |V(G)|$ and  $m=|E(G)|$.
-Let $v \in V(G)$ be an arbitrary vertex of $G$, denote with $deg_{max}$ the maximum degree of all vertices in $V(G)$ and let $S_v$ be the set of time edges in $(G,\lambda)$, incident to $v$, \ie $S_v = \{(uv, \lambda(uv)) | uv \in E(G)\}$.
-In their work Wu et~al.~\cite{Wu2016Efficient} provide an algorithm that computes the duration of the fastest temporal path from a source vertex $v$ to all other vertices in $G$ in
-$O(n + m \log c)$ time, where $c = \min \{|S_v|, deg_{max}\}$.
-From this result, we can deduce the following. 
-\begin{lemma} \label{lemma:calculatingD}
-Let $(G, \lambda, \Delta)$ be a $\Delta$-periodic temporal graph, where $\lambda$ assigns exactly $k$ labels to every edge of $G$. 
-Denote with $deg_{max}$ the maximum degree of vertices in $G$, let $deg(v_i)$ be the degree of vertex $v_i \in V(G)$,
-and let $c_{v_i} = \min \{ k \cdot deg(v_i), deg_{max}\}$.\\
-To calculate the durations of all fastest temporal paths from a fixed vertex $v \in V(G)$ to all other vertices, it takes $O(n + m \log c_v)$ time. \\
-To calculate the durations of the fastest temporal paths among all pairs of vertices we then need $O(n^2 + m \sum_{v \in V(G)} \log c_v)$ time.
-\end{lemma}
-
-Observe that $O(n + m \log c_v) = O(n + m \log deg_{max}) = O(n + m \log n) = O(n^2 \log n)$ and similarly
-$O(n^2 + m \sum_{v \in V(G)} \log c_v) = O(n^2 + mn \log deg_{max}) = O(n + mn \log n) = O(n^3 \log n)$.
-Since an instance $I$ of \kDeltaExact\ problem is an $n \times n$ matrix $D$, the running time of calculating one row of $D$ (\ie the fastest temporal paths from a single vertex to all others) takes $O(|I|\log \sqrt{|I|})$-time and calculating the whole matrix $D$ (\ie the fastest temporal paths among all pairs of vertices) takes $O(|I|^{3/2} \log \sqrt{|I|})$ time.
-Therefore, from now on we say that calculating (a row of) $D$ takes polynomial time.
-\end{comment}
-%\section{Results}
 
 \subparagraph{Organization of the paper.}
 In \cref{sec:hardness} we present our hardness results, first the NP-hardness in \cref{sec:nphardness} and then the parameterized hardness in \cref{sec:w1hardness}. In \cref{sec:algos} we present our algorithmic results. First we give in \cref{sec:cyclealgo} a polynomial-time algorithm for the case where the underlying graph is a tree. In \cref{sec:FPT} we generalize this and present our FPT result, which is the main result in the paper. In \cref{sec:cyclealgo} we provide a simple polynomial-time algorithm for the case where the underlying graph is a cycle. Finally, we conclude in \cref{sec:conclusion} and discuss some future work directions.
@@ -434,7 +454,7 @@ For an illustration see~\cref{fig:NP-example}.
 	\includegraphics{fig-NP-reduction}
 }
 \caption{Illustration of the temporal graph $(G,\lambda)$ from the NP-hardness reduction, 
-	where the NAE 3-SAT formula $\phi$ is of form $\phi = \text{NAE}(x_1, \overline{x}_2, x_3) \wedge \text{NAE}(\overline{x}_1, x_2, x_4)$.
+	where the NAE 3-SAT formula $\phi$ is of form $\phi = \text{NAE}(x_1, \overline{x}_2, x_3) \wedge \text{NAE}(x_1, x_2, x_4)$.
 To improve the readability, we draw edges between vertices $x_i^T$ and $x_j^F$ (where $i \neq j$) with gray dotted lines.
 Presented is the labeling of $G$ corresponding to the assignment $x_1=x_2=\textsc{true}$ and $x_3,x_4=\textsc{false}$,
 where all unlabeled edges get the label $2$.
@@ -463,7 +483,7 @@ We start by setting the value of $d(u,v) = 1$ where $u$ and $v$ are two adjacent
     If $x_i$ appears negated in $c$ we specify the following duratios:
     $d(c,x_i^T)=2$ and $d(x_i^T,c)=\Delta$.
     \item Let $x_i$ be a variable that does \emph{not} appear in clause $c$, then we specify the following duratios:
-    $d(x_i,c)=\Delta$, $d(c,x_i)=2\Delta + 2$
+    $d(x_i,c)=2 \Delta$, $d(c,x_i)=\Delta + 2$
     and
     $d(c,x_i^T)=d(c,x_i^F)=2$, $d(x_i^T,c)=d(x_i^F,c)=\Delta$. 
     \item For each pair of variables $x_i \neq x_j$ in $\phi$ we specify the following duratios:
@@ -611,8 +631,8 @@ We now verify that all duratios are realized.
     first,
     $d(c,x_i^T)=d(c,x_i^F)=2$,
     second, $d(x_i^T, c) = d(x_i^F,c)=\Delta$,
-    third, $d(x_i,c)=\Delta$,
-    and fourth $d(c,x_i)=2 \Delta + 2$.
+    third, $d(c,x_i)=\Delta + 2$,
+    and fourth $d(x_i,c)=2 \Delta$.
 
     Let $x_j$ be a variable that appears non-negated in $c$ (the case where $x_j$ appears negated is symmetric). 
     Then there is a temporal path 
@@ -620,16 +640,15 @@ We now verify that all duratios are realized.
     from $c$ to $x_i^F$ via $x_j^T$ such that $\lambda(x_j^T c)=1$ and $\lambda(x_j^T x_i^T)=\lambda(x_j^T x_i^F)=2$,
     which proves the first equality.
     Using the same temporal path in the opposite direction,
-    \ie first the edge $x_j^T c$ and then one of the edges $x_j^T x_i^F$ or $x_j^T x_i^T$,
+    \ie first the edge $x_j^T c$ and then one of the edges $x_j^T x_i^F$ or $x_j^T x_i^T$ at times $2$ and $\Delta + 1$, respectively,
     yields the second equality.
     For a temporal path from $c$ to $x_i$ we traverse the following three edges 
     $x_j^T c, x_j^T x_i^F$ and $x_i^Fx_i$,
-    with labels $1, 2, 2$ respectively.
-    This proves the second equality.
+    with labels $1, 2, 2$ respectively (\ie the path traverses them at time $1,2$ and $\Delta + 2$, respectively), which proves the third equality.
     Now for the case of a temporal path from $x_i$ to $c$,
     we use the same three edges, but in the opposite direction,
     namely $x_i^Fx_i, x_j^T x_i^F$ and $x_j^T c$,
-    again with labels $2, 2, 1$, respectively,
+    again at times $2, \Delta + 2, 2\Delta + 1$, respectively,
     which proves the last equality.
     Note that all of the above temporal paths are also the shortest possible, 
     and since the labels of first and last edges (of these paths) are unique,
@@ -661,12 +680,12 @@ We now verify that all duratios are realized.
     There is a path of length three from $c_i$ to $c_j$
     that passes first through vertex $x_k^T$ and then through vertex $x_\ell^T$.
     Therefore the temporal path from $c_i$ to $c_j$
-    uses the edges $x_k^T c_i, x_\ell ^T c_j, x_k^T x_\ell ^T$, with labels $1,2,1$, respectively,
+    uses the edges $x_k^T c_i, x_\ell ^T c_j, x_k^T x_\ell ^T$, with labels $1,2,1$ (at times $1, 2, \delta + 1$), respectively,
     which proves the desired equality.
     Note also that this is the shortest path between $c_i$ and $c_j$, and that the first and the last edge must have the label $1$,
     therefore it follows that this is the fastest temporal path.
 \end{itemize}
-Lastly, observe that the above constructed labeling $\lambda$ uses values $\{1,2,3\}\subseteq[\Delta]$, since we have $\Delta\ge 3$.
+Lastly, observe that the above constructed labeling $\lambda$ uses values $\{1,2,3\}\subseteq[\Delta]$, therefore $\Delta\ge 3$.
 \end{proof}
 
 
@@ -860,7 +879,7 @@ All fastest path durations between non-adjacent vertex pairs that are not specif
 \centering
 \includegraphics{fig-W1-reduction}
     }
-    \caption{Illustration of part of the underlying graph $G$ and a possible labeling. Edges incident with vertices of connector gadgets are omitted. Gray vertices form a feedback vertex set.
+    \caption{Illustration of part of the underlying graph $G$ and a possible labeling. Edges incident with vertices $\hat{v}_1,\hat{v}_2$ of connector gadgets are omitted. Gray vertices form a feedback vertex set.
     The double line connections, between a vertex $v_{i-1}^j$ in the verification gadget, and $u_1^3$ in the edge selection gadget, 
     and, between a vertex $u_2^3$ in the edge selection gadget, and $v_{i}^j$ in the verification gadget,
     consist of $5n$ vertices $a_1^{j,i,3},a_2^{j,i,3},\dots,a_{5n}^{j,i,3}$ 
@@ -1413,14 +1432,14 @@ We first start with defining certain notions, that will be of use when solving t
         &= \sum _{i = 1}^{p-1} (t_{i+1} - t_i) + 1 \\
         & = (t_2 - t_1) + (t_3 - t_2) + \cdots + (t_p - t_{p-1}) + 1  \\
         & = t_{p-1} - t_1 + 1\\
-        & = d(P)
+        & = d(P, \lambda)
         \end{align*}
         Now in the case when $t_i > t_{i+1}$ we get that $\tau_{v_i}^{v_{i-1}v_{i+1}} = \Delta + t_{i+1} - t_i$.
         At the end this still results in the correct duration as the last time we traverse the path $P$ is not exactly $t_p$ but $k \lambda + t_p$, for some $k$.
     \end{proof}
     We also get the following.
     \begin{observation}\label{obs:travel-delays-both-directions}
-    Let $(G, \lambda)$ be a temporal graph satisfying conditions of problem \deltaExact.
+    Let $(G, \lambda)$ be a temporal graph satisfying conditions of the \deltaExact problem.
     For any two incident edges $e_1 = uv$ and $e_2 = vz$ on vertices $u,v,z \in V$, with $e_1 \cap e_2 = v$, we have $\tau_v^{zu} = \Delta - \tau_v^{uz} \pmod \Delta$.
     \end{observation}
     
@@ -1431,7 +1450,7 @@ We first start with defining certain notions, that will be of use when solving t
     \end{proof}
 
 \begin{lemma} \label{lemma:unique-fastest-path-allDelays}
-    Let $(G, \lambda)$ be a temporal graph satisfying conditions of problem \deltaExact,
+    Let $(G, \lambda)$ be a temporal graph satisfying conditions of the \deltaExact problem,
     and let $(P,\lambda)=(P_{1,k},\lambda)$ be a fastest temporal path from $u=v_1$ to $v=v_k$ on $k$ vertices $v_1,v_2,\dots,v_k$.
     Let us denote with $(P_{1,i}, \lambda)$ the sub-path of temporal path $(P_{1,k},\lambda)$, that starts at $v_1$ and finishes at $v_i$.
     Suppose that for any $v_i$ in $P$ it follows that $(P_{1,i}, \lambda)$ is also the fastest temporal path from $u=v_1$ to $v_i$.

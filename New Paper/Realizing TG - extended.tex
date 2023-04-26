@@ -226,7 +226,7 @@ Hence, given a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, we can com
 which consists of durations of fastest temporal paths among all pairs of vertices in $(G,\lambda,\Delta)$.
 
 
-\begin{definition}[Travel delays]
+\begin{definition}[Travel delays] \label{def:travelDelays}
 	Let $(G, \lambda)$ be a $\Delta$-periodic temporal graph.
 	Let $e_1=uv$ and $e_2=vz$ be two incident edges in $G$ with $e_1 \cap e_2 = v$.
 	We define the \emph{travel delay} from $u$ to $z$ at vertex $v$, denoted with $\tau_v^{uz}$,
@@ -350,29 +350,30 @@ From all of the above we get the following result.
 \end{proof}
 
 \section{Upper bounds in the matrix D}
-We start by investigating the hardness of the problem on paths.
-We first reduce the input matrix $D$, by performing a series of modifications.
+We start by investigating the complexity of the problem \DeltaUpperBoundLong\ in the case when the underlying graph $G$, of the input instance, is a path.
+To do this efficiently we first present a procedure that reduces the values in the matrix $D$, of the input instance, as much as possible, without effecting solutions.
+This procedure is based on the basic properties of fastest temporal paths.
 
-Denote with $P = (v_1, v_2, \dots, v_n)$ a path on $n$ vertices,
-and let $D$ be the duration matrix with upper bounds.
-For any two vertices $v_i, v_j$ from $P$ we get that:
-\begin{itemize}
-	\item if the value of $D_{i,j} < D_{i,k}$, where $k \in [1+1,j-1]$
-	we set $D_{i,k} = D_{i,j}$.
-\end{itemize}
-%
-By the definition of temporal paths, it follows that $d(i,j) = d(i,k) + d(k-1, j) - 1$, where $i,j \in [n]$, with $i<j$ and $k \in [i+1,j-1]$.
-Therefore,
-\begin{itemize}
-	\item if $D_{i,j} > D_{i,k} + D_{k-1,j} -1$ we set the value of $D_{i,j}$ to $D_{i,k} + D_{k-1,j} -1$. 
-\end{itemize}
-%
-And lastly, to any $i$-th row of the matrix $D$, we make the following modifications:
-\begin{itemize}
-	\item if there are two entries $j< k$ with the same values, \ie $D_{i,j} = D_{i,k}$ where both $j,k$ are bigger than $i$ (resp.~smaller than $i$),
-	then we set $D_{i,j} = D_{i,k} - (k-j)$ (resp.~ $D_{i,k} = D_{i,j} - (k-j)$).
-\end{itemize}
-We iteratively repeat all of the above steps and produce a reduce matrix $D'$.
+Let $(G,D)$ be an instance of \deltaUpperBound\, where $G$ is a path of length $n$.
+Denote with $v_0,v_1, v_2, \dots, v_n$ the vertices of $G$ where $v_{i}v_{i+1} \in E(G)$, for all $i \in [n]$.
+Observe the following properties.
+\begin{enumerate}
+	\item Let $i,j,k \in [n]$, where $i < k < j$, and let $D_{i,j} \leq D_{i,k}$. 
+ Then the temporal path $P_{i,k}$ from $v_i$ to $v_k$ cannot be of duration more than $D_{i,j} - (k-j)$,
+ which implies that $D_{i,k} \leq D_{i,j} - (k-j)$.
+ 
+ This holds because $P_{i,k}$ is a subpath of the temporal path $P_{i,j}$ from $v_i$ to $v_j$,
+ therefore we can brake down $P_{i,j}$ into two parts, $P_{i,k}$ and the path $P_{k,j}$ from $v_k$ to $v_j$.
+ Since $P_{k,j}$ consists of $k-j$ edges we need at least $k-j$ time to traverse it, so the duration of $P_{i,k}$ cannot take more than $D_{i,j} - (k-j)$ time.
+
+    \item From the definition of temporal paths, it follows that $d(i,j) = d(i,k) + d(k-1, j) - 1$, where $i,j \in [n]$, with $i<j$ and $k \in [i+1,j-1]$.
+    Therefore $D_{i,j} \leq D_{i,k} + D_{k-1,j} -1$.
+
+    \item 
+\end{enumerate}
+
+
+We iteratively repeat the steps below and produce a reduce matrix $D'$ from the input matrix $D$.
 It is easy to see that if there exists a labeling of $P$ for $D'$, then this labeling satisfies also $D$. 
 
 \begin{theorem}
@@ -421,6 +422,36 @@ It is easy to see that if there exists a labeling of $P$ for $D'$, then this lab
 	\begin{claim}
 		The above procedure produces a labeling of $P$ that satisfies durations from $D$.
 	\end{claim}
+\end{proof}
+
+\begin{proof}[Proof idea -- new:]
+We are given an instance  $(G,\Delta), D$ of \deltaUpperBound\, where $G$ is a path on vertices $v_0, v_1, \dots, v_n$.
+Let us denote with $\tau_i^+$ the waiting time at vertex $v_i$ when passing from vertex $v_{i-1}$ to $v_{i+1}$, and with $\tau_i^-$ the waiting time at $v_i$ when traversing through $v_i$ from other direction (for details see~\cref{def:travelDelays}).
+Since $\tau_i^- = \Delta - \tau_i^+$, we denote with $\tau_i = \tau_i^+$, and replace $\tau_i^-$ with $ \Delta - \tau_i$.
+By the definition it also follows that the duration of a fastest path among two vertices $v_i, v_j$ in $(G,\lambda)$, for $i < j$
+is 
+\begin{equation}\label{eq:path-positive}
+    d(v_i,v_j)=\sum_{k = i+1}^{j-1} \tau_k + 1,
+\end{equation}
+and for $i > j$ is 
+\begin{equation}\label{eq:path-negative}
+d(v_i,v_j)=\sum_{k = i+1}^{j-1} (\Delta - \tau_k) + 1.
+\end{equation}
+
+We want to determine the values of all $\tau_i$, and consequently the labeling $\lambda$, such that the distance matrix $D$ is satisfied,
+namely $d(v_i,v_j) \leq D_{i,j}$ for all $v_i,v_j$ in $G$.
+To do this we build an ILP. We do this as follows.
+
+For every pair of vertices $v_i, v_j \in G$ where $|i-j| \geq 2$, we create an inequality of form $d(v_i,v_j) \leq D_{i.j}$, where $d(v_i,v_j)$ equals the expression from \cref{eq:path-positive} if $i < j$, and \cref{eq:path-negative} if $i > j$.
+We build a system of $O(n^2)$ inequalities with $n$ variables $d_1,d_2, \dots, d_n$,
+where each $d_i \in [\Delta]$. Let us denote this system of inequalities as $I_D$.
+We need to prove first that produced system $I_D$ is in fact an (integer) linear program and then show how we can find a solution of it in polynomial time.
+
+Before starting with the analysis of $I_D$ let us observe some basic properties that have to hold for $D$, which will make our computation easier.
+\begin{enumerate}
+    \item f
+\end{enumerate}
+
 \end{proof}
 	
 	
