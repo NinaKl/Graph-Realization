@@ -350,15 +350,16 @@ From all of the above we get the following result.
 \end{proof}
 
 \section{Upper bounds in the matrix D}
-We start by investigating the complexity of the problem \DeltaUpperBoundLong\ in the case when the underlying graph $G$, of the input instance, is a path.
-To do this efficiently we first present a procedure that reduces the values in the matrix $D$, of the input instance, as much as possible, without effecting solutions.
-This procedure is based on the basic properties of fastest temporal paths.
+We start by investigating the complexity of the problem \DeltaUpperBoundLong\ in the case when the underlying graph of the input instance is a path.
+First we observe some properties of the problem.
 
 Let $(G,D)$ be an instance of \deltaUpperBound\, where $G$ is a path of length $n$.
 Denote with $v_0,v_1, v_2, \dots, v_n$ the vertices of $G$ where $v_{i}v_{i+1} \in E(G)$, for all $i \in [n]$.
-Observe the following properties.
-\begin{enumerate}
-	\item Let $i,j,k \in [n]$, where $i < k < j$, and let $D_{i,j} \leq D_{i,k}$. 
+And let $\lambda$ be a labelling that we are trying to construct (\ie a labeling satisfying conditions of the problem).
+The following must hold.
+\begin{enumerate}[(a)]
+	\item \label{path:enum-1}
+ Let $i,j,k \in [n]$, where $i < k < j$, and let $D_{i,j} \leq D_{i,k}$. 
  Then the temporal path $P_{i,k}$ from $v_i$ to $v_k$ cannot be of duration more than $D_{i,j} - (k-j)$,
  which implies that $D_{i,k} \leq D_{i,j} - (k-j)$.
  
@@ -366,21 +367,70 @@ Observe the following properties.
  therefore we can brake down $P_{i,j}$ into two parts, $P_{i,k}$ and the path $P_{k,j}$ from $v_k$ to $v_j$.
  Since $P_{k,j}$ consists of $k-j$ edges we need at least $k-j$ time to traverse it, so the duration of $P_{i,k}$ cannot take more than $D_{i,j} - (k-j)$ time.
 
-    \item From the definition of temporal paths, it follows that $d(i,j) = d(i,k) + d(k-1, j) - 1$, where $i,j \in [n]$, with $i<j$ and $k \in [i+1,j-1]$.
-    Therefore $D_{i,j} \leq D_{i,k} + D_{k-1,j} -1$.
+    \item \label{path:enum-2}
+     For any two vertices $v_i, v_{i+2}$ on distance two apart the following holds $d(i, i+2) + d(i+2, i) = \Delta + 2$.
+     Therefore $D_{i,i+2} + D_{i+2,i} \geq \Delta + 2$.
+     We can generalize this observation for any two vertices on distance $k$ apart and get 
+     $D_{i,i+k} + D_{i+k,i} \geq (k-1) \Delta + 2$.
 
-    \item 
+    %    \item \label{path:enum-3}
+    %    From the definition of temporal paths, it follows that $d(i,j) = d(i,k) + d(k-1, j) - 1$, where $i,j \in [n]$, with $i<j$ and $k \in [i+1,j-1]$.
+    %    Therefore $D_{i,j} \leq D_{i,k} + D_{k-1,j} -1$.
 \end{enumerate}
 
+From all of the above properties we create a polynomial-time algorithm that transforms the input matrix $D$ into a reduced one, without affecting any potential solutions.
+The algorithm performs the following steps.
+\begin{enumerate}
+    \item A vertex $v_i$ is on the distance $0$ from itself, and at distance $1$ from its neighbors,
+    which means it is also on the duration $0$ and $1$ from them, respectively.
+    Therefore we set all the diagonal values of $D$ to $0$, and the upper and lower diagonals to $1$.
+    \item 
+    From the property~(\ref{path:enum-1}) it follows that the values in every row $i$ the values have to be strictly increasing (resp.~decreasing) from $D_{i,i}$ to $D_{i,n}$ (resp.~$D_{i,1}$).
+    Therefore we loop through each row of $D$ and whenever we encounter 
+    a row that does not obey this rule, we use the property~(\ref{path:enum-1}) to modify its entries.
+\end{enumerate}
+For the matrix $D$ we can also check that the property~(\ref{path:enum-2}) holds, by checking all $O(n^2)$ possible equations. If one of them does not hold then we can conclude that there is no labeling $\lambda$ of $G$ that would realize $D$.
 
-We iteratively repeat the steps below and produce a reduce matrix $D'$ from the input matrix $D$.
-It is easy to see that if there exists a labeling of $P$ for $D'$, then this labeling satisfies also $D$. 
+From now on we assume that $D$ is reduced and satisfies the above conditions.
 
-\begin{theorem}
+\begin{theorem}\label{thm:paths-upperBound}
 	\deltaUpperBound\ can be solved in polynomial time on paths.
 \end{theorem}
 
-\begin{proof}[Proof idea:]
+\begin{proof}[Proof idea for \cref{thm:paths-upperBound} -- new:]
+We are given an instance  $(G,D)$ of \deltaUpperBound\, where $G$ is a path on vertices $v_0, v_1, \dots, v_n$. 
+Let $\lambda$ be a labeling satisfying this instance.
+We denote with $\tau_i^+$ the waiting time at vertex $v_i$ when passing from vertex $v_{i-1}$ to $v_{i+1}$ in $(G,\lambda)$, with $\tau_i^-$ the waiting time at $v_i$ when traversing through $v_i$ from the other direction (for details see~\cref{def:travelDelays}).
+Since $\tau_i^- = \Delta - \tau_i^+$, we denote with $\tau_i = \tau_i^+$, and replace $\tau_i^-$ with $ \Delta - \tau_i$.
+By the definition it also follows that the duration of a fastest path among two vertices $v_i, v_j$ in $(G,\lambda)$, for $i < j$
+is 
+\begin{equation}\label{eq:path-positive}
+    d(v_i,v_j)=\sum_{k = i+1}^{j-1} \tau_k + 1,
+\end{equation}
+and for $i > j$ is 
+\begin{equation}\label{eq:path-negative}
+d(v_i,v_j)=\sum_{k = i+1}^{j-1} (\Delta - \tau_k) + 1.
+\end{equation}
+
+We want to determine the values of all $\tau_i$, and consequently the labeling $\lambda$, such that the distance matrix $D$ is satisfied,
+namely $d(v_i,v_j) \leq D_{i,j}$ for all $v_i,v_j$ in $G$.
+To do this we build an ILP. We do this as follows.
+
+For every pair of vertices $v_i, v_j \in G$ where $|i-j| \geq 2$, we create an inequality of form $d(v_i,v_j) \leq D_{i.j}$, where $d(v_i,v_j)$ equals the expression from \cref{eq:path-positive} if $i < j$, and \cref{eq:path-negative} if $i > j$.
+We build a system of $O(n^2)$ inequalities with $n$ variables $d_1,d_2, \dots, d_n$,
+where each $d_i \in [\Delta]$. Let us denote this system of inequalities as $I_D$.
+We need to prove first that produced system $I_D$ is in fact an (integer) linear program and then show how we can find a solution, if there is one, in polynomial time.
+
+\begin{claim}
+    The produce system of inequalities $I_D$ is an integer linear program.
+\end{claim}
+\begin{claimproof}
+d
+\end{claimproof}
+
+\end{proof}
+
+\begin{proof}[Proof idea for \cref{thm:paths-upperBound} -- old:]
 	Let $P = (v_1, v_2, \dots, v_n)$ be a path on $n$ vertices.
 	For the sake of simplicity we denote with $a_i$ label of edge $e_i =v_iv_{i+1}$, for all $i \in [n-1]$.
 	By the definition, for any two vertices $v_i,v_j \in P$, we have the following inequality:
@@ -422,36 +472,6 @@ It is easy to see that if there exists a labeling of $P$ for $D'$, then this lab
 	\begin{claim}
 		The above procedure produces a labeling of $P$ that satisfies durations from $D$.
 	\end{claim}
-\end{proof}
-
-\begin{proof}[Proof idea -- new:]
-We are given an instance  $(G,\Delta), D$ of \deltaUpperBound\, where $G$ is a path on vertices $v_0, v_1, \dots, v_n$.
-Let us denote with $\tau_i^+$ the waiting time at vertex $v_i$ when passing from vertex $v_{i-1}$ to $v_{i+1}$, and with $\tau_i^-$ the waiting time at $v_i$ when traversing through $v_i$ from other direction (for details see~\cref{def:travelDelays}).
-Since $\tau_i^- = \Delta - \tau_i^+$, we denote with $\tau_i = \tau_i^+$, and replace $\tau_i^-$ with $ \Delta - \tau_i$.
-By the definition it also follows that the duration of a fastest path among two vertices $v_i, v_j$ in $(G,\lambda)$, for $i < j$
-is 
-\begin{equation}\label{eq:path-positive}
-    d(v_i,v_j)=\sum_{k = i+1}^{j-1} \tau_k + 1,
-\end{equation}
-and for $i > j$ is 
-\begin{equation}\label{eq:path-negative}
-d(v_i,v_j)=\sum_{k = i+1}^{j-1} (\Delta - \tau_k) + 1.
-\end{equation}
-
-We want to determine the values of all $\tau_i$, and consequently the labeling $\lambda$, such that the distance matrix $D$ is satisfied,
-namely $d(v_i,v_j) \leq D_{i,j}$ for all $v_i,v_j$ in $G$.
-To do this we build an ILP. We do this as follows.
-
-For every pair of vertices $v_i, v_j \in G$ where $|i-j| \geq 2$, we create an inequality of form $d(v_i,v_j) \leq D_{i.j}$, where $d(v_i,v_j)$ equals the expression from \cref{eq:path-positive} if $i < j$, and \cref{eq:path-negative} if $i > j$.
-We build a system of $O(n^2)$ inequalities with $n$ variables $d_1,d_2, \dots, d_n$,
-where each $d_i \in [\Delta]$. Let us denote this system of inequalities as $I_D$.
-We need to prove first that produced system $I_D$ is in fact an (integer) linear program and then show how we can find a solution of it in polynomial time.
-
-Before starting with the analysis of $I_D$ let us observe some basic properties that have to hold for $D$, which will make our computation easier.
-\begin{enumerate}
-    \item f
-\end{enumerate}
-
 \end{proof}
 	
 	
