@@ -504,7 +504,7 @@ In this section we prove that \deltaUpperBound\ becomes NP-hard when the underly
 
     Given an instance $\phi$ of NAE 3-SAT with $n$ variables $x_1,x_2 \dots , x_n$ and $m$ clauses $c_1, c_2, \dots, c_m$, we build an instance $(D,\Delta)$ of \deltaUpperBound\ using the following procedure.
 
-\begin{figure}[t]
+\begin{figure}[hbt]
 	\noindent
 	\makebox[\textwidth]{
 		\centering
@@ -566,7 +566,7 @@ In this section we prove that \deltaUpperBound\ becomes NP-hard when the underly
     %x3 to clause
 	\draw (x3t) to node[timelabel,pos=0.75] {$1$} (c1);
     %x3 gadget
-	\draw (x3t) to node[timelabel] node[dummy] {} 
+	\draw (x3t) to node[dummy] {} 
     node[timelabel,pos=0.25]{$2$} node[pos=0.75,timelabel]{$3$} (v);
 	\draw (x3f) to [out=100,in=330] node[dummy] {} 
     node[timelabel,pos=0.25]{$2$} node[pos=0.75,timelabel]{$1$} (v);
@@ -577,13 +577,12 @@ In this section we prove that \deltaUpperBound\ becomes NP-hard when the underly
     %x4 to clause
 	\draw (x4t) to node[timelabel,pos=0.75] {$1$} (c2);
     %x4 gadget
-	\draw (x4t) to [out=90,in=340] node[timelabel] node[dummy] {} 
+	\draw (x4t) to [out=90,in=340] node[dummy] {} 
     node[timelabel,pos=0.25]{$2$} node[pos=0.75,timelabel]{$3$} (v);
 	\draw (x4f) to [out=90,in=360] node[dummy] {} 
     node[timelabel,pos=0.25]{$2$} node[pos=0.75,timelabel]{$1$} (v);
     \draw (x4t) to node[timelabel, pos=0.5] {$1$} (x4) to node[timelabel, pos=0.5] {$3$} (x4f);
 	
-
 \end{tikzpicture}
 }
 \caption{Illustration of the temporal graph $(G,\lambda)$ from the NP-hardness reduction, 
@@ -629,5 +628,5 @@ for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ i
 \todo[inline]{how to extend the poly algorithms of cycles? Easy candidate: FES, FVS, series-parallel graphs, or tw=2 graphs}
 \todo[inline]{FVS, $c$-factor approximation, hardness of approximation for $c<1.5$}
 
-\bibliography{../bibliography}	
+\bibliography{bibliography}	
 \end{document}
