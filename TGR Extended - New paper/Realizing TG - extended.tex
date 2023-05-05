@@ -18,6 +18,7 @@
 
 
 \usepackage{amsmath}
+\usepackage{cite}
 %\let\proof\relax
 %\let\endproof\relax
 
@@ -405,12 +406,13 @@ From now on we assume that $D$ is a reduced matrix, that satisfies the above con
 	\deltaUpperBound\ can be solved in polynomial time on paths.
 \end{theorem}
 
-\begin{proof}[Proof idea for \cref{thm:paths-upperBound} -- new:]
-We are given an instance  $(G,D)$ of \deltaUpperBound\, where $G$ is a path on vertices $v_0, v_1, \dots, v_n$. 
+\begin{proof}
+We are given an instance  $(G,D)$ of \deltaUpperBound\, where $G$ is a path on vertices $v_0, v_1, \dots, v_{n+1}$. 
 Let $\lambda$ be a labeling satisfying this instance.
-We denote with $\tau_i^+$ the waiting time at vertex $v_i$ when passing from vertex $v_{i-1}$ to $v_{i+1}$ in $(G,\lambda)$, with $\tau_i^-$ the waiting time at $v_i$ when traversing through $v_i$ from the other direction (for details see~\cref{def:travelDelays}).
-Since $\tau_i^- = \Delta - \tau_i^+$, we denote with $\tau_i = \tau_i^+$, and replace $\tau_i^-$ with $ \Delta - \tau_i$.
-By the definition it also follows that the duration of a fastest path among two vertices $v_i, v_j$ in $(G,\lambda)$, for $i < j$
+We denote with $\tau_i^+$ the waiting time at vertex $v_i$ when passing from vertex $v_{i-1}$ to $v_{i+1}$ in $(G,\lambda)$,
+and with $\tau_i^-$ the waiting time at $v_i$ when traversing through $v_i$ from the other direction (for details see~\cref{def:travelDelays}).
+Since $\tau_i^- = \Delta - \tau_i^+$, we can simplify the above notation and replace $\tau_i^+$ with $\tau_i$, and $\tau_i^-$ with $ \Delta - \tau_i$.
+Therefore, by the definition, it follows that the duration of a fastest path among two vertices $v_i, v_j$ in $(G,\lambda)$, for $i < j$
 is 
 \begin{equation}\label{eq:path-positive}
     d(v_i,v_j)=\sum_{k = i+1}^{j-1} \tau_k + 1,
@@ -422,73 +424,121 @@ d(v_i,v_j)=\sum_{k = i+1}^{j-1} (\Delta - \tau_k) + 1.
 
 We want to determine the values of all $\tau_i$, and consequently the labeling $\lambda$, such that the distance matrix $D$ is satisfied,
 namely $d(v_i,v_j) \leq D_{i,j}$ for all $v_i,v_j$ in $G$.
-To do this we build the following integer linear program (ILP).
+To do this we build a system of inequalities $I_D$, using the following procedure.
 
 For every pair of vertices $v_i, v_j \in G$ where $|i-j| \geq 2$, we create an inequality of form $d(v_i,v_j) \leq D_{i.j}$, where $d(v_i,v_j)$ equals the expression from \cref{eq:path-positive} if $i < j$, and \cref{eq:path-negative} if $i > j$.
-We build a system of $O(n^2)$ linear inequalities with $n$ variables $d_1,d_2, \dots, d_n$,
-where each $d_i \in [\Delta]$. Let us denote this system of inequalities as $I_D$.
-The produced system $I_D$ is an ILP. 
-We need to show that we can, in polynomial-time, determine if $I_D$ admits a solution,
-and in the positive case construct one such solution.
-A solution for $I_D$ determines the values of each $\tau_i$. We then use this information to determine a labeling $\lambda$, which is a solution for our instance of \deltaUpperBound.
-We do this using the following steps.
-First we prove that our ILP $I_D$ has a solution if and only if the (relaxed) LP version of it admits one .
-Second, we prove that if we have a (non-necessary integer) solution $S'$ of the LP instance $I_D$, then we can modify the solution $S'$ to get an integer solution $S$ of the ILP version of $I_D$.
+This results in creating $O(n^2)$ linear inequalities with $n$ variables $\tau_1,\tau_2, \dots, \tau_n$,
+where each $\tau_i \in [\Delta]$. 
+
+Let us observe the following properties of the system of inequalities $I_D$, which will help us to express it as a linear program (LP) in a canonical form.
+
+From observing vertices $v_i$ and $v_j$, we get the following two inequalities:
+\begin{equation}
+\sum_{k = i+1}^{j-1} \tau_k + 1 \leq D_{i,j}
+\Leftrightarrow
+\sum_{k = i+1}^{j-1} \tau_k \leq D_{i,j} - 1
+\end{equation}
+and
+\begin{equation}
+\sum_{k = i+1}^{j-1} (\Delta - \tau_k) + 1
+\Leftrightarrow
+\sum_{k = i+1}^{j-1} - \tau_k \leq  D_{i,j} - 1 -(j-i+1)\Delta .
+\end{equation}
+From the condition $\tau_i \in [\Delta]$, we add the inequality $\tau_i \leq \Delta$ and $\tau_i \geq 0$.
+
+Let us now describe our LP.
+We want to find an assignment of values for each $\tau_i$, that satisfy the inequalities:
+\begin{equation} \label{eq:paths-inequalities-A}
+\begin{aligned}
+\tau_1 & \leq \Delta \\
+\tau_2 & \leq \Delta \\
+& \vdots \\
+\tau_n &\leq \Delta \\
+%%%% \tau \leq Delta
+\tau_1 &\leq D_{0,2} -1 \\
+\tau_1 + \tau_2 &\leq D_{0,3} -1 \\
+\tau_1 + \tau_2 + \tau_3 &\leq D_{0,4} -1 \\
+& \vdots \\
+\tau_1 + \cdots + \tau_n &\leq D_{0,n+1} -1 \\
+%%%% all with \tau_1
+\tau_2 & \leq D_{1,3} -1 \\
+\tau_2 + \tau_3 &\leq D_{1,4} - 1\\
+& \vdots \\
+\tau_n &\leq D_{n-1,n+1} - 1 \\
+%%% all positive tau
+%%%
+- \tau_1 &\leq D_{2,0} -1 - \Delta \\
+- \tau_1 - \tau_2 &\leq D_{3,0} -1 -2 \Delta \\
+& \vdots \\
+- \tau_n &\leq D_{n+1,n-1} - 1 - \Delta
+\end{aligned}
+\end{equation}
+where all $\tau_i$ are positive integers.
+We can write the above set of inequalities in the matrix form as $A t \leq b$, where $t$ is a vector of variables $\tau_1,\tau_2,\dots, \tau_n$.
+Therefore we can form the following LP, in the canonical form
+\begin{equation} \label{eq:paths-LP}
+\begin{aligned}
+\text{find a vector} &&& t \\
+\text{that maximizes} &&& \sum_i \tau_i \\
+\text{subject to} && A t  &\leq b, \\
+\text{and} && t &\geq 0. \\
+\end{aligned}
+\end{equation}
+Note that in our case we do not necessarily want to maximize the sum of all $\tau_i$ variables, but just to find an assignment of variables that will satisfy our conditions. Clearly if there is a solution to our system then there is also a solution that will maximize the sum, and vice versa. 
+
+In their work Hoffman and Kruskal~\cite{Hoffman1956Integral} prove that if the coefficient matrix  $A$, from the \cref{eq:paths-LP} is totally unimodular (that is, any square submatrix has determinant $\pm 1$, or $0$), and the vector $b$ is integral,
+then the extreme (corner) points of the feasible polyhedron $\{ t \mid A t  \leq b, t \geq 0\}$ are integral. 
+Which implies that using the simplex method to solve the LP, which takes polynomial time, results in an integral solution.
+Therefore we have to prove that $A$ really is totally unimodular.
+
 \begin{claim}
-    Integer version of the LP for $I_D$ has a solution if and only if the LP for $I_D$ has a solution.
+    The coefficient matrix $A$ of linear program $I_D$ is totally unimodular.
 \end{claim}
 
 \begin{claimproof}
-Clearly, if the LP for $I_D$ admits no solution, then also the Integer version of the LP for $I_D$ admits no solution, as any integer solution for ILP would also be a solution for LP.
-Therefore we only need to prove that if the LP for $I_D$ admits a solution, then also the ILP or $I_D$ admits one (not necessarily the same one).
+    From the definition it follows that $U$ is a totally unimodular matrix if and only if $U^T$ is totally unimodular.
+    It is not hard to prove that if $U$ is a totally unimodular matrix then also $[I U]$ and $[U -U]$ are totally unimodular, where $I$ is the identitiy matrix.
+    We use these facts to prove that our coefficient matrix $A$ is totally unimodular.
 
-
+    From the first $n$ inequalities from \cref{eq:paths-inequalities-A} it follows that the first $n$ rows of $A$ form an identity matrix $I$ of size $n \times n$.
+    Let us now split the rest of the matrix $A$ into two parts, one where all the non-zero coefficient are positive ($+1$) and the second where they are negative ($-1$).
+    Note that the second part (with the negative non-zero coefficients) is the same as the first part, where each coefficient changes the sign.
+    Therefore we can write the matrix $A$ as
+    \begin{equation*}
+    A =
+        \begin{bmatrix}
+        I \\
+        B \\
+        -B
+        \end{bmatrix},
+    \end{equation*}
+    where $I$ is the identity matrix and $B$ is a matrix of the following form
+    \begin{equation*}
+    B =
+        \begin{bmatrix}
+        1 & & & & \\
+        1 & 1 & & \\
+        1 & 1 & 1 & \cdots & 1 \\
+        \vdots & & & \ddots & \\
+        1 & 1 & 1 & \cdots & 1\\
+        & 1 & & & \\
+        & 1 & 1 & & \\
+        & \vdots & & \ddots & \\
+        & 1 & 1 & \cdots & 1\\
+        & & & \ddots & \\
+        & & & & 1
+        \end{bmatrix}.
+    \end{equation*}
+    Note that $B$ is a matrix in which for every row all non-zero entries ($1$-s) appear consecutively.
+    It is known\cite{Hoffman1956Integral,Fulkerson1965Incidence} that $B$ is a totally unimodular matrix.
+    Using this result and the above mentioned properties of totally unimodular matrices, it follows that $A$ is totally unimodular.
 \end{claimproof}
-
-\end{proof}
-
-\begin{proof}[Proof idea for \cref{thm:paths-upperBound} -- old:]
-	Let $P = (v_1, v_2, \dots, v_n)$ be a path on $n$ vertices.
-	For the sake of simplicity we denote with $a_i$ label of edge $e_i =v_iv_{i+1}$, for all $i \in [n-1]$.
-	By the definition, for any two vertices $v_i,v_j \in P$, we have the following inequality:
-	\begin{equation*}
-		(a_{i+1} - a_i)_\Delta + (a_{i+2} - a_{i+1})_\Delta + \cdots + (a_{j-1} - a_{j-2})_\Delta + 1
-		\leq D_{i,j}.
-	\end{equation*}
-	For the sake of simplicity we refer to the inequality that a temporal path from $v_i$ to $v_j$ has to respect (\ie~the above inequality) 
-	as $I_{i,j}$.
-	Note that we can rewrite the inequality $I_{i,j}$ also without the modulo $\Delta$ part as:
-	\begin{equation*}
-		k_{i+1,i} \Delta + (a_{i+1} - a_i)+ k_{i+2,i+1} \Delta + (a_{i+2} - a_{i+1}) + \cdots + k_{j-1,j-2} \Delta + (a_{j-1} - a_{j-2})+ 1
-		\leq D_{i,j},
-	\end{equation*}
-	where all $k_{i,i+1} \in \{0,1\}$.
-	
-	W.l.o.g. we can assume also that $a_i \neq a_{i+1}$ for all $i \in [n-1]$,
-	this follows from the fact that the duration among two vertices $v_i, v_{i+2}$ on distance $2$ in $P$ equals to $\Delta + 1$ when the two consecutive labels are the same, but if the labels are not the same, the duration can be at most $\Delta$, which still satisfies the condition from before.
-	Therefore, for any two consecutive labels $a_i$ and $a_{i+1}$ (\ie for any two vertices $v_i, v_{i+2}$ on distance $2$ in $P$), 
-	it follows that 
-	$k_{i, i+1} = 1 - k_{i+1,i}$, where $k_{i+1,i} \in \{0,1\}$, which makes also $k_{i,i+1} \in \{0,1\}$, as required.
-	If we now sum up the two inequalities $I_{i,i+2}, I_{i+2,i}$ we get the following:
-	\begin{equation*}
-		(a_i-a_{i+1})_\Delta + (a_{i+1}-a_i)_\Delta +1 +1 = \Delta + 2.
-	\end{equation*}
-	It follows that for any two vertices $v_i, v_j$ in $P$, that are on distance $k$ apart, 
-	we get that $d(i,j) + d(j,i) = (k-1) \Delta + 2$.
-	
-	To satisfy the inequalities $I_{1,n}$ and $I_{n,1}$ we have to correctly determine which of $k_{i+1,i}$ have value $1$, and consequently set $k_{i,i+1} = 0$,
-	and vice versa.
-	
-	From the value $D_{1,n}$ (resp.~$D_{n,1}$) we can determine how many of $k_{i+1,i}$ (resp.$k_{i,i+1}$) can be non-zero. Suppose that there are $m$ non-zero ones (resp.~$n-m-1$).
-	Then to determine which $m$ of the $k_{i,i+1}$ are non-zero we look at every two vertices $v_i, v_{i+2}$ at the distance $2$ in $P$ 
-	and based on the inequalities $I_{i,i+2}, I_{i+2,i}$ determine if $k_{i+1,i}$ has a value $1$ or $0$,
-	i.e.~if $e_{i+1}$ is bigger or smaller than $e_i$.
-	We start determining the values $k_{i+1,i}$ from ``left to right'' (i.e~first we determine $k_{2,1}$, then $k_{3,2}$, \dots, and at last $k_{i-1,i-2}$).
-	Now that the relations of every two consecutive labels of $P$ are determined, 
-	we select the values for each label, such that the inequalities among them hold.
-	\begin{claim}
-		The above procedure produces a labeling of $P$ that satisfies durations from $D$.
-	\end{claim}
+We have now proved that we can, in polynomial time, determine the values of $\tau_i$ satisfying inequalities from $I_D$, if such $\tau_i$ exist.
+We now have to determine the labeling $\lambda$ from the waiting times $\tau_i$.
+Note that knowing the label $\lambda(v_{i-1}v_i)$ and $\tau_i$ we uniquely determine the label $\lambda(v_iv_{i+1})$ as $(\tau_i - \lambda(v_{i-1}v_i))\pmod{\Delta}$.
+Therefore the algorithm to build the whole labelling $\lambda$ of $G$
+starts by fixing the label of the first edge $\lambda(v_0v_1) = 1$, and then iteratively determines the label of each consecutive edge.
+At the end we have build a labeling $\lambda$ that satisfies all inequalities from $I_D$, which implies that for all $v_i,v_j \in V(G)$ we have $d(v_i,v_j) \leq D_{i,j}$.
 \end{proof}
 
 \subsection{\deltaUpperBound\ on general graphs}
@@ -627,6 +677,53 @@ for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ i
 \todo[inline]{Check if the reduction works for the UPPER BOUNDED version (seems to work)}
 \todo[inline]{how to extend the poly algorithms of cycles? Easy candidate: FES, FVS, series-parallel graphs, or tw=2 graphs}
 \todo[inline]{FVS, $c$-factor approximation, hardness of approximation for $c<1.5$}
+
+\clearpage
+\section{Old (not useful?) results}
+\begin{proof}[Proof idea for \cref{thm:paths-upperBound} -- old:]
+	Let $P = (v_1, v_2, \dots, v_n)$ be a path on $n$ vertices.
+	For the sake of simplicity we denote with $a_i$ label of edge $e_i =v_iv_{i+1}$, for all $i \in [n-1]$.
+	By the definition, for any two vertices $v_i,v_j \in P$, we have the following inequality:
+	\begin{equation*}
+		(a_{i+1} - a_i)_\Delta + (a_{i+2} - a_{i+1})_\Delta + \cdots + (a_{j-1} - a_{j-2})_\Delta + 1
+		\leq D_{i,j}.
+	\end{equation*}
+	For the sake of simplicity we refer to the inequality that a temporal path from $v_i$ to $v_j$ has to respect (\ie~the above inequality) 
+	as $I_{i,j}$.
+	Note that we can rewrite the inequality $I_{i,j}$ also without the modulo $\Delta$ part as:
+	\begin{equation*}
+		k_{i+1,i} \Delta + (a_{i+1} - a_i)+ k_{i+2,i+1} \Delta + (a_{i+2} - a_{i+1}) + \cdots + k_{j-1,j-2} \Delta + (a_{j-1} - a_{j-2})+ 1
+		\leq D_{i,j},
+	\end{equation*}
+	where all $k_{i,i+1} \in \{0,1\}$.
+	
+	W.l.o.g. we can assume also that $a_i \neq a_{i+1}$ for all $i \in [n-1]$,
+	this follows from the fact that the duration among two vertices $v_i, v_{i+2}$ on distance $2$ in $P$ equals to $\Delta + 1$ when the two consecutive labels are the same, but if the labels are not the same, the duration can be at most $\Delta$, which still satisfies the condition from before.
+	Therefore, for any two consecutive labels $a_i$ and $a_{i+1}$ (\ie for any two vertices $v_i, v_{i+2}$ on distance $2$ in $P$), 
+	it follows that 
+	$k_{i, i+1} = 1 - k_{i+1,i}$, where $k_{i+1,i} \in \{0,1\}$, which makes also $k_{i,i+1} \in \{0,1\}$, as required.
+	If we now sum up the two inequalities $I_{i,i+2}, I_{i+2,i}$ we get the following:
+	\begin{equation*}
+		(a_i-a_{i+1})_\Delta + (a_{i+1}-a_i)_\Delta +1 +1 = \Delta + 2.
+	\end{equation*}
+	It follows that for any two vertices $v_i, v_j$ in $P$, that are on distance $k$ apart, 
+	we get that $d(i,j) + d(j,i) = (k-1) \Delta + 2$.
+	
+	To satisfy the inequalities $I_{1,n}$ and $I_{n,1}$ we have to correctly determine which of $k_{i+1,i}$ have value $1$, and consequently set $k_{i,i+1} = 0$,
+	and vice versa.
+	
+	From the value $D_{1,n}$ (resp.~$D_{n,1}$) we can determine how many of $k_{i+1,i}$ (resp.$k_{i,i+1}$) can be non-zero. Suppose that there are $m$ non-zero ones (resp.~$n-m-1$).
+	Then to determine which $m$ of the $k_{i,i+1}$ are non-zero we look at every two vertices $v_i, v_{i+2}$ at the distance $2$ in $P$ 
+	and based on the inequalities $I_{i,i+2}, I_{i+2,i}$ determine if $k_{i+1,i}$ has a value $1$ or $0$,
+	i.e.~if $e_{i+1}$ is bigger or smaller than $e_i$.
+	We start determining the values $k_{i+1,i}$ from ``left to right'' (i.e~first we determine $k_{2,1}$, then $k_{3,2}$, \dots, and at last $k_{i-1,i-2}$).
+	Now that the relations of every two consecutive labels of $P$ are determined, 
+	we select the values for each label, such that the inequalities among them hold.
+	\begin{claim}
+		The above procedure produces a labeling of $P$ that satisfies durations from $D$.
+	\end{claim}
+\end{proof}
+
 
 \bibliography{bibliography}	
 \end{document}
