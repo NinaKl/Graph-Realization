@@ -1,0 +1,182 @@
+SUBMISSION: 4305
+TITLE: Realizing temporal graphs from fastest travel times
+
+
+----------------------- REVIEW 1 ---------------------
+SUBMISSION: 4305
+TITLE: Realizing temporal graphs from fastest travel times
+AUTHORS: Nina Klobas, George Mertzios, Hendrik Molter and Paul Spirakis
+
+----------- Overall evaluation -----------
+SCORE: 1 (weak accept)
+----- TEXT:
+The authors study a novel graph realization problem, in which an integer matrix is given and one has to decide whether a temporal graph exists such that the matrix entries correspond to the fastest travel times between the graph's vertices. 
+Numerous non-trivial results are presented including NP-hardness and W[1]-hardness results, exact polynomial-time algorithms and finally a FPT algorithm which makes use of an ILP.
+
+My main remark with this work is that too much is being presented in too little detail. Indeed, almost all details are referred to the (60 page long) appendix, and whenever details are being presented (such as for the W[1] hardness result) one has to figure out themselves how to complete them. This coupled with the fact that not enough high-level descriptions are presented can leave a reader wondering. As I haven't had enough time to look through the appendix, I feel it is hard to properly review the 12 page paper. Maybe dropping some of the presented incomplete details, so as to leave room for complete high level descriptions, as well as proofs for simpler results (the algorithm for trees?)
+
+All in all, I will definitely read the complete version of this paper, as I believe the results/proofs may be correct and helpful for my own work. Although this level is supposedly to be expected for MFCS, I personally believe the sheer size of this work (which does not fit in 12 pages only) would make it more acceptable for a journal instead of a conference. If this is not an issue for the program committee, then I recommend accepting this paper.
+
+MAJOR REMARKS:
+
+- There may be an issue in the "preprocessing of the input" regarding the following. T is just an arbitrary spanning tree, and U and U' are defined according to this spanning tree, and the latter journeys/paths highly depend on T. My concern is that maybe a suitable labelling for the problem may not exist *for this spanning tree T* whereas a suitable labelling may exist when another spanning tree would've been picked. Potentially lots of spanning trees may exist (although maybe this is bounded by the feedback edge number?) so a simple enumeration may not stay FPT. The program committee may consider searching the appendix to see if this issue is treated. Maybe the authors show that U and U' are necessarily the same for all spanning trees?
+
+- The details from the W[1] hardness proof starting from page 6 are confusing, but I thought it would all click together at some point... until the rest of the proof was left to the reader. Instead of giving a detailed half-proof, the authors may use this space to present a high-level description of the proof, and maybe present the anticipated "infinity" gadget if it's not too large?
+
+- In line with the previous remark, due to space constraints maybe it's best to remove the related work paragraph and for example use it to present the algorithm for trees?
+
+
+
+MINOR REMARKS:
+
+- A discussion on why the authors focused on periodic temporal graphs may be interesting, i.e. does this make the problem harder, or is this why it is possible to simplify to one label (per period), ...?
+
+>>> TODO?
+
+- Similarly, why fastest? A discussion on foremost and shortest journeys instead may be interesting.
+
+>>> TODO?
+
+- Shouldn't the abbreviation for "Simple Periodic Temporal Graph Realization" be "Simple Periodic TGR" instead of only "Simple TGR"? This may be confusing especially since the reduction is first to a non-periodic version of the problem, and afterwards to the periodic version (so in a sense "Simple TGR" exists in the paper as well, although you focus on "Simple Periodic TGR").
+
+>>> TODO?
+
+- page 5 line 207: results -> result
+
+>>> DONE.
+
+- page 5 lines 217-218: "We assume w.l.o.g. ..."
+The other assumptions are understandable, but this one may need an explanation/reference as to why this remains hard. Or rather is this w.l.o.g. in the sense that the transformation can easily be adapted if this is not the case?
+
+>>> TODO? (I think it's sufficiently obvious.)
+
+- page 9 lines 353-354:
+It is unclear to me how the tree structure provides the bounded neighbourhood size.
+
+>>> DONE.
+
+- page 10 lines 370-372:
+"we split each one of these guesses..." Do you mean all combinations of guesses between the 11 structures are tested?
+Also, "respond" -> "correspond"?
+
+>>> I think is is correct.
+
+- Definition 7: "Note Su,v \neq Sv,u"
+Why not? It seems to me these segments describe exactly the same paths. Does it have to do with the order, i.e. u to v versus v to u?
+
+>>> DONE.
+
+- Lemma 10: "... respects the values from D."
+Not clear, do the authors mean the specific value D_{u, v}? As only labeling a segment between u and v can't possibly respect values between vertices not on the segment, can it?
+
+>>> TODO?
+
+- page 11 line 404: "nine cases"
+Explain how the nine cases are different from the eleven structures from before.
+
+- page 11 line 419 onward:
+The whole proof becomes too confusing at this point, for example why are there at MOST two not yet determined edges, I figured there would be at LEAST two?
+
+
+
+----------------------- REVIEW 2 ---------------------
+SUBMISSION: 4305
+TITLE: Realizing temporal graphs from fastest travel times
+AUTHORS: Nina Klobas, George Mertzios, Hendrik Molter and Paul Spirakis
+
+----------- Overall evaluation -----------
+SCORE: 0 (borderline paper)
+----- TEXT:
+The paper deals with the following problem:
+
+Given an integer Delta and a matrix D of integers, n times n, find a temporal graph with n nodes such that the fastest temporal path for every i,j vertices is equal to D[i][j]. The temporal graph must be periodic with period Delta and each edge must occur only once in the period.
+
+In other words we want to find a graph G and a function lambda: E(G) to [Delta] where the fastest temporal path from i to j in the temporal graph (G,lambda) is D[i][j]. Considered paths must have labels strictly increasing and fastest path is the one having less duration, i.e. minimum difference arrival time minus starting time.
+
+They prove:
+1- The problem is NP-hard even if Delta is constant
+2- It is W[1]-hard wrt feedback vertex number of the underlying graph
+3- It is poly if the underlying graph is a tree
+4- It is FPT when parametrized wrt feedback edge number. This result is achieved via ILP formulation.
+
+PROS:
+- The results are interesting
+- All the presented results are non-trivial. The reductions, especially the second one, are quite involved. Even though I did not check all the details.
+- The result 3 is quite easy while the result 4 is not.
+
+CONS:
+- the writing style, especially in the main part of the paper is not reader-friendly. In the sense that no intuition is given about reductions but only the formal construction. Without intuition is hard to follow. A roadmap is needed to understand what is going on there.
+- the paper consider the case where each edge must appear only once in the time period. I believe this makes the problem much harder to solve (and so it is easier to prove NP-hardness) and less interesting to study (missing application where exactly one occurrence of edge is needed).
+In any case, both positive and negative results do not carry over to the case where more than one label is given to the edges. Indeed it the answer is NO, it could be still possible that the fastest durations can be realized allowing more than one occurrence for the edges. So the two problems are quite uncorrelated, with the difference that for the version studied in this paper is easier to provide negative results.
+
+
+
+----------------------- REVIEW 3 ---------------------
+SUBMISSION: 4305
+TITLE: Realizing temporal graphs from fastest travel times
+AUTHORS: Nina Klobas, George Mertzios, Hendrik Molter and Paul Spirakis
+
+----------- Overall evaluation -----------
+SCORE: 1 (weak accept)
+----- TEXT:
+The paper studies the well studied graph realization problem in periodic temporal graphs. They show
+(i)the problem is NP-hard and W[1] hard with respect to size of minimum-sized feedback vertex set of the underlying static graph;
+(ii) an easy polynomial time algorithm when the underlying static graph is a tree;
+(iii) an FPT algorithm with respect to size of the minimum size feedback edge set that uses ILP.
+
+Presentation:
+Apart from some typos and errors in articles, I do not agree with what the authors have decided to present in the main part of the paper. The incomplete construction for the W[1] hardness adds no value. I feel rather adding the algorithm for trees or adding the reduction from infinite period temporal graph to finite period temporal graph will be much more valuable.
+
+Technical Merit:
+The results are definitely non-trivial and interesting.
+ 
+Soundness:
+The results seem correct. However, I did not check any proof completely, except for the algorithm on trees.
+
+Evaluation:
+Strengths:
+(i) this paper seems to initiate the study for graph realization on periodic temporal graphs.
+(ii) The results seem correct.
+
+Weaknesses:
+(i) The presentation of the paper and writing can be improved.
+(ii) Even though the paper is quite long, some details are missing in the arguments or definitions have typos that make it confusing. For example, in Definition 7 (definition of segment), it should be for each i. In G1, it is not clear why there are k! possible paths.
+
+
+
+
+
+Suggestions:
+1.I feel the title of the paper should mention periodic temporal graph.
+2. Adding a figure to show how the edges go between U U* and G' - (U \cup U*) will be useful in page 9.
+3. Since G-8 is used in the example in main body, keep G-8 in main body.
+
+
+Detailed comments:
+L16: since the 1960's--> since 1960, then add citation
+>>> DONE.
+L118: start with --> start by
+L218: wlog --> either add proper citation or add why it is holds.
+L247: \ell' is not quantified, add for some \ell' \in [n]
+>>> DONE!
+L364: there are k! Possible paths -- why?
+L383: be a set of vertices of interest --> be the set of vertices of interest (since the set U is well-defined)
+L384: for i \in --> for all i \in
+>>> DONE.
+L414: among --> between
+>>> DONE.
+L416: you do not talk about x after this line. It will be helpful to tell the readers here that the following shows how to find a fastest temporal path for any vertex in S_{wiz} \steminus {w,z}. Consequently, it shows how to do so for x.
+L426 and many other places: of form --> of the form
+L437: z_i being unique does not clarify why z_i and z_{i+1} would be the same!
+L442: waiting time is not defined.
+
+
+Comments from the Appendix:
+L230: the edge notation in inconsistent. It was written as {.,.} in preliminary and main text.
+>>> DONE.
+L281: c_1 --> c
+>>> DONE.
+L442 and some other places: validation gadget --> verification gadget?
+>>> DONE.
+L1210: repeat procedure --> repeat the following procedure.
+>>> DONE.
