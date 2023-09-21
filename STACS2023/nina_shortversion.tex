@@ -1271,24 +1271,27 @@ In this section we show how to generalize the polynomial-time algorithm for tree
 
 In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subset E(G)$ is a subset of edges, such that each cycle in $G$ has at least one edge in $F$.
 The minimum such set $F$ is called a  \emph{minimum feedback edge set} and its size, $k = |F|$, is called the \emph{feedback edge number} of graph $G$.
-Note that one can find a minimum feedback edge set in linear time, by calculating a spanning tree (or forest) $T$ of the given graph $G$ and then removing all of the edges $T$ from $G$.%, \ie $F = E(G) \setminus E(T)$.
+Determining $F$ can be done in linear time, by simply removing edges of a spanning tree (forest) from the given graph.
+%one can find a minimum feedback edge set in linear time, by calculating a spanning tree (or forest) $T$ of the given graph $G$ and then removing all of the edges $T$ from $G$.%, \ie $F = E(G) \setminus E(T)$.
 
 \begin{theorem}[$\star$]\label{thm:FPTwrtFES}
     \deltaExact\ is in FPT when parameterized by the feedback edge number of the underlying graph.
 \end{theorem}
 
 We first give an informal and very high-level description of the main ideas of the algorithm.
-We then present the first part in more details and deffer the reader to the appendix, for the remaining part and correctness proof.
+We then present the first part in more details and deffer the reader to the appendix for the remaining part and correctness proof.
 It is well-known that the number of paths between two vertices in a static graph can be upper-bounded by a function of the feedback edge number of the graph. Intuitively, this would allow us to ``guess'' paths between a small number of vertex pairs in $G$ (the underlying graph of our instance \deltaExact). These paths would then be used to create (representatives of) fastest temporal paths among vertex pairs in $(G,\lambda)$. We would then try to use the polynomial algorithm for trees (which includes paths) to figure out the labeling $\lambda$ of the edges used by these path. An idea like this has been used for several other temporal graph problems related to the connectivity between two vertices~\cite{casteigts2021finding,FMNR22a,EMM22}.
+%
+%In our case, however, it is not enough to consider fastest temporal paths among some subset of vertices, but we have to determine the fastest temporal paths between all pairs of vertices. This means that we have to somehow extend the labeling $\lambda$ of the edges used by guessed paths to all other edges of $G$. Besides that we also need to make sure that all temporal paths that do not follow our guessed paths are not too fast.
 
-In our case, however, it is not enough to consider fastest temporal paths among some subset of vertices, but we have to determine the fastest temporal paths between all pairs of vertices. This means that we have to somehow extend the labeling $\lambda$ of the edges used by guessed paths to all other edges of $G$.
-Besides that we also need to make sure that all temporal paths that do not follow our guessed paths are not too fast. 
-
-	A further difficulty arises from the somewhat unintuitive characteristic of fastest paths in temporal graphs.
+In our case, however, this approach does not work. Mainly because of the
+	%A further difficulty arises from the 
+ somewhat unintuitive characteristic of fastest paths in temporal graphs.
  When considering the problem of finding shortest paths among vertices in static graphs, we have the nice property that if a shortest path $P$ from vertex $u$ to $v$ traverses the vertex $w$,
 	then the subpath of $P$ from $u$ to $w$ is a shortest path from $u$ to $w$. This can help tremendously when developing algorithms.
 	However, one can see that this property does not carry over to fastest paths in temporal graphs, for an example see~\cref{fig:ftpExample}.
  For us this means that even if we guess a fastest path between two vertices, we cannot simply determine all labels of the edges used by the fastest path.
+ Besides that, it is not enough to consider fastest temporal paths among some subset of vertices, but we have to determine the fastest temporal paths between all pairs of vertices.
 	%This makes all the standard intuition and work with these kind of paths, much harder.
     %This also explains why our FPT algorithm, w.r.t the feedback edge number, is so complex. 
     %Usually, the feedback edge number parameter (denote it $k$) provides an easy algorithm, 
@@ -1324,15 +1327,17 @@ Besides that we also need to make sure that all temporal paths that do not follo
 
 To overcome the above mentioned difficulties, we propose the following high-level strategy.
 \begin{itemize}
-    \item We identify a small number of ``interesting vertices'' between which we guess representative fastest paths.
-    \item We show that we can determine most labels along each path up to an additive constant. We show that the number of labels we cannot determine along such a path is small. 
-    \item For each additive constant and each non-determined label along such a path we introduce a variable for an Integer Linear Program (ILP).
-    \item We use constraints in the ILP to ensure that alternative connections (not using the guessed fastest path) between vertex pairs are not too fast.
-    \item We compute a solution to each of the ILPs (if it exists) and construct a labeling from that solution. Since the ILP has few variables and not too many constraints, this computation can be done efficiently using Lenstra's Theorem~\cite{Lenstra1983Integer}.
+    \item We identify a small number of ``interesting vertices'' and specific ``graph constructions'' between which we guess representative fastest paths.
+    \item For each guess %(also called ``paths configuration'') 
+    we create one Integer Linear Program (ILP).
+    \item We show that we can determine most labels along each path up to an additive constant. We show that the number of labels we cannot determine is small. 
+    \item For each additive constant and each non-determined label we introduce a variable for an Integer Linear Program (ILP).
+    \item We use equality and inequality constraints in each ILP to ensure that the fastest temporal path from $u$ to $v$ is of duration $D_{u,v}$, while any other path is of duration at least $D_{u,v}$.
+    \item We compute a solution to each of the ILPs (if it exists) and construct a labeling from that solution. Since each ILP has a few variables and not too many constraints, this computation can be done efficiently using Lenstra's Theorem~\cite{Lenstra1983Integer}.
+    If none of the ILP instances give a positive solution, then there exists no labeling realizing given matrix.
+    This is true because considering all guesses of fastest temporal paths is equivalent to exhaustively searching through all possible temporal paths between vertices.
 \end{itemize}
-It is important to point out that each guess of fastest paths, gives rise to one ILP. Since there are many guesses ($f(k)$ many, where $f$ is a double exponential function), we get many ILPs.
-If none of the ILP instances gives a positive solution, then there exists no labeling realizing given matrix.
-This is true because considering all guesses of fastest temporal paths is equivalent to exhaustively searching through all possible temporal paths between vertices.
+
 
 \subsubsection{First part of the FPT algorithm}
 We now present the first part of our FPT algorithm.
@@ -1382,16 +1387,13 @@ Note that determining sets $U$, $U^*$, and $Z^*$ takes linear time.
 %Let us remember the following basic property of the problem \deltaExact.
 Recall that a labeling $\lambda$ of $G$ satisfies $D$ if the duration of a fastest temporal path from vertex $v_i$ to $v_j$ equals $D_{v_i, v_j}$.
 %, and no other temporal path from $v_i$ to $v_j$ is faster.
-In order to find a labeling that satisfies this property we split our analysis in nine cases.
-We consider fastest temporal paths 
-where $v_i$ is in one of the sets $U,V(G') \setminus U, Z$,
-and $v_j$ is in one of the sets $U,V(G') \setminus U, Z$.
-In each of these cases we guess the underlying path $P$ that at least one fastest temporal path from $v_i$ to $v_j$ follows, 
-which results in one equality constraint for the labels on the path $P$. 
+In order to find a labeling that satisfies this property we iterate through all pairs of vertices $v_i, v_j \in V(G)$ and 
+first guess the underlying path $P$ of a fastest temporal path from $v_i$ to $v_j$, which results in one equality constraint for the labels on the path $P$. 
 For all other temporal paths from $v_i$ to $v_j$ we know that they cannot be faster, so we introduce inequality constraints for them.
 This results in producing $poly(n,m)$ constraints. 
-Note that we have to do this while keeping the total number of variables upper-bounded by some function in $k$.
-
+It is important to point out that the number of constraint and number of variables are not related, while we introduced all of the necessary constraints, we manage to create only a small number of variables (upper-bounded by some function in $k$).
+%Note that we have to do this while keeping the total number of variables upper-bounded by some function in $k$, therefore we do not 
+%
 For an easier understanding and the analysis of the algorithm we give the following definition.
 \begin{definition}\label{def:segments}
 	Let $U \subseteq V(G')$ be a set of vertices of interest and let $u,v \in U$.
@@ -1399,7 +1401,8 @@ For an easier understanding and the analysis of the algorithm we give the follow
 	is called a \emph{segment} from $u$ to $v$. We denote it as $S_{u,v}$.
 \end{definition}
 %From the definition it follows, that there are $O(k^2)$ segments in $G'$. \todo{True but does not follow directly just from the definition}
-Note from \cref{def:segments} we get that $S_{u,v} \neq S_{v,u}$, since we consider paths to be directed. Observe that a temporal path in $G'$ between two vertices of interest is either a segment, or consists of a sequence of some segments. Furthermore, since we have at most $4k$ interesting vertices in $G'$, we can deduce the following important result.
+Note from \cref{def:segments} we get that $S_{u,v} \neq S_{v,u}$. 
+Observe that a temporal path in $G'$ between two vertices of interest is either a segment, or consists of a sequence of some segments. Furthermore, since we have at most $4k$ interesting vertices in $G'$, we can deduce the following important result.
 \begin{corollary}\label{obs:FPT-k2segments}
 	There are at most $O(k^2)$ segments in $G'$.
 \end{corollary}
@@ -1448,14 +1451,14 @@ We guess the following structures.
 	\setcounter{enumi}{\value{guesscounter}}
 	\item \label{FPT-guessFTPamongv2z2}
 	\textbf{Inner segment guess I}.
-	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be two segments,
-	first one between vertices $u,v \in U$, second one between vertices $w, z \in U$.
+	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be two segments. %,
+	%first one between vertices $u,v \in U$, second one between vertices $w, z \in U$.
 	We want to guess the following fastest temporal path
 	$v_2 \rightarrow u \leadsto w \rightarrow z_2$. 
 	We repeat this procedure for all pairs of segments.
 	Since there are $O(k^2)$ segments in $G'$,
 	there are $O(k^{k^5})$ possible paths of this form. \\
-	Recall that $S_{u,v}\neq S_{v,u}$ for every $u,v\in U$. Furthermore note that we did not assume that the sets $\{u,v\}$ and $\{w,z\}$ are disjoint. Therefore, by repeatedly making the above guesses, we also guess the following fastest temporal paths: 
+	Recall that $S_{u,v}\neq S_{v,u}$ for every $u,v\in U$. Furthermore note that we did not assume that $\{u,v\} \cap \{w,z\} = \emptyset$. Therefore, by repeatedly making the above guesses, we also guess the following fastest temporal paths: 
 	${v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}}$,\ \ \ 
 	${v_2 \rightarrow u \leadsto v \rightarrow v_{p-1}}$,\ \ \  
 	${v_{p-1} \rightarrow v \leadsto w \rightarrow z_{2}}$,\ \ \  
@@ -1466,14 +1469,14 @@ We guess the following structures.
 	\item \label{FPT:guess-uToSegmentz2}
 	\textbf{Inner segment guess II}.
 	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$,
-	and let $w \in U \cup Z^*$ be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a vertex of interest.
+	and let $w \in U \cup Z^*$. %be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a vertex of interest.
 	We want to
 	guess the following fastest temporal paths
 	$w \leadsto u \rightarrow v_2$, $w \leadsto v \rightarrow v_{p-1} \rightarrow \cdots \rightarrow v_2$,
 	and
 	$v_2 \rightarrow u \leadsto w$, $v_2 \rightarrow v_3 \rightarrow \cdots v \leadsto w$.
 	\\
-	For a fixed segment $S_{u,v}$ and a fixed vertex $w \in U \cup Z^*$ we have $O(k^k)$ different possible such paths, therefore we make $O(k^{k^4})$ guesses for these paths.
+	For fixed $S_{u,v}$ and $w \in U \cup Z^*$ we have $O(k^k)$ different possible such paths, therefore we make $O(k^{k^4})$ guesses for these paths.
 	%
 	For an example see~\cref{fig:FPT-guessG5}.
 	%All together we made $O(k^{k^4}$  new guesses for the structure of all of the above mentioned fastest temporal paths.
@@ -1482,15 +1485,10 @@ We guess the following structures.
 	\textbf{Split vertex guess I}.
 	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$, and let us
 	fix a vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
-	In the case when $S_{u,v}$ is of length $4$, the fixed vertex $v_i$ is the middle vertex (\ie vertex that is on distance two from $u$ and $v$ in $S_{u,v}$).
-	If $S_{u,v}$ is not of length~$4$, we fix an arbitrary vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
+	In the case when $S_{u,v}$ is of length $4$, the fixed vertex $v_i$ is the middle vertex, else we fix an arbitrary vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
 	Let 
 	$S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be another segment in $G'$.
-	Note that all inner vertices of $S_{w,z}$ (\ie vertices in $S_{w,z} \setminus \{w,z\}$)
-	can be reached from $v_i$ by some path that has to go through $w$ or $z$.
-	Therefore, the values of the duration of the fastest path from $v_i$ to vertices on 
-	the segment
-	$S_{w,z}$ have to increase up to a certain point, when traversing the segment coming through $w$ and coming through $z$.
+	We want to determine the fastest paths from $v_i$ to all inner vertices of $S_{w,z}$. We do this by inspecting the values in matrix $D$ from $v_i$ to inner vertices of $S_{w,z}$.
 	We split the analysis into two cases.
 	\begin{enumerate}
 		\item 
@@ -1531,7 +1529,7 @@ We guess the following structures.
 		and $u \leadsto z \rightarrow z_{r-1}$.
 		Each of this paths we then uniquely extend along the segment $S_{w,z}$ up to the vertex $v_j$, resp.~$v_{j+1}$,
 		which give us fastest temporal paths from $u$ to $v_j$ and from $u$ to $v_{j+1}$.
-		Note that in this case we do not introduce any new guesses, as we have aready guessed 
+		In this case we do not introduce any new guesses, as we have aready guessed 
 		the fastest paths of the form
 		$u \leadsto w \rightarrow z_2$
 		and $u \leadsto z \rightarrow z_{r-1}$
@@ -1543,8 +1541,8 @@ We guess the following structures.
 	For an example see~\cref{fig:FPT-guessG6}.
 	\item \label{FPT:guess-splitFromUtoAnotherSegment}
 	\textbf{Split vertex guess II}.
-	Let $w \in U \cup Z^*$ be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a vertex of interest,
-	and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$.
+	Let $w \in U \cup Z^*$ 
+	and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$.
 	We want to guess a split vertex of $w$ in $S_{u,v}$, and the fastest temporal path that reaches it.
 	We again have two cases,
 	first one where $v_i$ is a unique vertex in $S_{u,v}$ that is furthest away from $w$,
@@ -1564,7 +1562,6 @@ We guess the following structures.
 	uniquely determine fastest temporal paths from $w$ to all vertices in $S_{u,v}$ 
 	(this also holds for the case when $w \in S_{u,v}$, \ie $w = u$ or $w = v$).
 	\end{comment}
-
 	All together we make two guesses for each pair of vertex $w \in U$ and segment $S_{u,v}$.
 	We repeat this for all vertices of interest, and all segments,
 	which produces $O(k^{k^2})$ new guesses.
@@ -1581,7 +1578,7 @@ We guess the following structures.
 		\centering
 		\resizebox{\linewidth}{!}{
 			\includegraphics{fig-guess1}}
-		\caption{Example of a guess G-\ref{FPT-guessFTPamongv2z2}, where we guessed the fastest temporal paths of the form $v_2 \rightarrow u \leadsto w \rightarrow z_2$ (in blue)
+		\caption{Example of an Inner segment guess I (G-\ref{FPT-guessFTPamongv2z2}), where we guessed the fastest temporal paths of the form $v_2 \rightarrow u \leadsto w \rightarrow z_2$ (in blue)
 			and $v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}$ (in red).
 			\label{fig:FPT-guessG4}}
 	\end{subfigure}
@@ -1591,7 +1588,7 @@ We guess the following structures.
 		\resizebox{\linewidth}{!}{
 			
 			\includegraphics{fig-guess2}}
-		\caption{Example of a guess G-\ref{FPT:guess-uToSegmentz2}, where we guessed the fastest temporal paths of the form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
+		\caption{Example of an Inner segment guess II (G-\ref{FPT:guess-uToSegmentz2}), where we guessed the fastest temporal paths of the form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
 			\label{fig:FPT-guessG5}}
 	\end{subfigure}
 	
@@ -1600,7 +1597,7 @@ We guess the following structures.
 		\resizebox{1.2\linewidth}{!}{
 			%
 			\includegraphics{fig-guess3}}
-		\caption{Example of a guess G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}, where, for a fixed vertex $v_i \in S_{u,v}$,
+		\caption{Example of a Split vertex guess I (G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}), where, for a fixed vertex $v_i \in S_{u,v}$,
 			we calculated its corresponding split vertex $z_j \in S_{w,z}$,
 			and guessed the fastest paths of the form
 			$v_i \rightarrow v_{i-1} \rightarrow \cdots \rightarrow u \leadsto z \rightarrow z_{r-1} \cdots \rightarrow z_j$ (in blue) 
@@ -1612,7 +1609,7 @@ We guess the following structures.
 		\centering
 		\resizebox{\linewidth}{!}{
 			\includegraphics{fig-guess4}}
-		\caption{Example of a guess G-\ref{FPT:guess-splitFromUtoAnotherSegment}, where, for a vertex of interest $w$, 
+		\caption{Example of a Split vertex guess II (G-\ref{FPT:guess-splitFromUtoAnotherSegment}), where, for a vertex of interest $w$, 
 			we
 			calculated its corresponding split vertex $v_i \in S_{u,v}$,
 			and guessed the fastest paths of the form
