@@ -1425,7 +1425,22 @@ For every pair of important vertices $u,v \in U \cup U^{\ast} \cup Z^{\ast}$, we
 
 \setcounter{guesscounter}{6}
 
-Unfortunately the above guesses do not provide us with enough information to be able to determine all fastest paths. For example consider the case depicted in the FIGURE TODO. 
+\begin{figure}[t]
+	\centering
+	%\includegraphics{fig-exampleg10}
+	\caption{In the above graph vertices $v_1, v_{11}, w$ are in $U$, while $v_2, v_{10}$ are in $U^*$. 
+		Numbers above all $v_i$ represent the values of the fastest temporal paths from $w$ to each of them (\ie the entries in the $w$-th row of matrix $D$).
+		From the basic guesses we know the fastest temporal path $P$ from $w$ to $v_2$ (depicted in blue) and the fastest temporal path $Q$ from $w$ to $v_{10}$.
+		From the values of durations from $w$ to each $v_i$ we cannot 
+		determine the fastest paths from $w$ to all $v_i$.
+		More precisely, we know that $w$ reaches $v_2, v_3, v_4, v_5$ (resp.~$v_{10}, v_{9}, v_{9}, v_{7}$) 
+		by first using the path $P$ (resp.~$Q$) and then proceeding through the vertices,
+		but we do not know how $w$ reaches $v_6$ the fastest.
+		Therefore we have to introduce some more guesses.
+  \label{fig:guesses-advanced}}
+\end{figure}
+
+Unfortunately the above guesses do not provide us with enough information to be able to determine all fastest paths. For example consider the case depicted in \cref{fig:guesses-advanced}. 
 Therefore we introduce some more guesses. To do this we have to first define the following.
 \begin{definition}\label{def:segments}
 	Let $U \subseteq V(G')$ be a set of vertices of interest and let $u,v \in U$.
@@ -1617,7 +1632,8 @@ We guess the following structures.
 %
 
 
-There are two more guesses \textcolor{lipicsGray}{\textsf{\textbf{G-11}}} and \textcolor{lipicsGray}{\textsf{\textbf{G-12}}} that are deferred to the Appendix. We prove that there are $f(k)$ combinations of guesses and for each one we create an ILP with $f(k)$ variables and $f(k)\cdot |D|^{O(1)}$ constraints.
+There are two more guesses \textcolor{lipicsGray}{\textsf{\textbf{G-11}}} and \textcolor{lipicsGray}{\textsf{\textbf{G-12}}} that are deferred to the Appendix. 
+We prove in the Appendix that, for all guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-12}}}, there are in total at most $f(k)$ possible choices, and for each one of them we create an ILP with at most $f(k)$ variables and at most $f(k)\cdot |D|^{O(1)}$ constraints. Each of these ILPs can be solved in FPT time by Lenstra's Theorem~\cite{Lenstra1983Integer}.
 %We create all of the above guesses independently.
 %We start with the first one, that results in $O(k^{k^3})$ different possibilities, then we split each one of these guesses into $O(k^{k^3})$ new ones, that respond to the guessing in the second step, etc.
 %After creating all of the guesses we end up with $f(k)$ different cases (where $f$ is a double exponential) 
