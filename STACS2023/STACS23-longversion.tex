@@ -1614,7 +1614,7 @@ Now using \cref{lemma:unique-fastest-path-allDelays}, we can determine the waiti
 
 In this section we show how to generalize the result presented in \cref{sec:treealgo}. Following the \emph{distance-from-triviality} parameterization paradigm~\cite{FJR13,GHN04}, we aim to obtain fixed-parameter tractability using a parameter that measures the distance from the underlying graph to a tree. \cref{thm:W1wrtFVS} tells us that we presumably cannot use the feedback vertex number (or any smaller measure such as the treewidth) as a parameter to obtain tractability. Hence, we choose the feedback edge number as a parameter and we present an FPT algorithm for \deltaExact\ parameterized by the feedback edge number of the underlying graph.
 
-In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subset E(G)$ is a subset of edges, such that each cycle in $G$ has at least one edge in $F$.
+In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subseteq E(G)$ is a subset of edges, such that each cycle in $G$ has at least one edge in $F$.
 The minimum such set $F$ is called a  \emph{minimum feedback edge set} and its size, $k = |F|$, is called the \emph{feedback edge number} of graph $G$.
 Note that one can find a minimum feedback edge set in linear time, by calculating a spanning tree (or forest) $T$ of the given graph $G$ and then removing all of the edges $T$ from $G$, \ie $F = E(G) \setminus E(T)$.
 
@@ -1708,8 +1708,8 @@ Then we determine a minimum feedback edge set $F$ of $G'$.
 Note that $F$ is also a minimum feedback edge set of $G$.
 Lastly, we determine sets $U$, of \emph{vertices of interest}, and $U^*$ of the neighbors of vertices of interest, in the following way.
 Let $T$ be a spanning tree of $G'$, with $F$ being the corresponding feedback edge set of $G'$.
-Let $V_1 \subset V(G')$ be the set of leaves in the spanning tree $T$, $V_2 \subset V(G')$ be the set of vertices of degree two in $T$, that are incident to at least one edge in $F$, 
-and let $V_3 \subset V(G')$ be the set of vertices of degree at least $3$ in $T$. 
+Let $V_1 \subseteq V(G')$ be the set of leaves in the spanning tree $T$, $V_2 \subseteq V(G')$ be the set of vertices of degree two in $T$, that are incident to at least one edge in $F$, 
+and let $V_3 \subseteq V(G')$ be the set of vertices of degree at least $3$ in $T$. 
 Then $|V_1| + |V_2| \leq 2k$, since every leaf in $T$ and every vertex in $V_2$ is incident to at least one edge in $F$,
 and $|V_3| \leq |V_1|$ by the properties of trees.
 We denote with 
@@ -2799,7 +2799,7 @@ We distinguish the following two cases.
         or of the form $P^+ = (r_i,x, z_{i+1}, z_{i+2}, \dots, z) \cup Q \cup (w, z_2, \dots, z_{i-1})$, where $Q$ is some path from $z$ to $w$.
         Denote with $R^x$ the underlying path of the fastest temporal path from $x$ to $u$,
         and with $R^{i-1}$ the underlying path of a fastest temporal path from $z_{i-1}$ to $u$.
-        Note $R^{i-1} \subset R^x$.
+        Note $R^{i-1} \subseteq R^x$.
         Similarly,
         denote with $R^{i+1}$ the underlying path of the fastest temporal path from $z_{i+1}$ to $u$, 
         for which we know it goes through the vertex $z$.
