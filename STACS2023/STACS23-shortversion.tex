@@ -1528,7 +1528,7 @@ We guess the following structures.
 		the fastest paths of the form
 		$u \leadsto w \rightarrow z_2$
 		and $u \leadsto z \rightarrow z_{r-1}$
-		(see guess~\textcolor{lipicsGray}{\textsf{\textbf{GG-\ref{FPT:guess-uToSegmentz2}}}}).
+		(see guess~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}).
 	\end{enumerate}
 	Note that this case results also in knowing the fastest paths from the vertex $v_i \in S_{u,v}$ to $w,z \in S_{w,z}$ for all segments $S_{w,z}$, 
 	\ie we know the fastest paths from a fixed $v_i \in S_{u,v}$ to all vertices of interest in $U$.
@@ -1562,7 +1562,7 @@ We guess the following structures.
 	which produces $O(k^{k^2})$ new guesses.
 	%
 	For an example see~\cref{fig:FPT-guessG7}.
-	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{GG-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to Appendix.
+	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to Appendix.
 	% counter for guesses continues
 	\setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
@@ -1573,7 +1573,7 @@ We guess the following structures.
 		\centering
 		\resizebox{\linewidth}{!}{
 			\includegraphics{fig-guess1}}
-		\caption{Example of an Inner segment guess I (\textcolor{lipicsGray}{\textsf{\textbf{GG-\ref{FPT-guessFTPamongv2z2}}}}), where we guessed the fastest temporal paths of the form $v_2 \rightarrow u \leadsto w \rightarrow z_2$ (in blue)
+		\caption{Example of an Inner segment guess I (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}), where we guessed the fastest temporal paths of the form $v_2 \rightarrow u \leadsto w \rightarrow z_2$ (in blue)
 			and $v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}$ (in red).
 			\label{fig:FPT-guessG4}}
 	\end{subfigure}
@@ -1583,7 +1583,7 @@ We guess the following structures.
 		\resizebox{\linewidth}{!}{
 			
 			\includegraphics{fig-guess2}}
-		\caption{Example of an Inner segment guess II (\textcolor{lipicsGray}{\textsf{\textbf{GG-\ref{FPT:guess-uToSegmentz2}}}}), where we guessed the fastest temporal paths of the form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
+		\caption{Example of an Inner segment guess II (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}), where we guessed the fastest temporal paths of the form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
 			\label{fig:FPT-guessG5}}
 	\end{subfigure}
 	
@@ -1592,7 +1592,7 @@ We guess the following structures.
 		\resizebox{1.2\linewidth}{!}{
 			%
 			\includegraphics{fig-guess3}}
-		\caption{Example of a Split vertex guess I (\textcolor{lipicsGray}{\textsf{\textbf{GG-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}), where, for a fixed vertex $v_i \in S_{u,v}$,
+		\caption{Example of a Split vertex guess I (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}), where, for a fixed vertex $v_i \in S_{u,v}$,
 			we calculated its corresponding split vertex $z_j \in S_{w,z}$,
 			and guessed the fastest paths of the form
 			$v_i \rightarrow v_{i-1} \rightarrow \cdots \rightarrow u \leadsto z \rightarrow z_{r-1} \cdots \rightarrow z_j$ (in blue) 
@@ -1604,7 +1604,7 @@ We guess the following structures.
 		\centering
 		\resizebox{\linewidth}{!}{
 			\includegraphics{fig-guess4}}
-		\caption{Example of a Split vertex guess II (\textcolor{lipicsGray}{\textsf{\textbf{GG-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}), where, for a vertex of interest $w$, 
+		\caption{Example of a Split vertex guess II (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}), where, for a vertex of interest $w$, 
 			we
 			calculated its corresponding split vertex $v_i \in S_{u,v}$,
 			and guessed the fastest paths of the form
