@@ -223,6 +223,7 @@ We show that our problem is W[1]-hard when parameterized by the \emph{feedback v
 	clearly marked Appendix to be read at the discretion of the Program Committee.}
 \end{abstract}
 
+\clearpage
 
 \section{Introduction}\label{intro-sec}
 
@@ -1382,41 +1383,18 @@ where the clip vertex $v_i$ of $T_i$ is a vertex of interest, \ie
 Z^* = \{ r_i  :  r_i \in T_i, \text{ where $T_i \in Z$, the clip vertex $u_i$ of $T_i$ is in $U$, and $r_i u_i \in E(G)$}\}.
 \]
 Since there are $O(k)$ vertices of interest, we get that $|Z^*| \in O(k)$.
-Note that determining sets $U$, $U^*$, and $Z^*$ takes linear time.
-
-%Let us remember the following basic property of the problem \deltaExact.
-Recall that a labeling $\lambda$ of $G$ satisfies $D$ if the duration of a fastest temporal path from vertex $v_i$ to $v_j$ equals $D_{v_i, v_j}$.
-%, and no other temporal path from $v_i$ to $v_j$ is faster.
-In order to find a labeling that satisfies this property we iterate through all pairs of vertices $v_i, v_j \in V(G)$ and 
-first guess the underlying path $P$ of a fastest temporal path from $v_i$ to $v_j$, which results in one equality constraint for the labels on the path $P$. 
-For all other temporal paths from $v_i$ to $v_j$ we know that they cannot be faster, so we introduce inequality constraints for them.
-This results in producing $poly(n,m)$ constraints. 
-It is important to point out that the number of constraint and number of variables are not related, while we introduced all of the necessary constraints, we manage to create only a small number of variables (upper-bounded by some function in $k$).
-%Note that we have to do this while keeping the total number of variables upper-bounded by some function in $k$, therefore we do not 
-%
-For an easier understanding and the analysis of the algorithm we give the following definition.
-\begin{definition}\label{def:segments}
-	Let $U \subseteq V(G')$ be a set of vertices of interest and let $u,v \in U$.
-	A path $P = (u=v_1,v_2, \dots, v_p = v)$  in graph $G'$, where all inner vertices are not in $U$, \ie $v_i \notin U$ for all $i \in \{ 2, 3, \dots, p-1\}$,
-	is called a \emph{segment} from $u$ to $v$. We denote it as $S_{u,v}$.
-\end{definition}
-%From the definition it follows, that there are $O(k^2)$ segments in $G'$. \todo{True but does not follow directly just from the definition}
-Note from \cref{def:segments} we get that $S_{u,v} \neq S_{v,u}$. 
-Observe that a temporal path in $G'$ between two vertices of interest is either a segment, or consists of a sequence of some segments. Furthermore, since we have at most $4k$ interesting vertices in $G'$, we can deduce the following important result.
-\begin{corollary}\label{obs:FPT-k2segments}
-	There are at most $O(k^2)$ segments in $G'$.
-\end{corollary}
-%In the analysis of the algorithm we rely heavily on the fact that there are $O(k^2)$ segments in $G'$.
-%, which we prove later on (see~\cref{obs:FPT-k2segments}).
-%For a pair $u,v$ of vertices in $U$, there are $O(k!)=O(k^k)$ possible paths in $G'$ between them.  
-
-%\subsubsection{Guessing necessary structures \label{sec:FPT-guessing}}
-Once the sets $U, U^*$ and $Z^*$ are determined, we are ready to start guessing  the necessary structures.
-Note that whenever we say that we guess the fastest temporal path between two vertices, we mean that we guess the underlying path of a representative fastest temporal path between those two vertices.
-In the case when we want to guess the fastest path from $u$, that (somehow) passes through the vertex $x$, and goes directly to $v$ via an edge, we write it as a fastest path of the form $u \leadsto x \rightarrow v$.
+To solve \deltaExact\ correctly it is necessary that for every pair of vertices $v_i, v_j \in V(G)$ we
+\begin{itemize}
+    \item determine the underlying path $P$ of the fastest temporal path from $v_i$ to $v_j$,
+for which we introduce the equality constraint (\ie $d(P) = D_{v_i, v_j}$), and %in the ILP
+\item make sure that every other path $P'$ from $v_i$ to $v_j$ is not faster than $P$ (\ie $d(P') \geq D_{v_i, v_j}$). %in the ILP
+\end{itemize}
+One could easily achieve this by ``guessing'' the fastest paths among each pair of vertices, but this would result in too many guesses. 
+For problem to remain feasible, one should create only a small number of guesses.
+With this in mind we create the following guesses.
+%It's important to mention that whenever we say that we guess the fastest temporal path between two vertices, we mean that we guess the underlying path of a representative fastest temporal path between those two vertices.
 %Similarly it holds if we want to include more vertices that have to be visited by the path. If there is an edge (\ie a unique fastest path) between two vertices, we denote it by $\rightarrow$,
 %if the fastest path between two vertices is not uniquely determined, we denote it by $\leadsto$.
-We guess the following structures.
 %\noindent\textbf{Basic guesses:}
 \begin{enumerate}[G-1.]
 	\setcounter{enumi}{\value{guesscounter}}
@@ -1446,7 +1424,22 @@ We guess the following structures.
 	This gives us $O(k^{k^4})$ guesses.
 	\setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
-\noindent
+
+Unfortunately the above guesses do not provide us with enough information to be able to determine all fastest paths. For example consider the case depicted in the FIGURE TODO. 
+Therefore we introduce some more guesses. To do this we have to first define the following.
+\begin{definition}\label{def:segments}
+	Let $U \subseteq V(G')$ be a set of vertices of interest and let $u,v \in U$.
+	A path $P = (u=v_1,v_2, \dots, v_p = v)$  in graph $G'$, where all inner vertices are not in $U$, \ie $v_i \notin U$ for all $i \in \{ 2, 3, \dots, p-1\}$,
+	is called a \emph{segment} from $u$ to $v$. We denote it as $S_{u,v}$.
+\end{definition}
+Note, from \cref{def:segments} we get that $S_{u,v} \neq S_{v,u}$. 
+Observe that a temporal path in $G'$ between two vertices of interest is either a segment, or consists of a sequence of some segments. Furthermore, since we have at most $4k$ interesting vertices in $G'$, we can deduce the following important result.
+\begin{corollary}\label{obs:FPT-k2segments}
+	There are at most $O(k^2)$ segments in $G'$.
+\end{corollary}
+We now continue with our guessing.
+In the case when we want to guess the fastest path from $u$, that (somehow) passes through the vertex $x$, and goes directly to $v$ via an edge, we write it as a fastest path of the form $u \leadsto x \rightarrow v$.
+We guess the following structures.
 \begin{enumerate}[G-1.]
 	\setcounter{enumi}{\value{guesscounter}}
 	\item \label{FPT-guessFTPamongv2z2}
@@ -1631,7 +1624,6 @@ We can do this efficiently, while introducing only a small number of variables,
 which ensures that each ILP is solved in an FPT-time.
 For detailed explanation and proofs of this part see Appendix.
 
-\todo{Argue why each (some) of the guesses are important}
 
 \section{Conclusion}\label{sec:conclusion}
 We believe that our work spawns several interesting future research directions and builds a base upon which further temporal graph realization problems can be investigated.
