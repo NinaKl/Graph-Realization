@@ -1330,8 +1330,8 @@ To overcome the above mentioned difficulties, we propose the following high-leve
     \item We identify a small number of ``interesting vertices'' and specific ``graph constructions'' between which we guess representative fastest paths.
     \item For each guess %(also called ``paths configuration'') 
     we create one Integer Linear Program (ILP).
-    \item We show that we can determine most labels along each path up to an additive constant. We show that the number of labels we cannot determine is small. 
-    \item For each additive constant and each non-determined label we introduce a variable for an Integer Linear Program (ILP).
+    \item We show that we can determine most labels along each path. We show that the number of labels we cannot determine is small. 
+    \item For each non-determined label we introduce a variable for an ILP.
     \item We use equality and inequality constraints in each ILP to ensure that the fastest temporal path from $u$ to $v$ is of duration $D_{u,v}$, while any other path is of duration at least $D_{u,v}$.
     \item We compute a solution to each of the ILPs (if it exists) and construct a labeling from that solution. Since each ILP has a few variables and not too many constraints, this computation can be done efficiently using Lenstra's Theorem~\cite{Lenstra1983Integer}.
     If none of the ILP instances give a positive solution, then there exists no labeling realizing given matrix.
