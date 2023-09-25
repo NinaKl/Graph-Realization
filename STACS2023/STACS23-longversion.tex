@@ -135,7 +135,7 @@
 \bibliographystyle{plainurl}% the mandatory bibstyle
 \usepackage{cite} %order citations by increasing number
 
-\title{Realizing temporal graphs from fastest travel times} %TODO Please add
+\title{Temporal graph realization from fastest temporal paths} %TODO Please add
 
 %\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
 
@@ -236,8 +236,9 @@ The variations of the problem on static graphs has been well studied and underst
 
 As it turns out, the periodic temporal graph realization problem has a very different computational complexity behavior than its static (i.e.~non-temporal) counterpart. 
 First we show that the problem is NP-hard in general, but polynomial-time solvable if the so-called underlying graph is a tree or a cycle.
-Building upon those results, we investigate its parameterized computational complexity with respect to structural parameters of the underlying static graph which measure the ``tree-likeness''. For those parameters, we essentially give a tight classification between parameters that allow for tractability (in the FPT sense) and parameters that presumably do not.
-We show that our problem is W[1]-hard when parameterized by the \emph{feedback vertex number} of the underlying graph, while we show that it is in FPT when parameterized by the \emph{feedback edge number} of the underlying graph. 
+Building upon those results, we investigate its parameterized computational complexity with respect to structural parameters of the underlying static graph which measure the ``tree-likeness''. We prove a tight classification between such parameters that allow fixed-parameter tractability (FPT) 
+and those which imply W[1]-hardness. 
+We show that our problem is W[1]-hard when parameterized by the \emph{feedback vertex number} (and therefore also any smaller parameter such as \emph{treewidth}, \emph{degeneracy}, and \emph{cliquewidth}) of the underlying graph, while we show that it is in FPT when parameterized by the \emph{feedback edge number} (and therefore also any larger parameter such as \emph{maximum leaf number}) of the underlying graph. 
 
 
 
@@ -252,7 +253,7 @@ We show that our problem is W[1]-hard when parameterized by the \emph{feedback v
 
 \section{Introduction}\label{intro-sec}
 
-The \emph{graph realization} problem with respect to a graph property $\mathcal{P}$ is to find a graph that satisfies property $\mathcal{P}$, or to decide that no such graph exists. 
+The (static) \emph{graph realization} problem with respect to a graph property $\mathcal{P}$ is to find a graph that satisfies property $\mathcal{P}$, or to decide that no such graph exists. 
 The motivation for graph realization problems stems both from ``verification'' and from network design applications in engineering. 
 In \emph{verification} applications, given the outcomes of some experimental measurements (resp.~some computations) on a network, 
 the aim is to (re)construct an input network which complies with them. 
@@ -333,14 +334,29 @@ As it turns out, the periodic temporal graph realization problem with respect to
 
 Formally, let $G=(V,E)$ and $\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ be an edge-labeling function that assigns to every edge of $G$ exactly one of the labels from $\{1,\ldots,\Delta\}$. 
 Then we denote by $(G,\lambda,\Delta)$ the \emph{$\Delta$-periodic temporal graph} $(G,L)$, where for every edge $e\in E$ we have $L(e)=\{i\Delta + x : i\geq 0, x\in \lambda(e)\}$. 
-In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of $G$. 
+In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of~$G$; see \cref{fig:periodic-example} for an illustration. 
 When it is clear from the context, we drop $\Delta$ form the notation and 
 we denote the ($\Delta$-periodic) temporal graph by $(G,\lambda)$.
-Given a duration matrix $D$, it is easy to observe that similar to the static case, if $D_{i,j}=1$, then $v_i$ and $v_j$ must be connected by an edge. We call the graph defined by those edges as the \emph{underlying graph} of $D$.
+Given a duration matrix~$D$, it is easy to observe that, similarly to the static case, if $D_{i,j}=1$ then $v_i$ and $v_j$ must be connected by an edge. We call the graph defined by these edges the \emph{underlying graph} of $D$.
 
 
 
-
+\begin{figure}[t]
+    \centering
+	\begin{tikzpicture}[xscale=1.5]
+		%%%S_uv
+		\node[vert,label=below:$v_1$] (1) at (1,0) {};
+		\node[vert,label=below:$v_2$] (2) at (3,0) {};
+		\node[vert,label=below:$v_3$] (3) at (5,0) {};
+		\node[vert,label=below:$v_4$] (4) at (7,0) {};
+		\node[vert,label=below:$v_5$] (5) at (9,0) {};
+		\draw (1) -- node[label=above:$10t+7$] {} (2) -- node[label=above:$10t+3$] {}  (3) -- node[label=above:$10t+5$] {} (4) -- node[label=above:$10t+1$] {} (5);	
+	\end{tikzpicture}
+	\caption{An example of a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, where $\Delta = 10$ and the 10-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,10\}$ is as follows: $\lambda(v_1 v_2)=7$, $\lambda(v_2 v_3)=3$, $\lambda(v_3 v_4)=5$, and $\lambda(v_4 v_5)=1$. 
+    Here, the fastest temporal path from $u$ to $v$ traverses the first edge $v_1v_2$ at time $7$, second edge $v_2v_3$ a time $13$, third edge $v_3v_4$ at time $15$ and the last edge $v_4v_5$ at time $21$.
+    This results in the total duration of $15$ for the fastest temporal path from $v_1$ to $v_5$.
+	\label{fig:periodic-example}}
+\end{figure}
 
 \subparagraph{Our contribution.}
 %In this work, 
@@ -358,27 +374,28 @@ for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ i
 
 
 
-We focus on exact algorithms. We start with showing NP-hardness of the problem (\cref{thm:NPhardness}), even if $\Delta$ is a small constant. To establish a baseline for tractability, we show that \deltaExact\ is polynomial-time solvable if the underlying graph is a tree (\cref{thm:deltaExact-PolyTimeTrees}).
+We focus on exact algorithms. We start by showing NP-hardness of the problem (\cref{thm:NPhardness}), even if $\Delta$ is a small constant. To establish a baseline for tractability, we show that \deltaExact\ is polynomial-time solvable if the underlying graph is a tree (\cref{thm:deltaExact-PolyTimeTrees}).
 
 Building upon these initial results, we explore the possibilities to generalize our polynomial-time algorithm using the \emph{distance-from-triviality} parameterization paradigm~\cite{FJR13,GHN04}. That is, we investigate the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph that measure its ``tree-likeness''.
 
 We obtain the following results. We show that \deltaExact\ is W[1]-hard when parameterized by the feedback vertex number of the underlying graph (\cref{thm:W1wrtFVS}). 
 To this end, we first give a reduction from \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval} to a variant of \deltaExact\ where the period $\Delta$ is infinite, that is, when the labeling is non-periodic. We use a special gadget (the ``infinity'' gadget) which allows us to transfer the result to a finite period $\Delta$. The latter construction is independent from the particular reduction we use, and can hence be treated as a reduction from the non-periodic to the periodic setting.
-Note that our parameterized hardness result rule out fixed-parameter tractability for several popular graph parameters such as treewidth and arboricity.
+Note that our parameterized hardness result rule out fixed-parameter tractability for several popular graph parameters such as \emph{treewidth}, \emph{degeneracy}, \emph{cliquewidth}, 
+\emph{distance to chordal graphs}, and \emph{distance to outerplanar graphs}.
 
-We complement this result by showing that the problem is fixed-parameter tractable (FPT) with respect to the feedback edge number $k$ of the underlying graph (\cref{thm:FPTwrtFES}), a parameter that is larger than the feedback vertex number. 
+We complement this hardness result by showing that \deltaExact\ is fixed-parameter tractable (FPT) with respect to the \emph{feedback edge number} $k$ of the underlying graph (\cref{thm:FPTwrtFES}). 
+This result also implies an FPT algorithm for any larger parameter, such as the \emph{maximum leaf number}. 
+A similar phenomenon of getting W[1]-hardness with respect to the feedback vertex number, while getting an FPT algorithm with respect to the feedback edge number, has been observed only in a few other temporal graph problems related to the connectivity between two vertices~\cite{casteigts2021finding,FMNR22a,EMM22}.
+
 Our FPT algorithm works as follows on a high level. 
-First we distinguish $O(k)$ vertices which we call ``interesting vertices''. 
-Then, we guess the fastest temporal paths for each pair of these interesting vertices; as we prove, the number of choices we have for all these guesses is upper bounded by a function of~$k$. 
-Then we also make several further guesses (again using a bounded number of choices), which altogether leads us to specify a small (i.e.~bounded by a function of $k$) number of different configurations for the fastest paths between \emph{all pairs} of vertices. For each of these configurations, we must then make sure that the labels of our solution will not allow any other temporal path from a vertex $v_i$ to a vertex $v_j$ have a \emph{strictly smaller} duration than~$D_{i,j}$.
+First we distinguish $O(k^2)$ vertices which we call ``important vertices''. 
+Then, we guess the fastest temporal paths for each pair of these important vertices; as we prove, the number of choices we have for all these guesses is upper bounded by a function of~$k$. 
+Then we also need to make several further guesses (again using a bounded number of choices), which altogether leads us to specify a small (\ie bounded by a function of $k$) number of different configurations for the fastest paths between \emph{all pairs} of vertices. For each of these configurations, we must then make sure that the labels of our solution will not allow any other temporal path from a vertex $v_i$ to a vertex $v_j$ have a \emph{strictly smaller} duration than~$D_{i,j}$.
 This naturally leads us to build one Integer Linear Program (ILP) for each of these configurations. We manage to formulate all these ILPs by having a number of variables that is upper-bounded by a function of $k$. Finally we use Lenstra's Theorem~\cite{Lenstra1983Integer} to solve each of these ILPs in FPT time. At the end, our initial instance is a \textsc{Yes}-instance if and only if at least one of these ILPs is feasible.
 
 
 
-
 The above results provide a fairly complete picture of the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph which measure ``tree-likeness''. To obtain our results, we prove several properties of fastest temporal paths, which may be of independent interest.
-
-Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the Appendix.
 
 
 \subparagraph{Related work.} Graph realization problems on static graphs have been studied since the 1960s. We provide an overview of the literature in the introduction. 
@@ -413,13 +430,15 @@ For the sake of simplicity of the representation, an edge $e$ is sometimes also 
 A path~$P$ in $G$ is a subgraph of $G$ with vertex set~$V(P)=\{v_1,\dots,v_k\}$ and edge set~$E(P)=\{\{v_i,v_{i+1}\} :  1\leq i<k\}$
 (we often represent path~$P$ by the tuple~$(v_1,v_2,\dots,v_k)$).
 
-
-
-
-
 Let $v_1,v_2,\ldots,v_n$ be the $n$ vertices of the graph $G$. 
-For simplicity of the presentation~--and with a slight abuse of notation--~we refer during the paper to the entry $D_{i,j}$ of the matrix $D$ as 
-$D_{a,b}$, where $a=v_i$ and $b=v_j$. That is, we put as indices of the matrix $D$ the corresponding vertices of $G$ whenever it is clear from the context.
+For simplicity of the presentation (and with a slight abuse of notation) we refer during the paper to the entry $D_{i,j}$ of the matrix $D$ as $D_{a,b}$, where $a=v_i$ and $b=v_j$. 
+That is, we put as indices of the matrix $D$ the corresponding vertices of $G$ whenever it is clear from the context. 
+
+Let $P=(u=v_1, v_2, \dots, v_p=v)$ be a path from $u$ to $v$ in $G$. 
+Recall that, in our paper, every edge has exactly one time label in every period of $\Delta$ consecutive time steps. 
+Therefore, as we are only interested in the fastest duration of temporal paths, 
+many times we refer to $(P,\lambda,\Delta)$ as any of the temporal paths from $u=v_1$ to $v=v_p$ along the edges of $P$, which starts at the edge $v_1 v_2$ at time $\lambda(v_1 v_2) + c \Delta$, for some $c\in \mathbb{N}$, and then sequentially visits the rest of the edges of $P$ as early as possible. 
+We denote by $d(P,\lambda,\Delta)$, or simply by $d(P,\lambda)$ when $\Delta$ is clear from the context, the duration of any of the temporal paths $(P,\lambda,\Delta)$; note that they all have the same duration. 
 Many times we also refer to a path $P=(u=v_1, v_2, \dots, v_p=v)$ from $u$ to $v$ in $G$,
 as a temporal path in $(G,\lambda,\Delta)$,
 where we actually mean that $(P,\lambda,\Delta)$ is a temporal path with $P$ as its underlying (static) path.
@@ -429,10 +448,11 @@ We remark that a fastest path between two vertices in a temporal graph can be co
 %Wu et~al.~\cite{Wu2016Efficient} provide an algorithm that computes the duration of the fastest temporal path from a source vertex $v$, in a temporal graph $(G,\lambda)$, to all other vertices,
 %that runs in polynomial-time.
 Hence, given a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, we can compute in polynomial-time  the matrix $D$
-which consists of durations of fastest temporal paths between all pairs of vertices in $(G,\lambda,\Delta)$.
+which consists of durations of fastest temporal paths among all pairs of vertices in $(G,\lambda,\Delta)$.
+
 
 \subparagraph{Organization of the paper.}
-In \cref{sec:hardness} we present our hardness results, first the NP-hardness in \cref{sec:nphardness} and then the parameterized hardness in \cref{sec:w1hardness}. In \cref{sec:algos} we present our algorithmic results. First we give in \cref{sec:cyclealgo} a polynomial-time algorithm for the case where the underlying graph is a tree. In \cref{sec:FPT} we generalize this and present our FPT result, which is the main result in the paper. In \cref{sec:cyclealgo} we provide a simple polynomial-time algorithm for the case where the underlying graph is a cycle. Finally, we conclude in \cref{sec:conclusion} and discuss some future work directions.
+In \cref{sec:hardness} we present our hardness results, first the NP-hardness in \cref{sec:nphardness} and then the parameterized hardness in \cref{sec:w1hardness}. In \cref{sec:algos} we present our algorithmic results. First we give in \cref{sec:treealgo} a polynomial-time algorithm for the case where the underlying graph is a tree. In \cref{sec:FPT} we generalize this and present our FPT result, which is the main result in the paper. In \cref{sec:cyclealgo} we provide a simple polynomial-time algorithm for the case where the underlying graph is a cycle. Finally, we conclude in \cref{sec:conclusion} and discuss some future work directions.
 
 \section{Hardness results for \deltaExact}\label{sec:hardness}
 In this section we present our main computational hardness results. In \cref{sec:nphardness} we show that \deltaExact\ is NP-hard even for constant $\Delta$. In \cref{sec:w1hardness} we investigate the parameterized computational hardness of \deltaExact\ with respect to structural parameters of the underlying graph. We show that \deltaExact\ is W[1]-hard when parameterized by the feedback vertex number of the underlying graph.
@@ -1526,10 +1546,10 @@ Furthermore, we can make the following observation concerning subpaths of a fast
 %All of the above is used in the design of the following polynomial-time algorithms.
 We are now ready to provide a polynomial-time algorithm for \deltaExact\ when the underlying graph is a tree.
 Let $D$ be a matrix from \deltaExact\ and let the underlying graph $G$ of $D$ be a tree on $n$ vertices $\{v_1, v_2, \dots, v_n\}$.
-Let $v_i,v_j$ be two arbitrary vertices in $G$. Then we know that there exists a unique (static) path $P$ between them.
+Let $v_i,v_j$ be two arbitrary vertices in $G$. Then, by the properties of trees, we know that there exists a unique (static) path $P$ between them.
 Consequently, it follows that the temporal paths $(P_{i,j},\lambda)$ from $v_i$ to $v_j$ and $(P_{j,i},\lambda)$ from $v_j$ to $v_i$ are also unique, up to modulo of the period $\Delta$ of the labeling $\lambda$,
 and therefore are the fastest.
-Then $D$ is of the following fo\rm:
+Then $D$ is of the following form:
 \begin{equation*}
     D_{i,j} =
     \begin{cases}
@@ -1607,16 +1627,15 @@ Now using \cref{lemma:unique-fastest-path-allDelays}, we can determine the waiti
 
 \subsection{FPT-algorithm for feedback edge number}\label{sec:FPT}
 
+Recall from \cref{sec:treealgo} that the main reason, for which \deltaExact\ is straightforward to solve on trees, is twofold: 
+\begin{itemize}
+    \item between any pair of vertices $v_i$ and $v_j$ in the tree $T$, there is a \emph{unique} path $P$ in $T$ from $v_i$ to $v_j$, and 
+    \item in any periodic temporal graph $(T,\lambda,\Delta)$ and any fastest temporal path $P=((e_1,t_1),\ldots,(e_i,t_i),\ldots,(e_j,t_j),\ldots,(e_\ell,t_\ell))$ from $v_1$ to $v_{\ell}$ we have that the sub-path $P'=((e_i,t_i),\ldots,(e_j,t_j))$ is also a fastest temporal path from $v_i$ to $v_j$.
+\end{itemize}
+However, these two nice properties do not hold when the underlying graph is not a tree. For example, in~\cref{fig:ftpExample}, the fastest temporal path from $u$ to $v$ is $P_{u,v}$ (depicted in blue) goes through~$w$, however the sub-path of $P_{u,v}$ that stops at $w$ is not the fastest temporal path from $u$ to $w$. The fastest temporal path from $u$ to $w$ consists only on the direct edge $uw$ (with label 9 and duration 1, depicted in red).
+%, while the fastest temporal path from $u$ to $v$ contains the four other edges (with labels 1, 3, 5, 7 and duration 7). 
 
-
-
-
-
-In this section we show how to generalize the result presented in \cref{sec:treealgo}. Following the \emph{distance-from-triviality} parameterization paradigm~\cite{FJR13,GHN04}, we aim to obtain fixed-parameter tractability using a parameter that measures the distance from the underlying graph to a tree. \cref{thm:W1wrtFVS} tells us that we presumably cannot use the feedback vertex number (or any smaller measure such as the treewidth) as a parameter to obtain tractability. Hence, we choose the feedback edge number as a parameter and we present an FPT algorithm for \deltaExact\ parameterized by the feedback edge number of the underlying graph.
-
-In a graph $G=(V,E)$, a \emph{feedback edge set} $F \subseteq E(G)$ is a subset of edges, such that each cycle in $G$ has at least one edge in $F$.
-The minimum such set $F$ is called a  \emph{minimum feedback edge set} and its size, $k = |F|$, is called the \emph{feedback edge number} of graph $G$.
-Note that one can find a minimum feedback edge set in linear time, by calculating a spanning tree (or forest) $T$ of the given graph $G$ and then removing all of the edges $T$ from $G$, \ie $F = E(G) \setminus E(T)$.
+Nevertheless, we prove in this section that we can still solve \deltaExact\ efficiently if the underlying graph is similar to a tree; more specifically we show the following result, which turns out to be non-trivial.
 
 \begin{theorem}\label{thm:FPTwrtFES}
     \deltaExactLong\ is in FPT when parameterized by the feedback edge number of the underlying graph.
@@ -1643,8 +1662,26 @@ Besides that we also need to make sure that all temporal paths that do not follo
 	
 	\begin{figure}[t]
     \centering
-	\includegraphics{fig-motivationExample}
-	\caption{An example of a temporal graph, where the fastest temporal path $P_{u,v}$ (in blue) from $u$ to $v$ is of duration $7$,
+	\begin{tikzpicture}[xscale=2.2,yscale=0.5]
+	%%%S_uv
+	\node[vert,label=below:$u$] (v1) at (1,0) {};
+	\node[vert] (v2) at (2,0) {};
+	\node[vert,label=below:$w$] (v3) at (3,0) {};
+	\node[vert] (v4) at (4,0) {};
+	\node[vert,label=below:$v$] (v5) at (5,0) {};
+
+	\draw[transform canvas={yshift=-1.5mm}, blue]
+	(v1) edge[diredge2]  node[pos=0.3,yshift=-2,label=below:$P_{u,v}$] {} (v5) ;
+	
+	\draw[red]
+	(v1) edge[diredge2] [out=85,in=95,distance=2.1cm] node[pos=0.3,yshift=2,label=above:$P_{u,w}$] {} (v3) ;
+ 
+	\draw (v1) -- node[label=above:$1$] {} (v2) -- node[label=above:$3$] {}  (v3) -- node[label=above:$5$] {} (v4) -- node[label=above:$7$] {} (v5);
+	\draw (v1) to [out=80,in=100,distance=2cm] node[label=above:$9$] {} (v3);
+	
+
+\end{tikzpicture}
+	\caption{An example of a temporal graph (with $\Delta \geq 9$), where the fastest temporal path $P_{u,v}$ (in blue) from $u$ to $v$ is of duration $7$,
 		while the fastest temporal path $P_{u,w}$ (in red) from $u$ to a vertex $w$, that is on a path $P_{u,v}$, is of duration $1$ and is not a subpath of $P_{u,v}$.		
 		\label{fig:ftpExample}}
 	\end{figure}
@@ -2969,10 +3006,6 @@ We know that the labels of all of the remaining edges depend on the label of (at
 Therefore, we easily calculate the desired labels for all remaining edges.
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{comment}
-
-
 \subsection{Polynomial-time algorithm for cycles}\label{sec:cyclealgo}
 In this section, we present a polynomial-time algorithm for \deltaExact\ when the underlying graph is a cycle. Note that \cref{thm:FPTwrtFES} already implies that \deltaExact\ on cycles is polynomial time solvable, however, for this particular case we can give a much simpler algorithm.
 
@@ -3127,9 +3160,6 @@ the value $\lambda(v_iv_k) \equiv a + \tau_{v_i}^{v_j,v_k} \pmod \Delta $ (resp.
 Since there are $\Delta$ options to fix the first label, we can find $\Delta$ different labelings satisfying $D$.
 Note, w.l.o.g. we can start determining the labeling $\lambda$ by setting $\lambda(v_1v_2) = 1$.
 \end{proof}
-
-\end{comment}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \begin{comment}
