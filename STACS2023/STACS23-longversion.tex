@@ -1637,30 +1637,7 @@ However, these two nice properties do not hold when the underlying graph is not 
 
 Nevertheless, we prove in this section that we can still solve \deltaExact\ efficiently if the underlying graph is similar to a tree; more specifically we show the following result, which turns out to be non-trivial.
 
-\begin{theorem}\label{thm:FPTwrtFES}
-    \deltaExactLong\ is in FPT when parameterized by the feedback edge number of the underlying graph.
-\end{theorem}
-
-We first give an informal and very high-level description of the main ideas of the algorithm. It is well-known that the number of paths between two vertices in a static graph can be upper-bounded by a function of the feedback edge number of the graph. Intuitively, this would allow us to ``guess'' paths between a small number of vertex pairs in $G$ (the underlying graph of our instance \deltaExact). These paths would then be used to create (representatives of) fastest temporal paths between vertex pairs in $(G,\lambda)$. We would then try to use the polynomial algorithm for trees (which includes paths) to figure out the labeling $\lambda$ of the edges used by these path. An idea like this has been used for several other temporal graph problems related to the connectivity between two vertices~\cite{casteigts2021finding,FMNR22a,EMM22}.
-
-In our case, however, it is not enough to consider fastest temporal paths between some subset of vertices, but we have to determine the fastest temporal paths between all pairs of vertices. This means that we have to somehow extend the labeling $\lambda$ of the edges used by guessed paths to all other edges of $G$.
-Besides that we also need to make sure that all temporal paths that do not follow our guessed paths are not too fast. 
-
-	A further difficulty arises from the somewhat unintuitive characteristic of fastest paths in temporal graphs.
- When considering the problem of finding shortest paths between vertices in static graphs, we have the nice property that if a shortest path $P$ from vertex $u$ to $v$ traverses the vertex $w$,
-	then the subpath of $P$ from $u$ to $w$ is a shortest path from $u$ to $w$. This can help tremendously when developing algorithms.
-	However, one can see that this property does not carry over to fastest paths in temporal graphs, for an example see~\cref{fig:ftpExample}.
- For us this means that even if we guess a fastest path between two vertices, we cannot simply determine all labels of the edges used by the fastest path.
-	%This makes all the standard intuition and work with these kind of paths, much harder.
-    %This also explains why our FPT algorithm, w.r.t the feedback edge number, is so complex. 
-    %Usually, the feedback edge number parameter (denote it $k$) provides an easy algorithm, 
-    %where one first determines $O(k)$ special vertices,
-    %guesses desired structures between them (\ie iterates through all possibilities) and then simply extends the solution to the rest of the graph.
-    %An example with this approach, on temporal graphs, can be observed in \cite{casteigts2021finding} where the authors provide an FPT algorithm that determines all temporal paths, under certain constraints.
-    %In our case the similar approach cannot work, as we cannot at any point calculate some partial labeling $\lambda$ of a delta periodic graph $(G,\lambda)$,
-    %that could at the end be extended to the whole $G$.
-	
-	\begin{figure}[t]
+\begin{figure}[t]
     \centering
 	\begin{tikzpicture}[xscale=2.2,yscale=0.5]
 	%%%S_uv
@@ -1686,13 +1663,40 @@ Besides that we also need to make sure that all temporal paths that do not follo
 		\label{fig:ftpExample}}
 	\end{figure}
 
-To overcome the above mentioned difficulties, we propose the following high-level strategy.
+\begin{theorem}\label{thm:FPTwrtFES}
+    \deltaExactLong\ is in FPT when parameterized by the feedback edge number of the underlying graph.
+\end{theorem}
+
+From \cref{thm:W1wrtFVS} and \cref{thm:FPTwrtFES} we immediately get the following, which is the main result of the paper.
+
+\begin{corollary}
+\deltaExact\ is:
 \begin{itemize}
-    \item We identify a small number of ``interesting vertices'' between which we guess representative fastest paths.
-    \item We show that we can determine most labels along each path up to an additive constant. We show that the number of labels we cannot determine along such a path is small. 
-    \item For each additive constant and each non-determined label along such a path we introduce a variable for an Integer Linear Program (ILP). 
-    \item We use constraints in the ILP to ensure that alternative connections (not using the guessed fastest path) between vertex pairs are not too fast.
-    \item We compute a solution to the ILP and construct a labeling from that solution. Since the ILP has few variables and not too many constraints, this computation can be done efficiently using Lenstra's Theorem~\cite{Lenstra1983Integer}.
+    \item in FPT when parameterized by the \emph{feedback edge number} or any larger parameter, such as the \emph{maximum leaf number}.
+    \item W[1]-hard when parameterized by the \emph{feedback vertex number} or any smaller parameter, such as: 
+    \emph{treewidth}, 
+    \emph{degeneracy}, 
+    \emph{cliquewidth}, 
+    \emph{distance to chordal graphs}, and 
+    \emph{distance to outerplanar graphs}.
+\end{itemize}
+\end{corollary}
+
+Before presenting the structure of our algorithm for \cref{thm:FPTwrtFES}, observe that, in a static graph, the number of paths between two vertices can be upper-bounded by a function $f(k)$ of the feedback edge number $k$ of the graph. 
+Therefore, for any fixed pair of vertices $u$ and $v$, we can ``guess'' the edges of the fastest temporal path from $u$ to $v$. 
+However, 
+% due to the difficulties illustrated in~\cref{fig:ftpExample}, 
+for an FPT algorithm with respect to $k$, we cannot afford to guess the edges of the fastest temporal path for each of the $O(n^2)$ pairs of vertices. 
+To overcome this difficulty, our algorithm follows this high-level strategy:
+\begin{itemize}
+    %%%\item We perform a preprocessing step by iteratively removing all vertices of degree one.
+    \item We identify a small number $f(k)$ of ``important vertices''; these consist of the sets that we call $U, U^{\ast}, Z^{\ast}$.
+    \item For each pair $u,v$ of important vertices, we guess the edges of the fastest temporal path from $u$ to $v$ (and from $v$ to $u$).
+    \item From these guesses we can still not deduce the edges of the fastest temporal paths between many pairs of non-important vertices. However, as we prove, it suffices to guess only a small number of specific auxiliary structures (to be defined later).
+    \item From these guesses we deduce fixed relationships between the labels of most of the edges of the graph. 
+    \item For all the edges, for which we do not have deduced a label yet, we introduce a \emph{variable}. Using all these variables, we build an Integer Linear Program (ILP). 
+    Among the constraints in this ILP we have that, for each of the $O(n^2)$ pairs of vertices $u,v$ in the graph, the duration of one specific temporal path from $u$ to $v$ (according to our guesses) is \emph{equal} to the desired duration $D_{u,v}$, while the duration of each of the other temporal paths from $u$ to $v$ is \emph{at least} $D_{u,v}$.
+    \item By making any of the above guesses, we restrict the solution space for the problem \deltaExact. This restricted solution space coincides with the set of feasible solutions to the resulting ILP. Furthermore, the set of feasible solutions for all constructed ILPs coincide with the set of all solutions to \deltaExact\ (\ie regardless of our guesses). As each ILP can be solved in FPT time with respect to $k$ by Lenstra's Theorem~\cite{Lenstra1983Integer} (the number of variables is upper bounded by a function of $k$), we obtain our FPT algorithm for \deltaExact\ with respect to $k$.
 \end{itemize}
 
 
@@ -1773,7 +1777,16 @@ where the clip vertex $v_i$ of $T_i$ is a vertex of interest, \ie
 Z^* = \{ r_i  :  r_i \in T_i, \text{ where $T_i \in Z$, the clip vertex $u_i$ of $T_i$ is in $U$, and $r_i u_i \in E(G)$}\}.
 \]
 Since there are $O(k)$ vertices of interest, we get that $|Z^*| \in O(k)$.
-Note that determining sets $U$, $U^*$, and $Z^*$ takes linear time.
+For an illustration see \cref{fig:labelingVertices}. Note that determining sets $U$, $U^*$, and $Z^*$ takes linear time.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{fig-example-names-vertices}
+	\caption{An example of a graph with its important vertices: $U$ (in blue), $U^*$ (in green) and $Z^*$ (in orange).
+    Corresponding feedback edges are marked with a thick red line, while dashed edges represent the edges (and vertices) ``removed'' from $G'$ at the initial step.
+	\label{fig:labelingVertices}}
+\end{figure}
+
 
 %Let us remember the following basic property of the problem \deltaExact.
 Recall that a labeling $\lambda$ of $G$ satisfies $D$ if the duration of a fastest temporal path from vertex $v_i$ to $v_j$ equals $D_{v_i, v_j}$.
