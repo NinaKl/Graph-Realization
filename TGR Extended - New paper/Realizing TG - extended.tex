@@ -137,7 +137,7 @@
 
 \bibliographystyle{plainurl}% the mandatory bibstyle
 
-\title{Realizing temporal graphs from fastest travel times} %TODO Please add
+\title{Realizing temporal graphs from fastest paths II} %TODO Please add
 
 %\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
 
@@ -200,7 +200,7 @@
 	and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 	for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is $D_{i,j}$?}
 	
-\problemdef{\DeltaUpperBoundLong}
+\problemdef{\DeltaUpperBoundLong (\deltaUpperBound)}
 {A static graph $G=(V,E)$ with $n$ vertices, $n \times n$ matrix $D$ of positive integers and a bijective mapping $\phi$ from vertices $V$ of $G$ to the rows/columns of the matrix $D$.}
 {Does there exist a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 	for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is \emph{at most} $D_{\phi(i),\phi(j)}$.}
@@ -269,7 +269,7 @@ Before studying the problem in general let us first focus on two restricted case
 	Second, when the input graph $G$ is a $C_4$. Let $v_1, v_2, v_3, v_4$ be the vertices of $G$ with edges $e_1 = v_1 v_2, e_2 = v_2 v_3, e_3 = v_3 v_4, e_4 = v_4 v_1$.
 	Now we set $\lambda(e_1) = \lambda (e_3) = \alpha$ and $\lambda(e_2) = \lambda(e_4) = \beta$, where w.l.o.g. $\alpha > \beta$.
 	Let $\gamma = min \{ \alpha - \beta, \Delta + \beta - \alpha\}$,
-	i.e. $\gamma$ is the minimum travel delay at vertex $v_i$ when traversing edges $e_{i-1}, e_i$, where indices are taken modulo $4$.
+	i.e. $\gamma$ is the minimum travel delay at vertex $v_i$ when traversing first the edge $e_{i-1}$ and then $e_i$ (indices are taken modulo $4$).
 	We get that 
 	\begin{equation*}
 		D_{i,j} =
@@ -303,10 +303,10 @@ From the above claim we get the following.
 \begin{claim}
 	Let $P = (u, v, w)$ be a path of length $2$, and let $(P,\lambda)$ be a $\Delta$-periodic temporal graph, 
 	then $D_{u,w} = D_{w,v}$
-	iff
-	$\lambda(e) \in \{\frac{\Delta}{2}, \Delta\}$, if $\Delta$ is even and
-	$\lambda(e) \in \{\Delta\}$, if $\Delta$ is odd,
-	for all $e \in E(P)$.
+	if and only if
+    for every edge $e \in E(P)$ it holds that that
+	$\lambda(e) \in \{\frac{\Delta}{2}, \Delta\}$, when $\Delta$ is even and
+	$\lambda(e) = \Delta$, when $\Delta$ is odd.
 \end{claim}
 
 \begin{proof}
@@ -327,11 +327,10 @@ From the above claim we get the following.
 		
 		W.l.o.g. we can now suppose that $\alpha = \Delta$.
 		If $\Delta$ is odd, we have a unique solution with the value $\alpha=\beta = \Delta$,
-		while in the case when $\Delta$ is odd we get that $\alpha, \beta \in \{\Delta, \frac{\Delta}{2}\}$. 
+		while in the case when $\Delta$ is even we get that $\alpha, \beta \in \{\Delta, \frac{\Delta}{2}\}$. 
 \end{proof}
 
-We can extend the above result to all graphs as we want to have a periodic labeling of a graph $G$, that gives rise to a symmetric matrix $D$. 
-Then the above has to hold for all pairs of vertices on distance $2$.
+In the case of a general graph $G$, the above still has to hold for any two vertices on distance $2$ apart.
 Therefore we get the following two results.
 
 \begin{claim}\label{claim:symmetric-odd}
@@ -346,7 +345,7 @@ From all of the above we get the following result.
 \begin{theorem}
 	\deltaSymExact\ can be solved in polynomial time.
 \end{theorem}
-
+\todo[inline]{Not all edges need to have labels from $\{\Delta, \Delta/2 \}$ - some of them can have whatever label. Think how these edges/graphs look like (example ``diamond with an inner path of length 2'' aka, $C_4$ with an extra vertex in the middle connecting a pair of opposite vertices).}
 \begin{proof}
 	TODO
 \end{proof}

@@ -1,4 +1,4 @@
-\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate]{lipics-v2021}
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate, anonymous]{lipics-v2021}
 %This is a template for producing LIPIcs articles. 
 %See lipics-v2021-authors-guidelines.pdf for further information.
 %for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
@@ -133,7 +133,8 @@
 
 \bibliographystyle{plainurl}% the mandatory bibstyle
 \usepackage{cite} %order citations by increasing number
-\title{Realizing temporal graphs from fastest travel times} %TODO Please add
+\title{Temporal graph realization from fastest paths} %TODO Please add
+%%%Realizing temporal graphs from fastest travel times
 
 %\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
 
@@ -141,9 +142,7 @@
 
 \author{George B. Mertzios}{Department of Computer Science, Durham University, UK}{george.mertzios@durham.ac.uk}{https://orcid.org/0000-0001-7182-585X}{Supported by the EPSRC grant EP/P020372/1.}
 
-\author{Hendrik~Molter}{Department of Computer Science, Ben-Gurion~University~of~the~Negev, 
-Beer-Sheva, 
-Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant No.~1456/18, and the ERC, grant number 949707.}
+\author{Hendrik~Molter}{Department of Computer Science, Ben-Gurion~University~of~the~Negev, Beer-Sheva, Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant No.~1456/18, and the ERC, grant number 949707.}
 
 \author{Paul G. Spirakis}{Department of Computer Science, University of Liverpool, UK}{p.spirakis@liverpool.ac.uk}{https://orcid.org/0000-0001-5396-3749}{Supported by the EPSRC grant EP/P02002X/1.}
 
@@ -207,12 +206,14 @@ In this paper we initiate the study of the \emph{temporal graph realization} pro
 while we focus on periodic temporal graphs. 
 Given an $n \times n$ matrix $D$ and a $\Delta \in \mathbb{N}$, the goal is to construct a $\Delta$-periodic temporal graph with $n$ vertices 
 such that the duration of a \emph{fastest path} from $v_i$ to $v_j$ is equal to $D_{i,j}$, or to decide that such a temporal graph does not exist. 
-The variations of the problem on static graphs has been well studied and understood since the 1960's (e.g.\ [Erd\H{o}s and Gallai, 1960], [Hakimi and Yau, 1965]), and this area of research remains active until nowadays. 
+The variations of the problem on static graphs has been well studied and understood since the 1960's (e.g.\ [Erd\H{o}s and Gallai, 1960], [Hakimi and Yau, 1965]).
+% , and this area of research remains active until nowadays. 
 
 As it turns out, the periodic temporal graph realization problem has a very different computational complexity behavior than its static (\ie non-temporal) counterpart. 
-First we show that the problem is NP-hard in general, but polynomial-time solvable if the so-called underlying graph is a tree or a cycle.
-Building upon those results, we investigate its parameterized computational complexity with respect to structural parameters of the underlying static graph which measure the ``tree-likeness''. For those parameters, we essentially give a tight classification between parameters that allow for tractability (in the FPT sense) and parameters that presumably do not.
-We show that our problem is W[1]-hard when parameterized by the \emph{feedback vertex number} of the underlying graph, while we show that it is in FPT when parameterized by the \emph{feedback edge number} of the underlying graph. 
+First we show that the problem is NP-hard in general, but polynomial-time solvable if the so-called underlying graph is a tree.
+Building upon those results, we investigate its parameterized computational complexity with respect to structural parameters of the underlying static graph which measure the ``tree-likeness''. We prove a tight classification between such parameters that allow fixed-parameter tractability (FPT) 
+and those which imply W[1]-hardness. 
+We show that our problem is W[1]-hard when parameterized by the \emph{feedback vertex number} (and therefore also any smaller parameter such as \emph{treewidth}, \emph{degeneracy}, and \emph{cliquewidth}) of the underlying graph, while we show that it is in FPT when parameterized by the \emph{feedback edge number} (and therefore also any larger parameter such as \emph{maximum leaf number}) of the underlying graph. 
 
 
 
@@ -227,7 +228,7 @@ We show that our problem is W[1]-hard when parameterized by the \emph{feedback v
 
 \section{Introduction}\label{intro-sec}
 
-The \emph{graph realization} problem with respect to a graph property $\mathcal{P}$ is to find a graph that satisfies property $\mathcal{P}$, or to decide that no such graph exists. 
+The (static) \emph{graph realization} problem with respect to a graph property $\mathcal{P}$ is to find a graph that satisfies property $\mathcal{P}$, or to decide that no such graph exists. 
 The motivation for graph realization problems stems both from ``verification'' and from network design applications in engineering. 
 In \emph{verification} applications, given the outcomes of some experimental measurements (resp.~some computations) on a network, 
 the aim is to (re)construct an input network which complies with them. 
@@ -242,7 +243,7 @@ on the vertex degrees~\cite{GolovachM17,gomory1961multi,hakimi1962realizability,
 on the eccentricities~\cite{barNoy2020efficiently,hell2009linear,behzad1976eccentric,lesniak1975eccentric}, and on connectivity~\cite{fulkerson1960zero,frank1992augmenting,chen1966realization,frank1994connectivity,frank1970connectivity,gomory1961multi}, among others. 
 
 
-In the simplest version of a graph realization problem with respect to vertex distances, 
+In the simplest version of a (static) graph realization problem with respect to vertex distances, 
 we are given a symmetric $n \times n$ matrix $D$ and we are looking for an $n$-vertex undirected and unweighted graph $G$ such that $D_{i,j}$ equals the distance between vertices $v_i$ and $v_j$ in~$G$. This problem can be trivially solved in polynomial time in two steps~\cite{hakimi1965distance}: First, we build the graph $G=(V,E)$ such that $v_i v_j \in E$ if and only if $D_{i,j}=1$. Second, from this graph $G$ we compute the matrix $D_G$ which captures the shortest distances for all pairs of vertices. If $D_G = D$ then $G$ is the desired graph, otherwise there is no graph having $D$ as its distance matrix. 
 Non-trivial variations of this problem have been extensively studied, such as for weighted graphs~\cite{hakimi1965distance,Patrinos-Hakimi-72}, as well as for cases where the realizing graph has to belong to a specific graph family~\cite{hakimi1965distance, barNoy2021composed}. Other variations of the problem include the cases where every entry of the input matrix $D$ may contain a range of consecutive permissible values~\cite{barNoy2021composed,Rubei16,Tamura93}, or even an arbitrary set of acceptable values~\cite{barNoy2022GraphRealization} for the distance between the corresponding two vertices. 
 
@@ -266,10 +267,15 @@ $t_i\in \lambda(e_i)$ for every $i=1,\ldots,k$, and $t_1<t_2<\ldots<t_k$.
 The \emph{duration} of this temporal path %$(P,\lambda)$ from $u$ to $v$ 
 is $t_k - t_1 + 1$.
 A \emph{fastest} temporal path from a vertex $u$ to a vertex $v$ in $(G,\lambda)$ is a temporal path from $u$ to $v$ with the smallest duration.
-The duration of the \emph{fastest} temporal path from $u$ to $v$ is denoted by $d(u,v)$.
+The \emph{duration} of the fastest temporal path from $u$ to $v$ is denoted by $d(u,v)$.
 \end{definition}
 
 %Other temporal analogues of a shortest path are temporal paths with the smallest total number of edges (\emph{shortest} temporal path), or the smallest earliest arrival time (\emph{foremost} temporal path), respectively. 
+
+
+
+
+
 
 
 In this paper we consider \emph{periodic} temporal graphs, \ie temporal graphs in which the temporal availability of each edge of the underlying graph is periodic. 
@@ -294,26 +300,13 @@ As it turns out, the periodic temporal graph realization problem with respect to
 
 
 
-%In an arbitrary (non-periodic) temporal graph $(G,\lambda)$ there can be pairs of vertices $u,v$ where there is no temporal path at all from $u$ to $v$, even if the underlying graph $G$ is undirected and connected. 
-
-
-%In order to focus on the smallest duration of temporal paths, rather than on temporal reachability between vertices, we consider in this paper only \emph{periodic} temporal graphs, \ie on temporal graphs in which the availability times of every edge are periodic (all edges having the same period $\Delta$)~\cite{casteigts2012time}. 
-
-
-%Apart from the theoretical interest of periodic temporal graphs, which have not been well studied and understood in the literature, they capture naturally many application areas too, such as transportation or satellite networks, where entities move according to repeating schedules or time tables. For example, a fastest temporal path from vertex $u$ to vertex $v$ in the temporal graph defined by a transportation (resp.~satellite) network represents the shortest travel time (resp.~the shortest communication delay) from $u$ to $v$. 
-
-
-
-
 
 Formally, let $G=(V,E)$ and $\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ be an edge-labeling function that assigns to every edge of $G$ exactly one of the labels from $\{1,\ldots,\Delta\}$. 
 Then we denote by $(G,\lambda,\Delta)$ the \emph{$\Delta$-periodic temporal graph} $(G,L)$, where for every edge $e\in E$ we have $L(e)=\{i\Delta + x : i\geq 0, x\in \lambda(e)\}$. 
-In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of $G$. 
+In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of~$G$; see \cref{fig:periodic-example} for an illustration. 
 When it is clear from the context, we drop $\Delta$ form the notation and 
 we denote the ($\Delta$-periodic) temporal graph by $(G,\lambda)$.
-Given a duration matrix $D$, it is easy to observe that similar to the static case, if $D_{i,j}=1$, then $v_i$ and $v_j$ must be connected by an edge. We call the graph defined by those edges as the \emph{underlying graph} of $D$.
-
-
+Given a duration matrix~$D$, it is easy to observe that, similarly to the static case, if $D_{i,j}=1$ then $v_i$ and $v_j$ must be connected by an edge. We call the graph defined by these edges the \emph{underlying graph} of $D$.
 
 
 
@@ -331,28 +324,48 @@ and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ 
 for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is $D_{i,j}$?}
 
 
+\begin{figure}[t]
+    \centering
+	\begin{tikzpicture}[xscale=1.5]
+		%%%S_uv
+		\node[vert,label=below:$v_1$] (1) at (1,0) {};
+		\node[vert,label=below:$v_2$] (2) at (3,0) {};
+		\node[vert,label=below:$v_3$] (3) at (5,0) {};
+		\node[vert,label=below:$v_4$] (4) at (7,0) {};
+		\node[vert,label=below:$v_5$] (5) at (9,0) {};
+		\draw (1) -- node[label=above:$10t+7$] {} (2) -- node[label=above:$10t+3$] {}  (3) -- node[label=above:$10t+5$] {} (4) -- node[label=above:$10t+1$] {} (5);	
+	\end{tikzpicture}
+	\caption{An example of a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, where $\Delta = 10$ and the 10-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,10\}$ is as follows: $\lambda(v_1 v_2)=7$, $\lambda(v_2 v_3)=3$, $\lambda(v_3 v_4)=5$, and $\lambda(v_4 v_5)=1$. 
+    Here, the fastest temporal path from $u$ to $v$ traverses the first edge $v_1v_2$ at time $7$, second edge $v_2v_3$ a time $13$, third edge $v_3v_4$ at time $15$ and the last edge $v_4v_5$ at time $21$.
+    This results in the total duration of $15$ for the fastest temporal path from $v_1$ to $v_5$.
+	\label{fig:periodic-example}}
+\end{figure}
 
-
-We focus on exact algorithms. We start with showing NP-hardness of the problem (\cref{thm:NPhardness}), even if $\Delta$ is a small constant. To establish a baseline for tractability, we show that \deltaExact\ is polynomial-time solvable if the underlying graph is a tree (\cref{thm:deltaExact-PolyTimeTrees}).
+We focus on exact algorithms. We start by showing NP-hardness of the problem (\cref{thm:NPhardness}), even if $\Delta$ is a small constant. To establish a baseline for tractability, we show that \deltaExact\ is polynomial-time solvable if the underlying graph is a tree (\cref{thm:deltaExact-PolyTimeTrees}).
 
 Building upon these initial results, we explore the possibilities to generalize our polynomial-time algorithm using the \emph{distance-from-triviality} parameterization paradigm~\cite{FJR13,GHN04}. That is, we investigate the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph that measure its ``tree-likeness''.
 
-We obtain the following results. We show that \deltaExact\ is W[1]-hard when parameterized by the feedback vertex number of the underlying graph (\cref{thm:W1wrtFVS}). 
+We obtain the following results. We show that \deltaExact\ is W[1]-hard when parameterized by the \emph{feedback vertex number} of the underlying graph (\cref{thm:W1wrtFVS}). 
 To this end, we first give a reduction from \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval} to a variant of \deltaExact\ where the period $\Delta$ is infinite, that is, when the labeling is non-periodic. We use a special gadget (the ``infinity'' gadget) which allows us to transfer the result to a finite period $\Delta$. The latter construction is independent from the particular reduction we use, and can hence be treated as a reduction from the non-periodic to the periodic setting.
-Note that our parameterized hardness result rule out fixed-parameter tractability for several popular graph parameters such as treewidth and arboricity.
+Note that our parameterized hardness result with respect to the feedback vertex number 
+also implies W[1]-hardness for any smaller parameter, such as \emph{treewidth}, \emph{degeneracy}, \emph{cliquewidth}, 
+\emph{distance to chordal graphs}, and \emph{distance to outerplanar graphs}.
 
-We complement this result by showing that the problem is fixed-parameter tractable (FPT) with respect to the feedback edge number $k$ of the underlying graph (\cref{thm:FPTwrtFES}), a parameter that is larger than the feedback vertex number. 
+
+We complement this hardness result by showing that \deltaExact\ is fixed-parameter tractable (FPT) with respect to the \emph{feedback edge number} $k$ of the underlying graph (\cref{thm:FPTwrtFES}). 
+This result also implies an FPT algorithm for any larger parameter, such as the \emph{maximum leaf number}. 
+A similar phenomenon of getting W[1]-hardness with respect to the feedback vertex number, while getting an FPT algorithm with respect to the feedback edge number, has been observed only in a few other temporal graph problems related to the connectivity between two vertices~\cite{casteigts2021finding,FMNR22a,EMM22}.
+
 Our FPT algorithm works as follows on a high level. 
-First we distinguish $O(k)$ vertices which we call ``interesting vertices''. 
-Then, we guess the fastest temporal paths for each pair of these interesting vertices; as we prove, the number of choices we have for all these guesses is upper bounded by a function of~$k$. 
-Then we also make several further guesses (again using a bounded number of choices), which altogether leads us to specify a small (\ie bounded by a function of $k$) number of different configurations for the fastest paths between \emph{all pairs} of vertices. For each of these configurations, we must then make sure that the labels of our solution will not allow any other temporal path from a vertex $v_i$ to a vertex $v_j$ have a \emph{strictly smaller} duration than~$D_{i,j}$.
+First we distinguish $O(k^2)$ vertices which we call ``important vertices''. 
+Then, we guess the fastest temporal paths for each pair of these important vertices; as we prove, the number of choices we have for all these guesses is upper bounded by a function of~$k$. 
+Then we also need to make several further guesses (again using a bounded number of choices), which altogether leads us to specify a small (\ie bounded by a function of $k$) number of different configurations for the fastest paths between \emph{all pairs} of vertices. For each of these configurations, we must then make sure that the labels of our solution will not allow any other temporal path from a vertex $v_i$ to a vertex $v_j$ have a \emph{strictly smaller} duration than~$D_{i,j}$.
 This naturally leads us to build one Integer Linear Program (ILP) for each of these configurations. We manage to formulate all these ILPs by having a number of variables that is upper-bounded by a function of $k$. Finally we use Lenstra's Theorem~\cite{Lenstra1983Integer} to solve each of these ILPs in FPT time. At the end, our initial instance is a \textsc{Yes}-instance if and only if at least one of these ILPs is feasible.
 
 
 
 
-The above results provide a fairly complete picture of the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph which measure ``tree-likeness''. To obtain our results, we prove several properties of fastest temporal paths, which may be of independent interest.
-
+The above results provide a fairly complete picture of the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph which measure ``tree-likeness''. To obtain our results, we prove several properties of fastest temporal paths, which may be of independent interest. 
 Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the Appendix.
 
 
@@ -1226,7 +1239,7 @@ Let $v_i,v_j$ be two arbitrary vertices in $G$, then we know that there exists a
     Let $D$ be an input matrix for problem \deltaExact\ of dimension $n \times n$.
     Let us fix the vertices of the corresponding graph $G$ of $D$ as $v_1, v_2, \dots, v_n$, where vertex $v_i$ corresponds to the row and column $i$ of matrix $D$.
     This can be done in polynomial time as we need to loop through the matrix $D$ once and connect vertices $v_i, v_j$ for which $D_{i,j} = 1$. At the same time we also check if $D_{i,i} = 0$, for all $i \in [n]$.
-    When $G$ is constructed we run DFS algorithm on it and check if it has no cycles.
+    When $G$ is constructed we run DFS algorithm on it and check that it has no cycles.
     If at any step we encounter a problem, our algorithm stops and returns a negative answer.
 
     Having computed $G$, our algorithm proceeds as follows. We pick an arbitrary edge $e$ and give it label one, that is, $\lambda(e)=1$. Now we push all edges incident with $e$ into a (initially empty) queue. Now we repeat the following as long as the queue is not empty:
@@ -1303,21 +1316,24 @@ Nevertheless, we prove in this section that we can still solve \deltaExact\ effi
 
 	\begin{figure}[t]
     \centering
-	\begin{tikzpicture}[xscale=2,yscale=0.4]
+	\begin{tikzpicture}[xscale=2.2,yscale=0.5]
 	%%%S_uv
 	\node[vert,label=below:$u$] (v1) at (1,0) {};
 	\node[vert] (v2) at (2,0) {};
 	\node[vert,label=below:$w$] (v3) at (3,0) {};
 	\node[vert] (v4) at (4,0) {};
 	\node[vert,label=below:$v$] (v5) at (5,0) {};
-	\draw (v1) -- node[timelabel] {$1$} (v2) -- node[timelabel] {$3$}  (v3) -- node[timelabel] {$5$} (v4) -- node[timelabel] {$7$} (v5);
-	\draw (v1) to [out=80,in=100,distance=2cm] node[timelabel] {$9$} (v3);
-	
+
 	\draw[transform canvas={yshift=-1.5mm}, blue]
 	(v1) edge[diredge2]  node[pos=0.3,yshift=-2,label=below:$P_{u,v}$] {} (v5) ;
 	
 	\draw[red]
 	(v1) edge[diredge2] [out=85,in=95,distance=2.1cm] node[pos=0.3,yshift=2,label=above:$P_{u,w}$] {} (v3) ;
+ 
+	\draw (v1) -- node[label=above:$1$] {} (v2) -- node[label=above:$3$] {}  (v3) -- node[label=above:$5$] {} (v4) -- node[label=above:$7$] {} (v5);
+	\draw (v1) to [out=80,in=100,distance=2cm] node[label=above:$9$] {} (v3);
+	
+
 \end{tikzpicture}
 	\caption{An example of a temporal graph (with $\Delta \geq 9$), where the fastest temporal path $P_{u,v}$ (in blue) from $u$ to $v$ is of duration $7$,
 		while the fastest temporal path $P_{u,w}$ (in red) from $u$ to a vertex $w$, that is on a path $P_{u,v}$, is of duration $1$ and is not a subpath of $P_{u,v}$.		
@@ -1361,7 +1377,7 @@ To overcome this difficulty, our algorithm follows this high-level strategy:
 \end{itemize}
 
 
-We now present the first part of our FPT algorithm.
+We now present the first part of our FPT algorithm, that is, identifying important vertices and guessing information about the fastest temporal paths. A full description of the algorithm is deferred to the Appendix.
 
 \subparagraph{Important vertices.}
 Let $D$ be the input matrix of \deltaExact\, and let $G$ be its underlying graph, on $n$ vertices and $m$ edges.
@@ -1406,7 +1422,15 @@ Z^* = \{ r_i  :  r_i \in T_i, \text{ where $T_i \in Z$, the clip vertex $u_i$ of
 \]
 Since there are $O(k)$ vertices of interest, we get that $|Z^*| \in O(k)$.
 Finally, the set of \emph{important vertices} is defined as the set $U \cup U^{\ast} \cup Z^{\ast}$.
+For an illustration see \cref{fig:labelingVertices}.
 
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.8\columnwidth]{fig-example-names-vertices}
+	\caption{An example of a graph with its important vertices: $U$ (in blue), $U^*$ (in green) and $Z^*$ (in orange).
+    Corresponding feedback edges are marked with a thick red line, while dashed edges represent the edges (and vertices) ``removed'' from $G'$ at the initial step.
+	\label{fig:labelingVertices}}
+\end{figure}
 
 % \medskip 
 % \noindent We can solve \deltaExact\  by 
@@ -1427,7 +1451,7 @@ For every pair of important vertices $u,v \in U \cup U^{\ast} \cup Z^{\ast}$, we
 
 \begin{figure}[t]
 	\centering
-	%\includegraphics{fig-exampleg10}
+	\includegraphics[width=0.75\columnwidth]{fig-exampleg10}
 	\caption{In the above graph vertices $v_1, v_{11}, w$ are in $U$, while $v_2, v_{10}$ are in $U^*$. 
 		Numbers above all $v_i$ represent the values of the fastest temporal paths from $w$ to each of them (\ie the entries in the $w$-th row of matrix $D$).
 		From the basic guesses we know the fastest temporal path $P$ from $w$ to $v_2$ (depicted in blue) and the fastest temporal path $Q$ from $w$ to $v_{10}$.
@@ -1440,8 +1464,8 @@ For every pair of important vertices $u,v \in U \cup U^{\ast} \cup Z^{\ast}$, we
   \label{fig:guesses-advanced}}
 \end{figure}
 
-Unfortunately the above guesses do not provide us with enough information to be able to determine all fastest paths. For example consider the case depicted in \cref{fig:guesses-advanced}. 
-Therefore we introduce some more guesses. To do this we have to first define the following.
+With the information provided by the described guesses we are still not able to determine all fastest paths. For example consider the case depicted in \cref{fig:guesses-advanced}. 
+Therefore we introduce additional guesses that provide us with sufficient information to determine all fastest paths. To do this we have to first define the following.
 \begin{definition}\label{def:segments}
 	Let $U \subseteq V(G')$ be a set of vertices of interest and let $u,v \in U$.
 	A path $P = (u=v_1,v_2, \dots, v_p = v)$  in graph $G'$, where all inner vertices are not in $U$, \ie $v_i \notin U$ for all $i \in \{ 2, 3, \dots, p-1\}$,
@@ -1452,7 +1476,6 @@ Observe that a temporal path in $G'$ between two vertices of interest is either 
 \begin{corollary}\label{obs:FPT-k2segments}
 	There are at most $O(k^2)$ segments in $G'$.
 \end{corollary}
-
 % We now continue with our guessing.
 To describe the next guesses, we introduce the following notation. Let $u,v,x$ be three vertices in $G'$. We write $u \leadsto x \rightarrow v$ to denote a temporal path from $u$ to $v$ that passes through $x$, and then goes directly to $v$ (via one edge).
 %In the case when we want to guess the fastest path from $u$, that passes through vertex $x$ (not necessarily via one edge), and then goes directly to $v$ (via one edge), we write it as a fastest path of the form $u \leadsto x \rightarrow v$.
@@ -1463,11 +1486,11 @@ We guess the following structures.
 	\textbf{Inner segment guess I}.
 	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be two segments. %,
 	%first one between vertices $u,v \in U$, second one between vertices $w, z \in U$.
-	We want to guess the following fastest temporal path
+	We want to guess the fastest temporal path
 	$v_2 \rightarrow u \leadsto w \rightarrow z_2$. 
 	We repeat this procedure for all pairs of segments.
 	Since there are $O(k^2)$ segments in $G'$,
-	there are $O(k^{k^5})$ possible paths of this form. \\
+	there are $k^{O(k^5)}$ possible paths of this form. \\
 	Recall that $S_{u,v}\neq S_{v,u}$ for every $u,v\in U$. Furthermore note that we did not assume that $\{u,v\} \cap \{w,z\} = \emptyset$. Therefore, by repeatedly making the above guesses, we also guess the following fastest temporal paths: 
 	${v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}}$,\ \ \ 
 	${v_2 \rightarrow u \leadsto v \rightarrow v_{p-1}}$,\ \ \  
@@ -1486,7 +1509,7 @@ We guess the following structures.
 	and
 	$v_2 \rightarrow u \leadsto w$, $v_2 \rightarrow v_3 \rightarrow \cdots v \leadsto w$.
 	\\
-	For fixed $S_{u,v}$ and $w \in U \cup Z^*$ we have $O(k^k)$ different possible such paths, therefore we make $O(k^{k^4})$ guesses for these paths.
+	For fixed $S_{u,v}$ and $w \in U \cup Z^*$ we have $k^{O(k)}$ different possible such paths, therefore we make $k^{O(k^4)}$ guesses for these paths.
 	%
 	For an example see~\cref{fig:FPT-guessG5}.
 	%All together we made $O(k^{k^4}$  new guesses for the structure of all of the above mentioned fastest temporal paths.
@@ -1525,7 +1548,7 @@ We guess the following structures.
 		We then make four guesses where we determine how the fastest temporal path from $v_i$ to $z_j$ passes through vertices $u,v$ and $w,z$ and 
 		for each of them two extra guesses to determine the fastest temporal path from $v_i$ to $z_{j-1}$ and from $v_i$ to $z_{j+1}$.
 		We repeat this procedure for all pairs of segments,
-		which results in producing $O(k^{k^6})$ new guesses.
+		which results in producing $k^{O(k^5)}$ new guesses.
 		Note, $v_i \in S_{u,v}$ is fixed when calculating the split vertex for all other segments $S_{w,z}$.
 		\item 
 		There are two vertices $z_j, z_{j+1} \in S_{w,z}$ for which the duration from $v_i$ is the biggest.
@@ -1574,7 +1597,7 @@ We guess the following structures.
 	\end{comment}
 	All together we make two guesses for each pair of vertex $w \in U$ and segment $S_{u,v}$.
 	We repeat this for all vertices of interest, and all segments,
-	which produces $O(k^{k^2})$ new guesses.
+	which produces $k^{O(k^2)}$ new guesses.
 	%
 	For an example see~\cref{fig:FPT-guessG7}.
 	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to Appendix.
@@ -1586,7 +1609,7 @@ We guess the following structures.
 	\centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{
+		\resizebox{0.88\linewidth}{!}{
 			\includegraphics{fig-guess1}}
 		\caption{Example of an Inner segment guess I (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}), where we guessed the fastest temporal paths of the form $v_2 \rightarrow u \leadsto w \rightarrow z_2$ (in blue)
 			and $v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}$ (in red).
@@ -1595,7 +1618,7 @@ We guess the following structures.
 	\quad
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{
+		\resizebox{0.88\linewidth}{!}{
 			
 			\includegraphics{fig-guess2}}
 		\caption{Example of an Inner segment guess II (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}), where we guessed the fastest temporal paths of the form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
@@ -1603,8 +1626,9 @@ We guess the following structures.
 	\end{subfigure}
 	
 	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\resizebox{1.2\linewidth}{!}{
+		\vspace{-0.4cm}
+        \centering
+		\resizebox{0.98\linewidth}{!}{
 			%
 			\includegraphics{fig-guess3}}
 		\caption{Example of a Split vertex guess I (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}), where, for a fixed vertex $v_i \in S_{u,v}$,
@@ -1617,7 +1641,7 @@ We guess the following structures.
 	\quad
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\resizebox{\linewidth}{!}{
+		\resizebox{0.88\linewidth}{!}{
 			\includegraphics{fig-guess4}}
 		\caption{Example of a Split vertex guess II (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}), where, for a vertex of interest $w$, 
 			we
@@ -1627,7 +1651,7 @@ We guess the following structures.
 			and $w \leadsto v \rightarrow v_{p-1} \rightarrow \cdots \rightarrow v_{i+1}$ (in red). 
 			\label{fig:FPT-guessG7}}
 	\end{subfigure}
-	\caption{An example of guesses \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}, and \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}.}
+	\caption{Illustration of the guesses \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}, and \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}.}
 \end{figure}
 %
 
@@ -1664,9 +1688,9 @@ Our work gives a starting point for many interesting future research directions 
 \bibliography{bibliography}	
 
 
-\clearpage
+%\clearpage
 
-\appendix
+%\appendix
 
 
 \end{document}

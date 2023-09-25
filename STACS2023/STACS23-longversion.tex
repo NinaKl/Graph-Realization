@@ -1,4 +1,4 @@
-\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate]{lipics-v2021}
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate, anonymous]{lipics-v2021}
 %This is a template for producing LIPIcs articles. 
 %See lipics-v2021-authors-guidelines.pdf for further information.
 %for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
@@ -2969,6 +2969,9 @@ We know that the labels of all of the remaining edges depend on the label of (at
 Therefore, we easily calculate the desired labels for all remaining edges.
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{comment}
+
 
 \subsection{Polynomial-time algorithm for cycles}\label{sec:cyclealgo}
 In this section, we present a polynomial-time algorithm for \deltaExact\ when the underlying graph is a cycle. Note that \cref{thm:FPTwrtFES} already implies that \deltaExact\ on cycles is polynomial time solvable, however, for this particular case we can give a much simpler algorithm.
@@ -3125,6 +3128,9 @@ Since there are $\Delta$ options to fix the first label, we can find $\Delta$ di
 Note, w.l.o.g. we can start determining the labeling $\lambda$ by setting $\lambda(v_1v_2) = 1$.
 \end{proof}
 
+\end{comment}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 \begin{comment}
 We have the following two cases.
@@ -3161,6 +3167,11 @@ We have the following two cases.
     
 \end{enumerate}
 \end{comment}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 \section{Conclusion}\label{sec:conclusion}
 We have introduced a natural and canonical temporal version of the graph realization problem with respect to distance requirements, called \deltaExactLong. 
