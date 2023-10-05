@@ -354,8 +354,8 @@ From all of the above we get the following result.
 
 \subsection{The underlying graph is a path}
 We start by investigating the complexity of the problem \DeltaUpperBoundLong\ in the case when the underlying graph of the input instance is a path.
-First we observe some properties of the problem.
 
+\begin{comment}
 Let $(G,D)$ be an instance of \deltaUpperBound\, where $G$ is a path of length $n$.
 Denote with $v_0,v_1, v_2, \dots, v_n$ the vertices of $G$ where $v_{i}v_{i+1} \in E(G)$, for all $i \in [n]$.
 And let $\lambda$ be a labelling that we are trying to construct (\ie a labeling satisfying conditions of the problem).
@@ -400,17 +400,34 @@ This follows from the fact that the duration among two vertices $v_i, v_{i+2}$ o
 Therefore if $D_{i,i+2}= \Delta + 1$ and $\lambda(v_{i-1} v_{i}) \neq \lambda (v_{i}v_{i+1})$ we get that $d(i, i+2) \leq \Delta \leq D_{i,i+2}$ which still satisfies the conditions.
 
 From now on we assume that $D$ is a reduced matrix, that satisfies the above conditions, and that the labeling $\lambda$ of $G$, if it exists, does not label two consecutive edges using the same label.
+\end{comment}
 
 \begin{theorem}\label{thm:paths-upperBound}
 	\deltaUpperBound\ can be solved in polynomial time on paths.
 \end{theorem}
+
+Before stating the proof let us observe the following.
+Suppose that $(G, D)$ is a yes instance of \deltaUpperBound\, where $G$ is a path on vertices $v_0, v_1, v_2, \dots, v_n$, 
+and let $\lambda$ be a labeling of $G$ s.t. $(G,\lambda)$ realizes $D$.
+Then, w.l.o.g. we can assume that $\lambda(v_{i-1} v_{i}) \neq \lambda (v_{i}v_{i+1})$ for all $i \in [n-1]$, \ie any two consecutive edges are labeled with a different label.
+This follows from the fact that the duration among two vertices $v_i, v_{i+2}$ on distance $2$ in $G$ equals to $\Delta + 1$ when the two consecutive labels are the same, 
+and the duration is at most $\Delta$,
+when the two consecutive labels are not the same,
+Therefore, if the value $D_{i,i+2}= \Delta + 1$ and $\lambda(v_{i-1} v_{i}) \neq \lambda (v_{i}v_{i+1})$, we get that the duration $d(v_i, v_{i+2})$ from vertex $v_i$ to $v_{i+2}$ in $(G, \lambda)$ is at most $\Delta$ 
+and therefore $d(v_i, v_{i+2}) \leq D_{i,i+2}$,
+which still satisfies the conditions of \deltaUpperBound.
+
+From now on we assume that the labeling $\lambda$ of $G$, if it exists, does not label two consecutive edges using the same label.
 
 \begin{proof}
 We are given an instance  $(G,D)$ of \deltaUpperBound\, where $G$ is a path on vertices $v_0, v_1, \dots, v_{n+1}$. 
 Let $\lambda$ be a labeling satisfying this instance.
 We denote with $\tau_i^+$ the waiting time at vertex $v_i$ when passing from vertex $v_{i-1}$ to $v_{i+1}$ in $(G,\lambda)$,
 and with $\tau_i^-$ the waiting time at $v_i$ when traversing through $v_i$ from the other direction (for details see~\cref{def:travelDelays}).
-Since $\tau_i^- = \Delta - \tau_i^+$, we can simplify the above notation and replace $\tau_i^+$ with $\tau_i$, and $\tau_i^-$ with $ \Delta - \tau_i$.
+Since $\tau_i^- = \Delta - \tau_i^+$, 
+\todo[inline]{NK: Done - paragraph above the proof \\
+GM: not correct, they can be both Delta ! THIS MUST BE WRITTEN. THE TRICK IS THAT, FOR A PATH, WE WILL NEVER CHOOSE TO HAVE TWO CONSECUTIVE LABELS EQUAL, SINCE THIS WOULD JUST INCREASE THE FASTEST TIMES ARTIFICIALLY. BUT THIS IS NOT TRUE FOR A GRAPH THAT IS NOT A PATH !}
+we can simplify the above notation and replace $\tau_i^+$ with $\tau_i$, and $\tau_i^-$ with $ \Delta - \tau_i$.
 Therefore, by the definition, it follows that the duration of a fastest path among two vertices $v_i, v_j$ in $(G,\lambda)$, for $i < j$
 is 
 \begin{equation}\label{eq:path-positive}
@@ -418,8 +435,10 @@ is
 \end{equation}
 and for $i > j$ is 
 \begin{equation}\label{eq:path-negative}
-d(v_i,v_j)=\sum_{k = i+1}^{j-1} (\Delta - \tau_k) + 1.
+d(v_i,v_j)=\sum_{k = j-1}^{i+1} (\Delta - \tau_k) + 1.
 \end{equation}
+\todo[inline]{NK: Done \\
+GM: WRONG INDICES: CHANGE IT HERE AND BELOW}
 
 We want to determine the values of all $\tau_i$, and consequently the labeling $\lambda$, such that the distance matrix $D$ is satisfied,
 namely $d(v_i,v_j) \leq D_{i,j}$ for all $v_i,v_j$ in $G$.
@@ -439,11 +458,13 @@ From observing vertices $v_i$ and $v_j$, we get the following two inequalities:
 \end{equation}
 and
 \begin{equation}
-\sum_{k = i+1}^{j-1} (\Delta - \tau_k) + 1
+\sum_{k = j-1}^{i+1} (\Delta - \tau_k) + 1 \leq D_{j,i}
 \Leftrightarrow
-\sum_{k = i+1}^{j-1} - \tau_k \leq  D_{i,j} - 1 -(j-i+1)\Delta .
+\sum_{k = i+1}^{j-1} - \tau_k \leq  D_{j,i} - 1 -(j-i+1)\Delta .
 \end{equation}
-From the condition $\tau_i \in [\Delta]$, we add the inequality $\tau_i \leq \Delta$ and $\tau_i \geq 0$.
+\todo[inline]{NK: Done \\
+GM: MISSING INEQUALITY ON THE LEFT SIDE}
+From the condition $\tau_i \in [\Delta]$, we add the inequality $\tau_i \leq \Delta$ and $\tau_i \geq 1$.
 
 Let us now describe our LP.
 We want to find an assignment of values for each $\tau_i$, that satisfy the inequalities:
@@ -483,6 +504,7 @@ Therefore we can form the following LP, in the canonical form
 \text{and} && t &\geq 0. \\
 \end{aligned}
 \end{equation}
+\todo[inline]{GM: WE DO NOT WANT AN OBJECTIVE FUNCTION, BUT EVEN IF WE WANT, WHY MAX AND NOT MIN? WE WANT HERE FEASIBILITY LP}
 Note that in our case we do not necessarily want to maximize the sum of all $\tau_i$ variables, but just to find an assignment of variables that will satisfy our conditions. Clearly if there is a solution to our system then there is also a solution that will maximize the sum, and vice versa. 
 
 In their work Hoffman and Kruskal~\cite{Hoffman1956Integral} prove that if the coefficient matrix  $A$, from the \cref{eq:paths-LP} is totally unimodular (that is, any square submatrix has determinant $\pm 1$, or $0$), and the vector $b$ is integral,

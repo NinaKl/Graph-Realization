@@ -133,7 +133,7 @@
 
 \bibliographystyle{plainurl}% the mandatory bibstyle
 \usepackage{cite} %order citations by increasing number
-\title{Temporal graph realization from fastest temporal paths} %TODO Please add
+\title{Temporal graph realization from fastest paths} %TODO Please add
 %%%Realizing temporal graphs from fastest travel times
 
 %\titlerunning{Dummy short title} %TODO optional, please use if title is longer than one line
@@ -1242,7 +1242,7 @@ Let $v_i,v_j$ be two arbitrary vertices in $G$, then we know that there exists a
     When $G$ is constructed we run DFS algorithm on it and check that it has no cycles.
     If at any step we encounter a problem, our algorithm stops and returns a negative answer.
 
-    Having computed $G$, our algorithm proceeds as follows. We pick an arbitrary edge $e$ and give it label one, that is, $\lambda(e)=1$. Now we push all edges incident with $e$ into a (initially empty) queue. Now we repeat the following as long as the queue is not empty:
+    Having computed $G$, our algorithm proceeds as follows. We pick an arbitrary edge $f$ and give it label one, that is, $\lambda(f)=1$. Now we push all edges incident with $f$ into a (initially empty) queue. Now we repeat the following as long as the queue is not empty:
 \begin{itemize}
     \item Pop edge $e=\{u,v\}$ from the queue. Since $e$ was pushed into the queue, there is an edge $e'$ incident with $e$ that already obtained a label. Let w.l.o.g.\ $e'=\{v,w\}$. Then we set $\lambda(e)=(\lambda(e')-D_{u,w}+1)\bmod \Delta$.
     \item Push all edges incident with $e$ that have not received a label yet into the queue.
@@ -1304,7 +1304,7 @@ Recall from \cref{sec:treealgo} that the main reason, for which \deltaExact\ is 
     \item between any pair of vertices $v_i$ and $v_j$ in the tree $T$, there is a \emph{unique} path $P$ in $T$ from $v_i$ to $v_j$, and 
     \item in any periodic temporal graph $(T,\lambda,\Delta)$ and any fastest temporal path $P=((e_1,t_1),\ldots,(e_i,t_i),\ldots,(e_j,t_j),\ldots,(e_\ell,t_\ell))$ from $v_1$ to $v_{\ell}$ we have that the sub-path $P'=((e_i,t_i),\ldots,(e_j,t_j))$ is also a fastest temporal path from $v_i$ to $v_j$.
 \end{itemize}
-However, these two nice properties do not hold when the underlying graph is not a tree. For example, in~\cref{fig:ftpExample}, the fastest temporal path from $u$ to $v$ is $P_{u,v}$ (depicted in blue) goes through~$w$, however the sub-path of $P_{u,v}$ that stops at $w$ is not the fastest temporal path from $u$ to $w$. The fastest temporal path from $u$ to $w$ consists only on the direct edge $uw$ (with label 9 and duration 1, depicted in red).
+However, these two nice properties do not hold when the underlying graph is not a tree. For example, in~\cref{fig:ftpExample}, the fastest temporal path from $u$ to $v$ is $P_{u,v}$ (depicted in blue) goes through~$w$, however the sub-path of $P_{u,v}$ that stops at $w$ is not the fastest temporal path from $u$ to $w$. The fastest temporal path from $u$ to $w$ consists only of the single edge $uw$ (with label $9$ and duration $1$, depicted in red).
 %, while the fastest temporal path from $u$ to $v$ contains the four other edges (with labels 1, 3, 5, 7 and duration 7). 
 
 Nevertheless, we prove in this section that we can still solve \deltaExact\ efficiently if the underlying graph is similar to a tree; more specifically we show the following result, which turns out to be non-trivial.
