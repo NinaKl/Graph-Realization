@@ -352,7 +352,7 @@ From all of the above we get the following result.
 
 \section{Upper bounds in the matrix D}
 
-\subsection{The underlying graph is a path}
+\subsection{\deltaUpperBound\ on paths}
 We start by investigating the complexity of the problem \DeltaUpperBoundLong\ in the case when the underlying graph of the input instance is a path.
 
 \begin{comment}
@@ -561,6 +561,108 @@ Therefore the algorithm to build the whole labelling $\lambda$ of $G$
 starts by fixing the label of the first edge $\lambda(v_0v_1) = 1$, and then iteratively determines the label of each consecutive edge.
 At the end we have build a labeling $\lambda$ that satisfies all inequalities from $I_D$, which implies that for all $v_i,v_j \in V(G)$ we have $d(v_i,v_j) \leq D_{i,j}$.
 \end{proof}
+
+\subsection{\deltaUpperBound\ on stars}
+
+Let $G$ be a star graph with a central vertex $s$ and $n$ leaf vertices $v_1, v_2, \dots, v_n$. Then all of the paths in $G$ are of length at most $2$. Since vertices on distance $1$ are connected by a path of duration $1$, we are only interested in the duration of paths between leaf vertices.
+Observe, that a path of distance $2$ is of duration $\Delta + 1$ only in the case when two consecutive edges are labeled with the same label. In any other case, the duration will be  at most $\Delta$.
+With this in mind we first modify the input duration matrix $D$ as follows:
+we iterate through the whole matrix $D$ and in the case when the input value $D_{i,j}  > \Delta + 1$ we set it to $D_{i,j} = \Delta + 1$. 
+Clearly, the newly modified matrix is realizable if and only if the starting, input matrix is realisable.
+
+Let us now fix the following notation.
+For every edge $sv_i$ we denote its label as $\lambda_i$.
+For every pair of vertices $v_i, v_j$ we denote the exact duration from $v_i$ to $v_j$ as $d_{i,j}$, while we always refer to the upper bound, given by the input matrix, as $D_{i,j}$.
+By the definition of the problem we have $d_{i,j} \leq D_{i,j}$.
+\begin{observation}
+Let $v_i,v_j$ be two leaf vertices in a star.
+Then
+\begin{equation}
+    d_{i,j} + d_{j,i} =
+    \begin{cases}
+    \Delta + 2, &\text{ when $\lambda_i \neq \lambda_j$} \\
+    2 \Delta + 2, &\text{ when $\lambda_i = \lambda_j$}
+    \end{cases}.
+\end{equation}
+\end{observation}
+\begin{proof}
+    We distinguish two cases. Suppose first that $\lambda_i \neq \lambda_j$ and w.l.o.g. we can assume also that $\lambda_i < \lambda_j$.
+    Then, by the definition of the duration, we get that
+    \begin{align*}
+        d_{i,j} + d_{j,i} &= (\lambda_j - \lambda_i + 1) + (\Delta + \lambda_i - \lambda_j + 1) \\
+        &= \Delta + 2.
+    \end{align*}
+    Suppose now that $\lambda_i = \lambda_j$ then we get
+    \begin{align*}
+        d_{i,j} + d_{j,i} &= (\Delta + \lambda_j - \lambda_i + 1) + (\Delta + \lambda_i - \lambda_j + 1) \\
+        &= 2\Delta + 2.
+    \end{align*}
+\end{proof}
+For any pair of vertices $v_i,v_j$, where both of the values $D_{i,j}, D_{j,i}$ are $\Delta + 1$, we know that the conditions on path durations will be satisfied regardless of what labels $\lambda_i$ and $\lambda_j$ are. Therefore, for this case, we do not have to satisfy any constraint.
+Using the above observation, for all $i < j$, where the sum $D_{i,j} + D_{j,i} \leq 2\Delta + 2$ we introduce the following new values:
+$D_{i,j} + D_{j,i} = \Delta + 2 + \epsilon_{i,j}$, where $0 \leq \epsilon_{i,j} < \Delta $,
+and 
+$D_{i,j} = d_{i,j} + c_{i,j}$, with $D_{j,i} = d_{j,i} + (\epsilon_{i,j} - c_{i,j})$, where 
+$0 \leq c_{i,j} \leq \epsilon_{i,j}$.
+Intuitively, the value of $c_{i,j}$ tells us how much slack/extra time we have between the moment when the temporal path from $v_i$ to $v_j$ finishes and the upper bound for its duration in the matrix $D$.
+Note that the values $\epsilon_{i,j}$ are uniquely determined already with the values from the input matrix $D$.
+
+\subsubsection*{Suppose that $n = 4$, \ie the star has only $4$ leaves.}
+To start determining the values of labels $\lambda_i$, 
+we can w.l.o.g. first fix $\lambda_1 = 1$.
+Now suppose that $D_{i,j} \leq \Delta$ for all $i,j$ (if there is a case when $D_{i,j} = D_{j,i} = \Delta + 1$ then we do not introduce any of the equalities presented below).
+By the definition of durations of temporal paths,
+for all $i \in \{2,3,4\}$ we get that 
+\begin{equation}\label{eq:lambdai-from1}
+    \lambda_i = d_{1,i} = D_{1,i} - c_{1,i}.
+\end{equation}
+Comparing all other paths of length two we get
+\begin{align}
+    \lambda_3 - \lambda_2 + 1 & \equiv D_{2,3} - c_{2,3} \pmod{\Delta} \label{eq:D23} \\
+    \lambda_4 - \lambda_3 + 1 & \equiv D_{3,4} - c_{3,4} \pmod{\Delta} \label{eq:D34} \\
+    \lambda_4 - \lambda_2 + 1 & \equiv D_{2,4} - c_{2,4} \pmod{\Delta}.\label{eq:D24} 
+\end{align}
+Joining the equations together we get the following
+\begin{align}
+    c_{1,2} + c_{2,3} - c_{1,3} & \equiv D_{1,2} + D_{2,3} - D_{1,3} -1 \pmod{\Delta} \label{eq:c123} \\
+    c_{1,3} + c_{3,4} - c_{1,4} & \equiv D_{1,3} + D_{3,4} - D_{1,4} -1 \pmod{\Delta} \label{eq:c134} \\
+    c_{1,2} + c_{2,4} - c_{1,4} & \equiv D_{1,2} + D_{2,4} - D_{1,4} -1 \pmod{\Delta} \label{eq:c124} \\
+    c_{2,3} + c_{3,4} - c_{2,4} & \equiv D_{2,3} + D_{3,4} - D_{2,4} -1 \pmod{\Delta}. \label{eq:c234}
+\end{align}
+
+For all $i,j,k,\ell \in [n]$ also the following holds
+$
+    d_{i,j} + d_{j,k} \equiv d_{i, \ell} + d_{\ell, k} \pmod \Delta.
+$
+In fact we can generalize the above statement even further and get the consequent.
+\begin{observation}
+    Let $G$ be a star with $n$ leaf vertices $v_1, v_2, \dots, v_n$.
+    Then
+    \begin{equation}\label{eq:d-congruences}
+    d_{i,k} + \ell \equiv d_{i, {j_1}} + d_{j_1, {j_2}} + \cdots + d_{j_{\ell -1}, {j_\ell}} + d_{j_\ell,k} \pmod \Delta,
+    \end{equation}
+    where $\ell \geq 0$ and $i \neq k \neq j_1 \neq j_2 \neq \dots \neq j_\ell$.
+\end{observation}
+%
+\begin{proof}
+    By the definition $d_{i,k} \equiv \lambda_k - \lambda_i + 1 \pmod \Delta$
+    and
+    \begin{align*}
+        & 
+        d_{i, {j_1}} + d_{i, {j_2}} + \cdots + d_{i, {j_\ell}} + d_{j_\ell,k}
+        \equiv \\
+        &
+        (\lambda_{j_1} - \lambda_i + 1) +
+        (\lambda_{j_2} - \lambda_{j_1} + 1) + \cdots +
+        (\lambda_{k} - \lambda_{j_\ell} + 1)
+        \equiv \\
+        &
+        \lambda_k - \lambda_i + \ell + 1 
+        \pmod \Delta.
+    \end{align*}
+    All of the above gives us the equality from \cref{eq:d-congruences}.
+\end{proof}
+
 
 \subsection{\deltaUpperBound\ on general graphs}
 In this section we prove that \deltaUpperBound\ becomes NP-hard when the underlying graph is unrestricted, even when $\Delta$ is small.
