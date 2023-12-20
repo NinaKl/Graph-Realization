@@ -318,7 +318,7 @@ To this end, we introduce and investigate the following problem, capturing the s
 	
 	
 \problemdef{\deltaExactLong\ (\deltaExact)}
-{An $n \times n$ matrix $D$, a positive integer $\Delta$.}
+{An integer $n \times n$ matrix $D$, a positive integer $\Delta$.}
 {Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
 and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is $D_{i,j}$?}
@@ -336,8 +336,8 @@ for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ i
 		\draw (1) -- node[label=above:$10t+7$] {} (2) -- node[label=above:$10t+3$] {}  (3) -- node[label=above:$10t+5$] {} (4) -- node[label=above:$10t+1$] {} (5);	
 	\end{tikzpicture}
 	\caption{An example of a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, where $\Delta = 10$ and the 10-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,10\}$ is as follows: $\lambda(v_1 v_2)=7$, $\lambda(v_2 v_3)=3$, $\lambda(v_3 v_4)=5$, and $\lambda(v_4 v_5)=1$. 
-    Here, the fastest temporal path from $u$ to $v$ traverses the first edge $v_1v_2$ at time $7$, second edge $v_2v_3$ a time $13$, third edge $v_3v_4$ at time $15$ and the last edge $v_4v_5$ at time $21$.
-    This results in the total duration of $15$ for the fastest temporal path from $v_1$ to $v_5$.
+    Here, the fastest temporal path from $v_1$ to $v_2$ traverses the first edge $v_1v_2$ at time $7$, second edge $v_2v_3$ a time $13$, third edge $v_3v_4$ at time $15$ and the last edge $v_4v_5$ at time $21$.
+    This results in the total duration of $21 - 7 + 1 = 15$ for the fastest temporal path from $v_1$ to $v_5$.
 	\label{fig:periodic-example}}
 \end{figure}
 
@@ -670,7 +670,7 @@ Roughly speaking, the edge selection gadget consists of $m$ paths, one for every
 
 
  We have a \emph{verification gadget} for every color $i$. They interact with the edge selection gadgets as follows.
- The verification gadget for color $i$ is connected to all edge selection gadgets that involve color $i$. More specifically, this is connected to every path corresponding to an edge at a position in the path that encodes the endpoint of color $i$ of that edge (again, see \cref{fig:hardness1}) for reference. Intuitively, the distances in the verification gadget are only realizable if the selected edges all have the same endpoint of color $i$.
+ The verification gadget for color $i$ is connected to all edge selection gadgets that involve color $i$. More specifically, this is connected to every path corresponding to an edge at a position in the path that encodes the endpoint of color $i$ of that edge (again, see \cref{fig:hardness1} for reference). Intuitively, the distances in the verification gadget are only realizable if the selected edges all have the same endpoint of color $i$.
 Hence, the distances of all verification gadgets can be realized if and only if the selected edges form a clique. 
 
 Furthermore, we use an \emph{alignment gadget} which, intuitively, ensures that the labelings of all gadgets use the same range of time labels. Finally, we use \emph{connector gadgets} which create shortcuts between all vertex pairs that are irrelevant for the functionality of the other gadgets. This allows us to easily fill in the distance matrix with the corresponding values.
@@ -1373,14 +1373,17 @@ To overcome this difficulty, our algorithm follows this high-level strategy:
     \item From these guesses we deduce fixed relationships between the labels of most of the edges of the graph. 
     \item For all the edges, for which we do not have deduced a label yet, we introduce a \emph{variable}. Using all these variables, we build an Integer Linear Program (ILP). 
     Among the constraints in this ILP we have that, for each of the $O(n^2)$ pairs of vertices $u,v$ in the graph, the duration of one specific temporal path from $u$ to $v$ (according to our guesses) is \emph{equal} to the desired duration $D_{u,v}$, while the duration of each of the other temporal paths from $u$ to $v$ is \emph{at least} $D_{u,v}$.
-    \item By making any of the above guesses, we restrict the solution space for the problem \deltaExact. This restricted solution space coincides with the set of feasible solutions to the resulting ILP. Furthermore, the set of feasible solutions for all constructed ILPs coincide with the set of all solutions to \deltaExact\ (\ie regardless of our guesses). As each ILP can be solved in FPT time with respect to $k$ by Lenstra's Theorem~\cite{Lenstra1983Integer} (the number of variables is upper bounded by a function of $k$), we obtain our FPT algorithm for \deltaExact\ with respect to $k$.
+    \item 
+    %%%By making any of the above guesses, we restrict the solution space for the problem \deltaExact. This restricted solution space coincides with the set of feasible solutions to the resulting ILP. Furthermore, the set of feasible solutions for all constructed ILPs coincide with the set of all solutions to \deltaExact\ (\ie regardless of our guesses). 
+    By making each of the above combinations of guesses, we essentially enumerate all possible ways that our instance of \deltaExact\ has a solution, and for each of these possible ways we create an ILP. That is, our instance of \deltaExact\ has a solution if and only if at least one of these ILPs has a feasible solution.
+    As each ILP can be solved in FPT time with respect to $k$ by Lenstra's Theorem~\cite{Lenstra1983Integer} (the number of variables is upper bounded by a function of $k$), we obtain our FPT algorithm for \deltaExact\ with respect to $k$.
 \end{itemize}
 
 
 We now present the first part of our FPT algorithm, that is, identifying important vertices and guessing information about the fastest temporal paths. A full description of the algorithm is deferred to the Appendix.
 
 \subparagraph{Important vertices.}
-Let $D$ be the input matrix of \deltaExact\, and let $G$ be its underlying graph, on $n$ vertices and $m$ edges.
+Let $D$ be the input matrix of \deltaExact, and let $G$ be its underlying graph, on $n$ vertices and $m$ edges.
 %\subsubsection*{Preprocessing of the input}
 From the underlying graph $G$ of $D$ we first create a graph $G'$ by
 iteratively removing vertices of degree one from $G$,

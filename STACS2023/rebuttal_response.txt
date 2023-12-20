@@ -1,0 +1,42 @@
+We thank all of the reviewers for their detailed analysis of our work. We will take in consideration all of the remarks and incorporate them to our paper before the final submission. We now provide a short response to each of the reviewers separately.
+
+REVIEWER 1
+We appreciate the reviewer's thoughts and would like to gently clarify an aspect of our research problem. 
+We are focused on the fastest temporal paths, rather than the shortest paths. Fastest temporal paths can be thought of as an extension of the concept of shortest paths on (static) graphs, to the setting of temporal graphs, where due to causality, entities and information can "flow" only along sequences of edges whose time-labels are strictly increasing.
+In our context, a fastest temporal path from vertex u to v is defined as the temporal path that uses the smallest possible duration to travel from u to v. This "duration" is essentially the "travel time" from the starting vertex to the ending one. In our example in Figure 1, the journey from v_1 to v_k can begin at time 7 and finish a time 21, which results in a travel time of 15 units and not 21. The initial six units of time before the journey do not contribute to the travel time. To put it into a real-life scenario, consider the example of travelling: we normally do not start measuring the travel duration at 00:00 on the day of travel, but at the specific time we live our home.
+
+REVIEWER 2
+
+#MINOR REMARKS
+- l 230: We will remove the requirement, that every vertex has at least one neighbor of every color. This was accidentally kept from an earlier draft of the reduction, and is not needed in the reduction presented in the paper.
+- Figure 5: One of the degree one neighbors of the bottom left green vertex should be in Z^*, we made a mistake.
+- l 505: The reviewer is right, segment is unique whenever it does not consist of a single edge. We will add this detail. Note that our algorithm remains correct, since there can be at most 1 (constant) such segment between a pair of important vertices. 
+
+
+
+REVIEWER 3
+
+#MAJOR REMARKS
+1)
+The reviewer is correct. In our W[1]-hardness proof we do not explicitly describe the values of the D matrix for all pairs of vertices. We apologise for this oversight and acknowledge that we failed to mention a crucial remark, that the values for durations of fastest paths among non-adjacent vertex pairs, that we do not explicitly specify in the proof, are set to infinity. We will clarify this in the updated version of the paper (in the full version this is mentioned - see Appendix in lines 563-564).
+
+2)
+When discussing the FPT algorithm, we use the term "guessing" where we mean that we enumerate all possible outcomes. We will state this more clearly in the next iteration of the paper.
+
+3)
+At the start of the algorithm, we chose a spanning tree T of G' and use it to determine the set of feedback edges F and set(s) of important vertices. We then "guess" the fastest paths among the determined important vertices in the whole graph G'. This implies that the fastest paths use the edges of our spanning tree T and the feedback edges F. Therefore, the choice of a spanning tree (and consequently the feedback edges F) does not influence the structure of fastest paths.
+
+#MINOR REMARKS
+Considering the graph realization on temporal graphs we agree that there are many different settings one could study, and for each of them argue why it is interesting.
+A nice property in periodic temporal graphs is that a temporal path among each pair of vertices exists (whenever the underlying graph is connected), which is not necessarily true in the non-periodic case. This is why we chose to study the problem on periodic temporal graphs.
+Initiating the study we tried to create the simplest possible setting, which resulted in labeling each edge with exactly one label in a fixed time period.
+We do state that the periodic case with all edges having the same period is the most fundamental case, where the more evolved variant would be graphs with the edges admitting different periods.
+As the reviewer mentioned, there are also other possible definitions of temporal paths that would be worth exploring, such as the shortest or foremost paths, both with the increasing or non-decreasing time labels. We focused on the fastest temporal paths with strictly increasing time labels, as we believe they are the most natural in our setting. 
+
+Answering the questions about the FPT algorithm. 
+- To guess a fastest path among two vertices we produce f(k) guesses. Thus guessing a path among n^2 pairs of vertices would result in f(k)^{n^2} guesses, which is not an FPT running time anymore. 
+We believe this explanation answers also the reasoning behind the number of guesses in lines 496-498. 
+- Let us shortly outline why the set Z^* is necessary. Let u be a clip vertex of a tree T_u, w \in V(T_u) a vertex from Z^*, and v an arbitrary vertex from the graph. Suppose that P is a fastest temporal path from v to u, of duration d that reaches u at time 1 (mod delta), and let Q be another (v,u)-temporal path that reaches u at time 5 (modulo delata) and is of duration d+1.
+Suppose also that the edge uw is labeled with 6. Then the (u,w)-temporal path R_1 = Q \cup {uw} is of smaller duration than R_2 = P \cup {uw}. Which implies that knowing the fastest temporal path from v to u does not provide enough information to uniquely determine the fastest temporal path from v to w (or to any other vertex from T_u).
+Now observe that knowing the label of one edge of the tree T_u results in uniquely determining all other labels, because of the fact that there is a unique (static) path between any two vertices of T_u (we can use our tree algorithm for this part).
+-line 506: one path is indeed reverse of the other.

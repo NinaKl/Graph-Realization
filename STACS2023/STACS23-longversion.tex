@@ -355,8 +355,8 @@ Given a duration matrix~$D$, it is easy to observe that, similarly to the static
 		\draw (1) -- node[label=above:$10t+7$] {} (2) -- node[label=above:$10t+3$] {}  (3) -- node[label=above:$10t+5$] {} (4) -- node[label=above:$10t+1$] {} (5);	
 	\end{tikzpicture}
 	\caption{An example of a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, where $\Delta = 10$ and the 10-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,10\}$ is as follows: $\lambda(v_1 v_2)=7$, $\lambda(v_2 v_3)=3$, $\lambda(v_3 v_4)=5$, and $\lambda(v_4 v_5)=1$. 
-    Here, the fastest temporal path from $u$ to $v$ traverses the first edge $v_1v_2$ at time $7$, second edge $v_2v_3$ a time $13$, third edge $v_3v_4$ at time $15$ and the last edge $v_4v_5$ at time $21$.
-    This results in the total duration of $15$ for the fastest temporal path from $v_1$ to $v_5$.
+    Here, the fastest temporal path from $v_1$ to $v_2$ traverses the first edge $v_1v_2$ at time $7$, second edge $v_2v_3$ a time $13$, third edge $v_3v_4$ at time $15$ and the last edge $v_4v_5$ at time $21$.
+    This results in the total duration of $21 - 7 + 1 = 15$ for the fastest temporal path from $v_1$ to $v_5$.
 	\label{fig:periodic-example}}
 \end{figure}
 
@@ -368,7 +368,7 @@ To this end, we introduce and investigate the following problem, capturing the s
 	
 	
 \problemdef{\deltaExactLong\ (\deltaExact)}
-{An $n \times n$ matrix $D$, a positive integer $\Delta$.}
+{An integer $n \times n$ matrix $D$, a positive integer $\Delta$.}
 {Does there exist a graph $G=(V,E)$ with vertices $\{v_1,\ldots,v_{n}\}$ 
 and a $\Delta$-periodic labeling $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ such that, 
 for every $i,j$, the duration of the fastest temporal path from $v_i$ to $v_j$ in the $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$ is $D_{i,j}$?}
@@ -765,7 +765,7 @@ Roughly speaking, the edge selection gadget consists of $m$ paths, one for every
 
 
  We have a \emph{verification gadget} for every color $i$. They interact with the edge selection gadgets as follows.
- The verification gadget for color $i$ is connected to all edge selection gadgets that involve color $i$. More specifically, this is connected to every path corresponding to an edge at a position in the path that encodes the endpoint of color $i$ of that edge (again, see \cref{fig:hardness1}) for reference. Intuitively, the distances in the verification gadget are only realizable if the selected edges all have the same endpoint of color $i$.
+ The verification gadget for color $i$ is connected to all edge selection gadgets that involve color $i$. More specifically, this is connected to every path corresponding to an edge at a position in the path that encodes the endpoint of color $i$ of that edge (again, see \cref{fig:hardness1} for reference). Intuitively, the distances in the verification gadget are only realizable if the selected edges all have the same endpoint of color $i$.
 Hence, the distances of all verification gadgets can be realized if and only if the selected edges form a clique. 
 
 Furthermore, we use an \emph{alignment gadget} which, intuitively, ensures that the labelings of all gadgets use the same range of time labels. Finally, we use \emph{connector gadgets} which create shortcuts between all vertex pairs that are irrelevant for the functionality of the other gadgets. This allows us to easily fill in the distance matrix with the corresponding values.
@@ -1581,12 +1581,15 @@ To overcome this difficulty, our algorithm follows this high-level strategy:
     \item From these guesses we deduce fixed relationships between the labels of most of the edges of the graph. 
     \item For all the edges, for which we do not have deduced a label yet, we introduce a \emph{variable}. Using all these variables, we build an Integer Linear Program (ILP). 
     Among the constraints in this ILP we have that, for each of the $O(n^2)$ pairs of vertices $u,v$ in the graph, the duration of one specific temporal path from $u$ to $v$ (according to our guesses) is \emph{equal} to the desired duration $D_{u,v}$, while the duration of each of the other temporal paths from $u$ to $v$ is \emph{at least} $D_{u,v}$.
-    \item By making any of the above guesses, we restrict the solution space for the problem \deltaExact. This restricted solution space coincides with the set of feasible solutions to the resulting ILP. Furthermore, the set of feasible solutions for all constructed ILPs coincide with the set of all solutions to \deltaExact\ (\ie regardless of our guesses). As each ILP can be solved in FPT time with respect to $k$ by Lenstra's Theorem~\cite{Lenstra1983Integer} (the number of variables is upper bounded by a function of $k$), we obtain our FPT algorithm for \deltaExact\ with respect to $k$.
+    \item 
+    %%%By making any of the above guesses, we restrict the solution space for the problem \deltaExact. This restricted solution space coincides with the set of feasible solutions to the resulting ILP. Furthermore, the set of feasible solutions for all constructed ILPs coincide with the set of all solutions to \deltaExact\ (\ie regardless of our guesses). 
+    By making each of the above combinations of guesses, we essentially enumerate all possible ways that our instance of \deltaExact\ has a solution, and for each of these possible ways we create an ILP. That is, our instance of \deltaExact\ has a solution if and only if at least one of these ILPs has a feasible solution.
+    As each ILP can be solved in FPT time with respect to $k$ by Lenstra's Theorem~\cite{Lenstra1983Integer} (the number of variables is upper bounded by a function of $k$), we obtain our FPT algorithm for \deltaExact\ with respect to $k$.
 \end{itemize}
 
 
 For the remainder of this section, we fix the following notation. 
-Let $D$ be the input matrix of \deltaExact\ \ie
+Let $D$ be the input matrix of \deltaExact, \ie
 the matrix of the fastest temporal paths between all pairs of $n$ vertices, and let $G$ be its underlying graph, on $n$ vertices and $m$ edges.
 With $F$ we denote a minimum feedback edge set of $G$, and with $k$ the feedback edge number of $G$.
 We are now ready to present our FPT algorithm. For an easier readability we split the description and analysis of the algorithm in five subsections.
@@ -1645,21 +1648,16 @@ We set $U^*$ to be the set of vertices in $V(G') \setminus U$ that are neighbors
 \[U^* = \{v \in V(G') \setminus U  :  u \in U, v \in N(u)\}.\]
 Again, using the tree structure, we get that for any $u \in U$ its neighborhood is of size $|N(u)| \in O(k)$, since every neighbor of $u$ is the first vertex of a (unique) path to another vertex in $U$.
 It follows that $|U^*| \in O(k^2)$.
-From the construction of $Z$ (by iteratively removing vertices of degree one from $G$)
-it follows that $Z$ consists of disjoint trees $T_1, T_2, \dots$.
-For a tree $T_i$ we denote with $u_i$ the vertex in $G'$ that is a neighbor of a vertex in $T_i$, 
-and call it a \emph{clip vertex of the tree $T_i$}.
-It follows that there can be many different trees $T_i$ that are incident to the same clip vertex $u_i \in V(G')$,
-but each tree $T_i$ is incident to exactly one clip vertex $u_i \in V(G')$.
-Since $u_i$ is the only vertex connecting all of the trees $T_i$ incident to it,
-from now on we assume that a tree $T_{u_i}$ in $Z$ is a union of trees on vertices from $V(G) \setminus V(G')$,
-that are clipped at the same vertex $u_i \in V(G')$.
-For each of the trees $T_{u_i}$ in $Z$, we select one vertex $r_i$, that is a neighbor of the clip vertex $u_i$,
-and call it \emph{a representative vertex of the tree $T_{u_i}$}.
-We now define as $Z^*$ the set of representatives $r_i$ of trees $T_i \in Z$,
-where the clip vertex $v_i$ of $T_i$ is a vertex of interest, \ie
+
+
+From the construction of $Z$ (\ie by exhaustively removing vertices of degree one from~$G$), it follows that $Z$ consists of disjoint trees. 
+Each of these trees has a unique neighbor $u_i$ in $G'$. Denote by $T_i$ the tree that is obtained by such a vertex $u_i$ of $G'$ and all the trees of $Z$ that are incident to $u_i$. Then  we call $u_i$ the \emph{clip vertex} of the tree $T_i$. 
+For each of these trees~$T_{i}$, we select an arbitrary vertex $r_i \in Z$ that is a neighbor of the clip vertex $u_i$ in $T_i$,
+and call it the \emph{representative vertex} of the tree $T_{u_i}$. 
+We now define by $Z^*$ the set of all representatives $r_i$ of the trees $T_i$,
+where the clip vertex $u_i$ of $T_i$ is a vertex of interest, \ie
 \[
-Z^* = \{ r_i  :  r_i \in T_i, \text{ where $T_i \in Z$, the clip vertex $u_i$ of $T_i$ is in $U$, and $r_i u_i \in E(G)$}\}.
+Z^* = \{ r_i  :  r_i \in Z \text{ is a neighbor of the clip vertex $u_i$ in the tree $T_i$, and $u_i \in U$}\}.
 \]
 Since there are $O(k)$ vertices of interest, we get that $|Z^*| \in O(k)$.
 Finally, the set of \emph{important vertices} is defined as the set $U \cup U^{\ast} \cup Z^{\ast}$.
@@ -2767,20 +2765,17 @@ once the correct segment is reached, there is a unique path to the desired verte
 Therefore we introduce $k^{O(k)}$ inequality constraints for each pair of vertices $x,y$.
 
 \subparagraph{\boldmath Considering the paths for vertices from $Z$.}
-All of the above is enough to determine the labeling $\lambda$ of $G'$. Now we have to make sure that the labeling considers also the vertices in $Z$ that we initially removed from $G$.
-Remember that removed vertices form disjoint trees in $G$.
-Let us denote $Z$ as the set of disjoint trees, \ie $Z = T_1 \cup T_2 \cup \cdots \cup T_t$, where $T_i$ represents one of the trees.
-Since there is a unique (static) path between any two vertices $z_1, z_2$ in a tree $T_i$,
-it follows that there is also a unique (therefore also the fastest) temporal path between them.
-Thus determining the label of an edge in $T_i$ uniquely determines the labels on all other edges of tree $T_i$.
-Let us describe now how to determine the labels on edges of an arbitrary $T_i \in Z$.
-Recall that for every tree $T_i$ there is a representative vertex $v_i$ of $T_i$,
-and a clip vertex $u_i \in V(G')$, such that $v_i \in N_G(u_i)$.
+All of the above is enough to determine the labeling $\lambda$ of $G'$. Now we have to make sure that the labeling considers also the vertices of~$Z= V(G) \setminus V(G')$ that we initially removed from $G$.
+Recall that $Z$ consists of disjoint trees, and that each of these trees has a unique neighbor $u_i$ in $G'$. 
+Furthermore recall that $T_i$ denotes the tree that is obtained by such a vertex $u_i$ of $G'$ and all the trees of $Z$ that are incident to $u_i$; then $u_i$ is the \emph{clip vertex} of the tree $T_i$. 
+Moreover, for each of these trees~$T_{i}$ we have selected an arbitrary vertex $r_i \in Z$ that is a neighbor of the clip vertex $u_i$ in $T_i$, 
+and $r_i$ is called the \emph{representative vertex} of the tree $T_{u_i}$. 
+Let us now describe now how to determine the labels on the edges of any such tree $T_i$.
 To determine the correct label of all edges of $T_i$ we use the following property.
 \begin{lemma}
-Let $T_i$ be a tree in $Z$ and let $e_i = (u_i,r_i)$ be an edge in $G$, where $u_i \in V(G')$ is a clip vertex of $T_i$ and $r_i \in T_i$ is a representative of $T_i$.
-Let $v \in N_{G'}(u_i)$ be the closest vertex to $r_i$, regarding the values of $D$, \ie  $D_{r_i,v} \leq D_{r_i,w}$ for all $w \in N_{G'}(u)$.
-Then the path $P^*=(r_i,u_i,v)$ has to be the fastest temporal path from $r_i$ to $v$ in $G$.
+Let $T_i$ be a tree having $u_i$ as its clip vertex, and let $e_i = (u_i,r_i)$. 
+Among all neighbors of $u_i$ in $G'$, let $v \in N_{G'}(u_i)$ be the one that is closest vertex to $r_i$ (with respect to the values of $D$), \ie  $D_{r_i,v} \leq D_{r_i,w}$ for all $w \in N_{G'}(u_i)$.
+Then the path $P^*=(r_i,u_i,v)$ is the fastest temporal path from $r_i$ to $v$.
 \end{lemma}
 \begin{proof}
 Suppose that this is not true.
@@ -2811,7 +2806,7 @@ We distinguish the following two cases.
 \begin{enumerate}[(i)]
     \item \label{FPT:z-u-clipnotU}
     The clip vertex $x$ of the tree $T_i$ is not a vertex of interest.
-    Let $x = z_i$ be a part of a segment $S_{w,z} = (w = z_1, z_2, \dots, z_r = z)$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighbouring vertices of $x$, 
+    Let $x = z_i$ be a part of a segment $S_{w,z} = (w = z_1, z_2, \dots, z_r = z)$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighboring vertices of $x$, 
     where $z_{i-1}$ is closer to $w$ in $S_{w,z}$ and 
     $z_{i+1}$ is closer to $z$ in $S_{w,z}$.
     From guess~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}} we know the following fastest paths $z_{2} \rightarrow w \leadsto u$ and %%%TBD
@@ -3035,7 +3030,7 @@ In this section, we present a polynomial-time algorithm for \deltaExact\ when th
 
 Let us observe some properties of the matrix $D$ from \deltaExact, when the underlying graph $G$ of $D$ is a cycle $C_n = \{v_1, v_2, \dots, v_n\}$  on $n$ vertices.
 By the definition, each vertex is on distance $0$ from itself, and therefore also the duration $0$. This corresponds with all diagonal entries of $D$ being $0$.
-Now, let us observe that each vertex $v_i$ has exactly two neighbours in $C_n$, namely $v_{i-1}$ and $v_{i+1}$,
+Now, let us observe that each vertex $v_i$ has exactly two neighbors in $C_n$, namely $v_{i-1}$ and $v_{i+1}$,
 therefore for all $i\in [n]$ we set $D_{i,i-1} = D_{i, i+1} = 1$, where indices are taken modulo $n$.
 This results in the upper and lower diagonal of $D$ having all $1$'s, together with $D_{1,n} = D_{n,1} = 1$.
 The matrix $D$ is of the following form
@@ -3139,7 +3134,7 @@ List $T$ of travel delays has non-empty values at all positions, \ie we have suc
     Let $v_j \in C_n \setminus \{v_i\}$ be an arbitrary vertex. 
     Note that the only time we cannot calculate the travel delay at vertex $v_i$, when considering vertex $v_j$, is in this case when $v_i$ is one of the maximum elements in $D_j$, \ie $v_i$ is a vertex that is on a maximum duration from $v_j$.
     This has to hold for all vertices $v_j$, therefore $v_i$ has to be on the maximum duration from every vertex $v_j \in C_n \setminus \{v_i\}$.
-    It then also has to hold for vertices $v_{i-1}, v_{i+1}$, that are neighbours of $v_i$.
+    It then also has to hold for vertices $v_{i-1}, v_{i+1}$, that are neighbors of $v_i$.
     We know that in this case $d^+(i-1,i) = 1, d^-(i+1,i) = 1$.
     Since $v_i$ has to be on the maximum duration from both of them 
     (\ie is one of the two maximum values $m^1_{i-1}, m^2_{i-1}$ for vertex $v_{i-1}$ and one of the two maximum values $m^1_{i+1}, m^2_{i+1}$ for vertex $v_{i+1}$),
@@ -3190,7 +3185,7 @@ Note, w.l.o.g. we can start determining the labeling $\lambda$ by setting $\lamb
 We have the following two cases.
 \begin{enumerate}[(i)]
     \item The clip vertex $x$ of the tree $T_i$ is not a vertex of interest.
-    Let $x$ be a part of a segment $S_{w,z} = (w, z_1, z_2, \dots, z_r, z)$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighbouring vertices of $x$, 
+    Let $x$ be a part of a segment $S_{w,z} = (w, z_1, z_2, \dots, z_r, z)$, and denote with $z_{i-1}$ and $z_{i+1}$ the neighboring vertices of $x$, 
     where $z_{i-1}$ is closer to $w$ in $S_{w,z}$ and 
     $z_{i+1}$ is closer to $z$ in $S_{w,z}$.
     Similarly as above, we determine two cases.
