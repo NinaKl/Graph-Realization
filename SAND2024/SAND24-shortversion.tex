@@ -1504,7 +1504,7 @@ We guess the following structures.
 	For an example see~\cref{fig:FPT-guessG4}.
 	\item \label{FPT:guess-uToSegmentz2}
 	\textbf{Inner segment guess II}.
-	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$,
+	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$,
 	and let $w \in U \cup Z^*$. %be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a vertex of interest.
 	We want to
 	guess the following fastest temporal paths
@@ -1519,7 +1519,7 @@ We guess the following structures.
 	%Each of the previous partial ILP instances is therefore extended into $O(k^6)$ new ILP instances.
 	\item \label{FPT:guess-splitFromAnotherSegmentAndPaths}
 	\textbf{Split vertex guess I}.
-	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$, and let us
+	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$, and let us
 	fix a vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
 	In the case when $S_{u,v}$ is of length $4$, the fixed vertex $v_i$ is the middle vertex, else we fix an arbitrary vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
 	Let 
