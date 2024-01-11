@@ -1491,7 +1491,7 @@ Let $v_i,v_j$ be two arbitrary vertices in $G$, then we know that there exists a
     \item Pop edge $e=\{u,v\}$ from the queue. Since $e$ was pushed into the queue, there is an edge $e'$ incident with $e$ that already obtained a label. Let w.l.o.g.\ $e'=\{v,w\}$. Then we set $\lambda(e)=(\lambda(e')-D_{u,w}+1)\bmod \Delta$.
     \item Push all edges incident with $e$ that have not received a label yet into the queue.
 \end{itemize}
-When the queue is empty, all edges have received a label. Iterate over all vertex pairs $u,v$ and check whether the fastest path from $u$ to $v$ in $(G,\lambda)$ has duration $D_{u,v}$. If this check succeeds for all vertex pairs, output the labelling $\lambda$, otherwise abort.
+When the queue is empty, all edges have received a label. Iterate over all vertex pairs $u,v$ and check whether the fastest path from $u$ to $v$ in $(G,\lambda)$ has duration $D_{u,v}$. If this check succeeds for all vertex pairs, output the labeling $\lambda$, otherwise abort.
 
 It is easy to see that the described algorithm runs in polynomial time. In the remainder, we proof that it is correct.
 
@@ -1776,7 +1776,7 @@ We guess the following structures.
 	For an example see~\cref{fig:FPT-guessG4}.
 	\item \label{FPT:guess-uToSegmentz2}
 	\textbf{Inner segment guess II}.
-	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$,
+	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$,
 	and let $w \in U \cup Z^*$. %be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a vertex of interest.
 	We want to
 	guess the following fastest temporal paths
@@ -1791,7 +1791,7 @@ We guess the following structures.
 	%Each of the previous partial ILP instances is therefore extended into $O(k^6)$ new ILP instances.
 	\item \label{FPT:guess-splitFromAnotherSegmentAndPaths}
 	\textbf{Split vertex guess I}.
-	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$, and let us
+	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$, and let us
 	fix a vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
 	In the case when $S_{u,v}$ is of length $4$, the fixed vertex $v_i$ is the middle vertex, else we fix an arbitrary vertex $v_i \in S_{u,v} \setminus \{u,v\}$.
 	Let 
@@ -1850,7 +1850,7 @@ We guess the following structures.
 	\item \label{FPT:guess-splitFromUtoAnotherSegment}
 	\textbf{Split vertex guess II}.
 Let $w \in U \cup Z^*$ be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a  of interest,
-    and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a line segment in $G'$.
+    and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$.
     Similarly as above, in guess \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}, we want to guess a split vertex of $w$ in $S_{u,v}$, and the fastest temporal path that reaches it.
     We again have two cases,
     first one where $v_i$ is a unique vertex in $S_{u,v}$ that is furthest away from $w$,
@@ -2050,7 +2050,7 @@ In our analysis we exploit the following greatly, that is why we state is as an 
 \begin{observation}\label{obs:FirstLabelAndDuration}
     Let $P$ be the underlying path of a fastest temporal path from $u$ to $v$, where $e_1, e_p \in P$ are its first and last edge, respectively.
     Then, knowing the label $\lambda (e_1)$ of the first edge and the duration $d(P,\lambda)$ of the temporal path $(P,\lambda)$, we can uniquely determine the label $\lambda (e_p)$ of the last edge of $P$.
-    Symmetrically, knowing $\lambda(e_p)$ and $d(P)$, we can uniquely determine $\lambda(e_1)$.
+    Symmetrically, knowing $\lambda(e_p)$ and $d(P,\lambda)$, we can uniquely determine $\lambda(e_1)$.
 \end{observation}
 The correctness of the above statement follows directly from \cref{def:temporalPath+Duration}. This is because the duration of $(P,\lambda)$ is calculated as the difference of labels of last and first edge plus $1$,
 where the label of last edge is considered with some delta periods,
@@ -2082,11 +2082,12 @@ Then the only way to reach $v_i$ from $u$, that differs from $P$, would be to go
 and then go from $v$ to $v_{p-1}, v_{p-2}, \dots, v_i$.
 But since $P$ is the fastest temporal path from $u$ to $v$, we get that $d(P_2) \geq d(P)$ and $d(P_2 \cup (v,v_{p-1}, \dots, v_i)) > d(P) > d(P_i)$.
 
-Now to label $P$ we use the fact that the fastest temporal path from $u$ to any $v_i \in P$ is a subpath of $P$, 
-therefore we can label each edge using \cref{obs:FirstLabelAndDuration},
-where the duration from $u$ to $v_i$ equals to $D_{u,v_i}$ and 
-we set the label of the first edge of $P$ to be a constant $c\in [\Delta]$.
-This gives us a unique label for each edge of $P$, that depends on the value $\lambda(u v_2)$.
+Now, to determine the labeling $\lambda$ of the path $P$ we use the property that the fastest temporal path from $u$ to any $v_i \in P$ is a subpath of $P$. 
+We set the label of the first edge of $P$ to be a constant $c\in [\Delta]$
+and
+use \cref{obs:FirstLabelAndDuration} to label all remaining edges,
+where the duration from $u$ to $v_i$ equals to $D_{u,v_i}$.
+This gives us a unique labeling $\lambda$ of $P$ where the label of each edge of $P$ is a function of $c$.
 \end{proof}
 
 \begin{lemma}\label{lemma:FPT-uv-LabelAlmostalledges}
@@ -2315,12 +2316,11 @@ with the exception of edges of from $v_{i-1}v_i$, that are incident to $v_i$ in 
 \end{proof}
 
 \begin{lemma}\label{lemma:FPT-noUndeterminedEdgeInSegment}
-Let $S_{u,v}$ be a segment in $G$ of length at least $5$,
-\ie $S_{u,v}= (u=v_1,v_2, \dots, v_p = v)$, where $p > 5$.
-It cannot happen that an inner edge $f = v_i v_{i+1}$ from $S_{u,v} \setminus \{u,v\}$,
-is not a part of any fastest temporal path, of length at least $2$, between vertices in $S_{u,v}$,
-\ie there has to be a pair $v_j, v_{j'} \in S_{u,v}$ \st the fastest temporal path from $v_j$ to $v_{j'}$ passes through edge $f$.
-In the case when $p = 5$ all temporal paths of length $2$ avoid $f$ if and only if $f$ has the same label as both of the edges incident to it.
+Let $S_{u,v}$ be a segment in $G$ of length at least $5$, denoted as $S_{u,v}= (u=v_1,v_2, \dots, v_p = v)$, where $p > 5$.
+It is impossible for an inner edge $f = v_i v_{i+1}$ from $S_{u,v} \setminus \{u,v\}$ (where $f$ is an edge that is not incident to a vertex from $U$)
+to not be a part of any fastest temporal path, of length at least $2$ between vertices in $S_{u,v}$.
+In other words, there must exist a pair $v_j, v_{j'} \in S_{u,v}$ \st the fastest temporal path from $v_j$ to $v_{j'}$ passes through $f$.
+In the case where $p = 5$ all temporal paths of length $2$ avoid $f$ if and only if $f$ has the same label as both of the edges incident to it, while the label of the last remaining edge is a function of $\lambda(f)$.
 \end{lemma}
 
 \begin{proof}
@@ -2353,8 +2353,7 @@ In the case when $p = 5$ all temporal paths of length $2$ avoid $f$ if and only 
     and
     $
     d(v_{1}, v_{3}, P^-) \leq d(v_{1}, v_{3}, Q)
-    $.
-    Let 
+    $. 
     Note that $d(v_{1}, v_{3}, P^+) \geq 1 + d(v_6,v_3,P')$,
     and by the definition $d(v_6,v_3,P') = 1 + (t_4 - t_5)_\Delta + (t_3 - t_4)_\Delta$,
     where $(t_i - t_j)_\Delta$ denotes the difference of two consecutive labels $t_i, t_j$ modulo $\Delta$.
@@ -2398,7 +2397,7 @@ In the case when $p = 5$ all temporal paths of length $2$ avoid $f$ if and only 
     which is impossible.
     
     In the case when $S_{u,v}$ is longer, we would get even bigger number on the left hand side of \cref{eq:FPT-prf-fUnlabeled}, 
-    so we conclude that in all of the above cases, it cannot happen that all fastest paths of length $2$, between vertices in $S{_u,v}$, avoid an edge $f$.
+    so we conclude that in all of the above cases, it cannot happen that all fastest paths of length $2$, between vertices in $S_{u,v}$, avoid edge $f$.
 
     Let us observe now the case when $S_{u,v} = (u=v_1,v_2, v_3, v_4, v_5=v)$ is of length $4$.
     Let $f = v_2 v_3$ (the case with $f = v_3 v_4$ is symmetrical).
@@ -2423,11 +2422,14 @@ In the case when $p = 5$ all temporal paths of length $2$ avoid $f$ if and only 
     \end{split}
     \end{equation*}
     The only case when the equation has a valid solution is when $t_1 = t_2$ and $t_3 \neq t_4$,
-    since in this case the left hands side evaluates to $\Delta + 2$, while the right side evaluates to $2 \Delta$.
-    
+    as in this case the left hand side evaluates to $\Delta + 2$, while the right side evaluates to $2 \Delta$.
+    %
     Repeating the analysis for the fastest paths between $v_2$ and $v_4$,
-    we get that the only valid solution is when $t_2 = t_3$ and $t_1 \neq t_4$.
-    Altogether, we get that $f$ is not in a fastest path of length $2$ in $S_{u,v}$ if and only if the label of edge $f$ is the same as the labels on the edges incident to it, while the last remaining edge has a different label.
+    we conclude that the only valid solution is when $t_2 = t_3$ and $t_1 \neq t_4$.
+    %
+    Altogether, we get that $f$ is not a part of any fastest path of length $2$ in $S_{u,v}$ if and only if the label of edge $f$ is the same as the labels on the edges incident to it, while the last remaining edge has a different label.
+    %
+    Note now that the fastest temporal path from $v_2$ to $v_4$ must first use the edge $u v_2$ and finish with the edge $v_4 v_5$, and it has to be of duration $D_{v_2, v_4}$. Using \cref{lemma:FPT-uv-Labelalledges} we determine the label of the edge $v_4v_5$ as a function of $\lambda(f)$.
 \end{proof}
 
 \subsubsection{Adding constraints and variables to the ILP}\label{sec:constraints}
@@ -2444,7 +2446,7 @@ or are partially determined.
 If the fastest temporal path between two vertices $u,v \in U$ is just an edge $e$, then we treat it as being determined, since it gets assigned a label $\lambda(e)$ with respect to itself.
 All other edges in $G'$ %that were not determined with the respect to some other edge label up to now, or are not partially determined, 
 are called the \emph{not yet determined} edges.
-Note that the not yet determined edges are exactly the ones that are not a part of any fastest temporal path.
+Note that the not yet determined edges are exactly the ones that are not a part of any fastest temporal path between any two vertices in $U$.
 
 Now we want to relate the not yet determined segments with the determined ones.
 Let $S_{u,v}$ and $S_{w,z}$ be two segments.
@@ -2471,7 +2473,7 @@ Each specific calculation takes linear time, since there are $O(k^2)$ segments, 
 At this point
 the edges of every segment are fully determined, 
 with the exception of at most three edges per segment (the first and last edge and potentially one extra somewhere in the segment).
-We will now relate also these edges.
+We now relate also some of these edges.
 More precisely,
 let $S_{u,v} = (u=v_1, v_2, \dots, v_p=v)$ be a segment with three not yet determined edges,
 and let $e_i =v_iv_{i+1}$ denote an edge of $S_{u,v}$.
@@ -2489,7 +2491,7 @@ We proceed as follows.
     \item \label{FPT-guessFTPinSegmentTgroughEdge}
     Let $S_{u,v} = (u=v_1, v_2, \dots, v_p=v)$  be a segment with a not yet determined edge $v_i v_{i+1} = f \in S_{u,v}$. 
     For the fastest temporal paths from $v_{i-1}$ to $v_{i+1}$, from $v_{i+1}$ to $v_{i-1}$, from $v_{i}$ and $v_{i+2}$, and $v_{i+2}$ and $v_{i}$, we guess whether it passes through the edge $f$. 
-    Thus we create $4$ guesses for every such segment $S_{u,v}$, therefore we create $O(k^2)$ new guesses in total, as there are at most $O(k^2)$ segments.
+    Thus we create $4$ guesses for every such segment $S_{u,v}$, and $O(k^2)$ new guesses in total, as there are at most $O(k^2)$ segments.
     % counter for guesses continues
     \setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
@@ -2499,13 +2501,12 @@ with respect to the first edge of the segment (when considering the fastest temp
 and with respect to the last edge of the segment (when considering the fastest temporal path between $v_{i}$ and $v_{i+2}$).
 Both these steps together determine all of the labels of $S_{u,v}$ with respect to just one label.
 Note, from \cref{lemma:FPT-noUndeterminedEdgeInSegment} it follows that the above procedure holds only for segments with at least $5$ edges.
-In the case when segment has $4$ edges, it can happen that the fastest temporal paths from above, do not traverse $f$. But in this case we get that $3$ labels of edges in the segment have to be the same, while one is different,
-which results in a segment with two not yet determined edges.
+In the case when segment has $4$ edges, it can happen that the fastest temporal paths from above, do not traverse $f$. But in this case we know that three edges have the same label, denote it $c$, while the label of the last one is a function of $c$.
 In the case when the segment $S_{u,v}$ has just three, two or one edge, this procedure does not improve anything,
 therefore these segments remain with three, two or one not yet determined edges, respectively.
-From now on we refer to segments of length less than $4$.
+%From now on we refer to segments of length less than $4$.
 
-At this point $G$ is a graph, where each edge $e$ has a value for its label $\lambda(e)$
+At this point $G'$ is a graph, where each edge $e$ has a value for its label $\lambda(e)$
 that depends on (\ie is a function of) some other label $\lambda(f)$ of edge $f$,
 or it depends on no other label.
 We now describe how we create variables and start building our ILP instances. 
