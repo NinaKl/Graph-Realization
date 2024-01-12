@@ -1650,8 +1650,8 @@ Again, using the tree structure, we get that for any $u \in U$ its neighborhood 
 It follows that $|U^*| \in O(k^2)$.
 
 
-From the construction of $Z$ (\ie by exhaustively removing vertices of degree one from~$G$), it follows that $Z$ consists of disjoint trees. 
-Each of these trees has a unique neighbor $u_i$ in $G'$. Denote by $T_i$ the tree that is obtained by such a vertex $u_i$ of $G'$ and all the trees of $Z$ that are incident to $u_i$. Then  we call $u_i$ the \emph{clip vertex} of the tree $T_i$. 
+From the construction of $Z$ (\ie by exhaustively removing vertices of degree one from~$G$), it follows that $G[Z]$ (graph induced in $G$ by $Z$) consists of disjoint trees. 
+Each of these trees has a unique neighbor $u_i$ in $G'$. Denote by $T_i$ the tree that is obtained by such a vertex $u_i$ and all the trees from $G[Z]$ that are incident to $u_i$. Then  we call $u_i$ the \emph{clip vertex} of the tree $T_i$. 
 For each of these trees~$T_{i}$, we select an arbitrary vertex $r_i \in Z$ that is a neighbor of the clip vertex $u_i$ in $T_i$,
 and call it the \emph{representative vertex} of the tree $T_{u_i}$. 
 We now define by $Z^*$ the set of all representatives $r_i$ of the trees $T_i$,
@@ -2501,17 +2501,17 @@ with respect to the first edge of the segment (when considering the fastest temp
 and with respect to the last edge of the segment (when considering the fastest temporal path between $v_{i}$ and $v_{i+2}$).
 Both these steps together determine all of the labels of $S_{u,v}$ with respect to just one label.
 Note, from \cref{lemma:FPT-noUndeterminedEdgeInSegment} it follows that the above procedure holds only for segments with at least $5$ edges.
-In the case when segment has $4$ edges, it can happen that the fastest temporal paths from above, do not traverse $f$. But in this case we know that three edges have the same label, denote it $c$, while the label of the last one is a function of $c$.
-In the case when the segment $S_{u,v}$ has just three, two or one edge, this procedure does not improve anything,
-therefore these segments remain with three, two or one not yet determined edges, respectively.
+In the case when a segment has $4$ edges, it can happen that the fastest temporal paths from above, do not traverse $f$. But in this case, we know that three edges have the same label, denote it $c$, while the label of the last one is a function of $c$.
+In the case when the segment $S_{u,v}$ has just three, two, or one edge, this procedure does not improve anything,
+therefore these segments remain with three, two, or one not yet determined edges, respectively.
 %From now on we refer to segments of length less than $4$.
 
 At this point $G'$ is a graph, where each edge $e$ has a value for its label $\lambda(e)$
 that depends on (\ie is a function of) some other label $\lambda(f)$ of edge $f$,
 or it depends on no other label.
 We now describe how we create variables and start building our ILP instances. 
-For every edge $e$ in $G'$ that is incident to a vertex of interest we create a variable $x_e$ that can have values from $ \{1, 2, \dots, \Delta\}$.
-Besides that we create one variable for each edge that is still not yet determined on a segment.
+For every edge $e$ in $G'$ that is incident to a vertex of interest, we create a variable $x_e$ that can have values from $ \{1, 2, \dots, \Delta\}$.
+Besides that, we create one variable for each edge that is still not yet determined on a segment.
 Since each vertex of interest is incident to at most $k$ edges, and each segment has at most one extra not yet determined edge, we create $O(k^2)$ variables.
 At the end we create our final guess.
 \begin{enumerate}[G-1.]
@@ -2521,7 +2521,7 @@ At the end we create our final guess.
     \item \label{FPT:guessallPermutations}
 We guess the permutation of all $O(k^2)$ variables,
 together with the relation of each variable to the labels of edges incident to these not yet determined edges.
-Namely, for an edge $e$ that is not yet determined, we set its value to $x_e$ and check labels of all of its neighbors,
+Namely, for an edge $e$ that is not yet determined, we set its value to $x_e$ and check the labels of all of its neighbors,
 which are determined by some other label,
 and variables of the not yet determined neighbors,
 and guess if $x_e$ is smaller, equal or bigger than the labels of the edges of its neighbors.
@@ -2768,7 +2768,7 @@ Therefore we introduce $k^{O(k)}$ inequality constraints for each pair of vertic
 \subparagraph{\boldmath Considering the paths for vertices from $Z$.}
 All of the above is enough to determine the labeling $\lambda$ of $G'$. Now we have to make sure that the labeling considers also the vertices of~$Z= V(G) \setminus V(G')$ that we initially removed from $G$.
 Recall that $Z$ consists of disjoint trees, and that each of these trees has a unique neighbor $u_i$ in $G'$. 
-Furthermore recall that $T_i$ denotes the tree that is obtained by such a vertex $u_i$ of $G'$ and all the trees of $Z$ that are incident to $u_i$; then $u_i$ is the \emph{clip vertex} of the tree $T_i$. 
+Furthermore, recall that $T_i$ denotes the tree that is obtained by such a vertex $u_i$ of $G'$ and all the trees of $Z$ that are incident to $u_i$; then $u_i$ is the \emph{clip vertex} of the tree $T_i$. 
 Moreover, for each of these trees~$T_{i}$ we have selected an arbitrary vertex $r_i \in Z$ that is a neighbor of the clip vertex $u_i$ in $T_i$, 
 and $r_i$ is called the \emph{representative vertex} of the tree $T_{u_i}$. 
 Let us now describe now how to determine the labels on the edges of any such tree $T_i$.
@@ -2797,9 +2797,9 @@ We repeat this procedure for all trees in $Z$.
 What remains, is to add the equality (resp.~inequality) constraints for the fastest (resp. non-fastest) temporal paths from vertices of $Z$ to all other vertices in $G'$ and vice versa.
 Note that since 
 there is a unique path between vertices of tree $T_i$, and since all edges of tree $T_i$ are determined with respect to the same label,
-we present the study for cases when we find fastest temporal paths from and to the 
+we present the study for cases when we find the fastest temporal paths from and to the 
 representative vertex $r_i$ of tree $T_i$.
-Each of these paths are then uniquely extended to all vertices in $T_i$.
+Each of these paths is then uniquely extended to all vertices in $T_i$.
 
 \subparagraph{\boldmath Fastest paths from $z \in Z$ to $u \in U$.}
 Let $u\in U$ and $z\in Z$. Then $z$ belongs to a tree $T_i$, and let $r_i$ be the representative of $T_i$. 
