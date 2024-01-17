@@ -304,7 +304,7 @@ As it turns out, the periodic temporal graph realization problem with respect to
 Formally, let $G=(V,E)$ and $\Delta\in \mathbb{N}$, and let $\lambda: E \rightarrow \{1,2,\ldots,\Delta\}$ be an edge-labeling function that assigns to every edge of $G$ exactly one of the labels from $\{1,\ldots,\Delta\}$. 
 Then we denote by $(G,\lambda,\Delta)$ the \emph{$\Delta$-periodic temporal graph} $(G,L)$, where for every edge $e\in E$ we have $L(e)=\{i\Delta + x : i\geq 0, x\in \lambda(e)\}$. 
 In this case we call $\lambda$ a \emph{$\Delta$-periodic labeling} of~$G$; see \cref{fig:periodic-example} for an illustration. 
-When it is clear from the context, we drop $\Delta$ form the notation and 
+When it is clear from the context, we drop $\Delta$ from the notation and 
 we denote the ($\Delta$-periodic) temporal graph by $(G,\lambda)$.
 Given a duration matrix~$D$, it is easy to observe that, similarly to the static case, if $D_{i,j}=1$ then $v_i$ and $v_j$ must be connected by an edge. We call the graph defined by these edges the \emph{underlying graph} of $D$.
 
@@ -1302,7 +1302,7 @@ Assume that $e=\{u,v\}$ and $e'=\{v,w\}$. Since $G$ is a tree there is only one 
 Recall from \cref{sec:treealgo} that the main reason, for which \deltaExact\ is straightforward to solve on trees, is twofold: 
 \begin{itemize}
     \item between any pair of vertices $v_i$ and $v_j$ in the tree $T$, there is a \emph{unique} path $P$ in $T$ from $v_i$ to $v_j$, and 
-    \item in any periodic temporal graph $(T,\lambda,\Delta)$ and any fastest temporal path $P=((e_1,t_1),\ldots,(e_i,t_i),\ldots,(e_j,t_j),\ldots,(e_\ell,t_\ell))$ from $v_1$ to $v_{\ell}$ we have that the sub-path $P'=((e_i,t_i),\ldots,(e_j,t_j))$ is also a fastest temporal path from $v_i$ to $v_j$.
+    \item in any periodic temporal graph $(T,\lambda,\Delta)$ and any fastest temporal path $P=((e_1,t_1),\ldots,(e_i,t_i),\ldots,(e_j,t_j),\ldots,(e_{\ell-1},t_{\ell-1}))$ from $v_1$ to $v_{\ell}$ we have that the sub-path $P'=((e_i,t_i),\ldots,(e_{j-1},t_{j-1}))$ is also a fastest temporal path from $v_i$ to $v_j$.
 \end{itemize}
 However, these two nice properties do not hold when the underlying graph is not a tree. For example, in~\cref{fig:ftpExample}, the fastest temporal path from $u$ to $v$ is $P_{u,v}$ (depicted in blue) goes through~$w$, however the sub-path of $P_{u,v}$ that stops at $w$ is not the fastest temporal path from $u$ to $w$. The fastest temporal path from $u$ to $w$ consists only of the single edge $uw$ (with label $9$ and duration $1$, depicted in red).
 %, while the fastest temporal path from $u$ to $v$ contains the four other edges (with labels 1, 3, 5, 7 and duration 7). 
