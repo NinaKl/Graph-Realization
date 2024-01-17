@@ -1992,7 +1992,7 @@ We say that the label of an edge $f$ is \emph{determined with respect to} the la
 
 We first start with defining certain notions, that will be of use when solving the problem.
 
-    \begin{definition}[Travel delays]
+    \begin{definition}[Travel delays] \label{def:travel-delay}
     Let $(G, \lambda)$ be a temporal graph satisfying conditions of \deltaExact.
     Let $e_1=uv$ and $e_2=vz$ be two incident edges in $G$ with $e_1 \cap e_2 = v$.
     We define the \emph{travel delay} from $u$ to $z$ at vertex $v$, denoted with $\tau_v^{uz}$,
@@ -2571,7 +2571,6 @@ We start by analyzing the case where we want to determine the labels on fastest 
 We proceed in the following way.
 Let $u,v \in U$ be two vertices of interest and let $P_{u,v}$ be the fastest temporal path from $u$ to $v$.
 If $P_{u,v}$ is a segment we determine all the labels of edges of $P_{u,v}$, with respect to the label of the first edge (see \cref{lemma:FPT-uv-Labelalledges}).
-%Note that since we determined labels of all edges, with respect to the first edge, we also know the exact values of waiting times at each inner vertex of $P_{u,v}$, when traversing the path.
 In the case when $P_{u,v}$ is a sequence of $\ell$ segments, we determine all but $\ell - 1$ labels of edges of $P_{u,v}$, with respect to the label of the first edge (see \cref{lemma:FPT-uv-LabelAlmostalledges}).
 We call these $\ell - 1$ edges, \emph{partially determined} edges.
 After repeating this step for all pairs of vertices in $U$,
@@ -2635,11 +2634,11 @@ To determine the desired paths we proceed as follows.
 %
 Note that the condition for segment length at least four comes from~\cref{lemma:FPT-noUndeterminedEdgeInSegment}.
 We now conclude the following.
-\begin{observation}\label{obs:FPT-4determined}
+\begin{corollary}\label{cor:FPT-4determined}
     Let $S_{u,v}$ be an arbitrary segment in $G'$.
-    If $S_{u,v}$ is of length at least $4$ then the labels of all the edges are determined with respect to its first edge.
     If $S_{u,v}$ is of length $3$ or $2$ then it has at most $3$ or $2$ not yet determined edges, respectively.
-\end{observation}
+    If $S_{u,v}$ is of length at least $4$ then the labels of all its edges are determined with respect to the first edge. 
+\end{corollary}
 
 %\paragraph*{Creating variables}
 At this point $G'$ is a graph, where each edge $e$ has a value for its label $\lambda(e)$
@@ -2786,21 +2785,22 @@ We have three possibilities:
 Let $x$ be a vertex in the segment $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$, and let $u\in U$.
 If $S_{w,z}$ is of length $3$ or less, then we already know the fastest temporal path from every vertex in the segment to $u$ 
 (since $S_{w,z}$ has at most $2$ inner vertices, we determined the fastest temporal paths from them to $u$ in guess \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongUandUstar}}}}).
-Assume that $S_{w,z}$ is of length at least $4$.
 
-This implies that there are at most two not yet determined edges in it.
-We can easily compute the vertices $z_i, z_{i+1} \in S_{w,z}\setminus\{w,z\}$ for which the fastest temporal path from $z_i$ to $u$ has the biggest duration.
-Denote with $P^+$ the fastest temporal path of the form $z_2 \rightarrow z \leadsto u$,
-and with $P^-$ the fastest temporal path of the form $z_{r-1} \rightarrow w \leadsto u$.
-Note that we know these paths from guess~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}.
-Then we know that all vertices $z_j$ in $S_{w,z} \setminus\{z_i,z_{i+1}\}$ that are closer to $w$ than $z_i,z_{i+1}$ reach $u$ on the 
-following fastest temporal path $(z_j \rightarrow z_{j-1} \rightarrow \cdots \rightarrow z_2) \cup P^+$ 
+Assume that $S_{w,z}$ is of length at least $4$. From \cref{cor:FPT-4determined} we know that the labels of all the edges in $S_{w,z}$ are determined with respect to the label of the first edge.
+Moreover, this gives us the knowledge of the exact differences among two consecutive edge labels, which is enough to uniquely determine travel delays at all of the inner vertices $z_i \in S_{w,z}$ (see~\cref{def:travel-delay}).
+
+From the matrix $D$ we can easily determine the two vertices $z_i, z_{i+1} \in S_{w,z}\setminus\{w,z\}$ for which the fastest temporal path from $z_i$ to $u$ has the biggest duration.
+Let us denote with $P^+$ the fastest temporal path of the form $z_2 \rightarrow z \leadsto u$,
+and with $P^-$ the fastest temporal path of the form $z_{r-1} \rightarrow w \leadsto u$ 
+(we know these paths from guess~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}).
+%
+It follows that all vertices $z_j$ in $S_{w,z} \setminus\{z_i,z_{i+1}\}$ that are closer to $w$ than $z_i,z_{i+1}$ reach $u$ the fastest using the path $(z_j \rightarrow z_{j-1} \rightarrow \cdots \rightarrow z_2) \cup P^+$ 
 and
-all the vertices $z_j$ in $S_{w,z}\setminus\{z_i,z_{i+1}\}$ that are closer to $z$ than $z_i, z_{i+1}$ reach $u$ on the 
-following fastest temporal path
+all the vertices $z_j$ in $S_{w,z}\setminus\{z_i,z_{i+1}\}$ that are closer to $z$ than $z_i, z_{i+1}$ reach $u$ the fastest using the path
 $(z_j \rightarrow z_{j+1} \rightarrow \cdots \rightarrow z_{r-1}) \cup P^-$.
-Since the first part of fastest paths is unique, and we know the second part is the fastest, the above paths are the fastest temporal paths.
-We still have to determine the fastest temporal paths from $z_i,z_{i+1}$ to $u$.
+Since the first part of the above path is unique, and we know that the second part is the fastest, it follows that these paths indeed represent the fastest temporal paths to $u$.
+%
+What remains to determine is the fastest temporal paths from $z_i,z_{i+1}$ to $u$.
 We distinguish the following two options.
 \begin{enumerate}[(i)]
     \item \label{FPT:equality-fromUtoX-twosplit}
@@ -2812,18 +2812,13 @@ We distinguish the following two options.
     $(z_{i+1} \rightarrow z_{i+2} \rightarrow \cdots \rightarrow z_{r-1}) \cup P^-$.
     \item \label{FPT:equality-fromUtoX-onesplit}
     $z_i = z_{i+1}$, \ie let $z_i$ be the unique vertex, that is furthest away from $u$ in $S_{w,z}$.
-    In this case we have to determine if the fastest temporal path from $z_i$ to $u$, goes first through vertex $z_{i-1}$ (and then through $w$),
-    or it goes first through $z_{i+1}$ (and then through $z$).
+    In this case we have to determine if the fastest temporal path from $z_i$ to $u$, travels first through vertex $z_{i-1}$ (and then through $w$),
+    or it travels first through $z_{i+1}$ (and then through $z$).
     Since we know the values $D_{z_{i-1},u}, D_{z_{i+1},u}$,
-    and since there are at most two not yet determined labels in $S_{w,z}$,
-    we can uniquely determine one of the following
-    waiting times:
-    the waiting time $\tau_{v_{i-1}} ^{v_{i}, v_{i-2}}$ at vertex $v_{i-1}$ when traveling from $v_i$ to $v_{i-2}$,
-    or
-    the waiting time $\tau_{v_{i+1}} ^{v_{i}, v_{i+2}}$ at vertex $v_{i+1}$ when traveling from $v_i$ to $v_{i+2}$.
-    Suppose we know the former (for the latter case, analysis follows similarly).
-    Then we set $c = D_{z_{i-1},u} +  \tau_{v_{i-1}} ^{v_{i}, v_{i-2}}$.
-    We now compare $c$ and the value $D_{z_{i},u}$.
+    and we know the value of the waiting time $\tau_{v_{i-1}} ^{v_{i}, v_{i-2}}$ at vertex $v_{i-1}$ when traveling from $v_i$ to $v_{i-2}$, 
+    we can uniquely determine the desired path.
+    We set $c = D_{z_{i-1},u} +  \tau_{v_{i-1}} ^{v_{i}, v_{i-2}}$
+    and compare $c$ to the value $D_{z_{i},u}$.
     If $c < D_{z_{i},u}$ we conclude that our ILP has no solution and we stop with calculations,
     if $c = D_{z_{i},u}$ then the fastest temporal path from $z_i$ to $u$ is of the form $(z_i \rightarrow z_{i-1} \rightarrow \cdots \rightarrow z_2) \cup P^+$,
     if $c > D_{z_{i},u}$ then the fastest temporal path from $z_i$ to $u$ is of the form $(z_i \rightarrow z_{i+1} \rightarrow \cdots \rightarrow z_{r-1}) \cup P^-$.
@@ -2834,34 +2829,28 @@ we introduce an inequality constraint. Therefore we add $k^{O(k)}$ inequality co
 
 \subparagraph{\boldmath Fastest paths between $x,y\in V(G') \setminus U$.}
 Let $x,y \in V(G') \setminus U$.
-We have two options.
+There are two options.
 \begin{enumerate}[(i)]
     \item Vertices $x,y$ are in the same segment $S_{u,v} = (u,v_1,v_2, \dots, v_p, v)$. 
-    If the length of $S_{u,v}$ is less than $4$ then we know what is the fastest path between vertices.
-    Suppose now that $S_{u,v}$ is of length at least $5$. Then there are at most two not yet determined edges in $S_{u,v}$.
-    
-    W.l.o.g. suppose that $x$ is closer to $u$ in $S_{u,v}$ than $y$.
-    Denote with $x = v_i$.
-    Let $v_k \in S_{u,v}$ be a vertex for which the duration from $v_i$ is the biggest 
-    (note that in the case when we have two such vertices, $v_k$ and $v_{k+1}$ we know exactly what are the fastest paths from $x$ to every vertex in $S_{u,v}$,
-    by similar arguing as in case~(\ref{FPT:equality-fromUtoX-twosplit}) from above, when we were determining the fastest path from $x \in V(G')$ to $u \in U$.
-    Then we know that $D_{x,v_{i+1}} < D_{x,v_{i+2}} < \cdots  < D_{x,v_{k}}$ and $D_{x,v_{i-1}} < D_{x,v_{i-2}} < \cdots  < D_{x,v_{k}}$, where indices are taken modulo $p$.
-    Therefore we know exactly the structure of all the fastest paths from $x$ to every vertex in $S_{u,v}$,
-    with the exception of the fastest path from $x$ to $v_k$.
-    Since there is at most one undetermined edge in $S_{u,v}$,
-    and since we know the exact durations $D_{x,v_{k-1}}$ and $D_{x,v_{k+1}}$,
-    we can determine either
-    $c = D_{x,v_{k-1}} + \tau _ {v_k-1}^{v_k,v_{k-2}}$ or 
-    $c' = D_{x,v_{k+1}} + \tau _ {v_k+1}^{v_k,v_{k+2}}$.
-    We then compare (one of) these values to $D_{x,v_k}$ which then 
-    uniquely determines the fastest temporal path from $x$ to $v_k$
-    (for details see case~(\ref{FPT:equality-fromUtoX-onesplit}) from above, when we were determining the fastest path from $x \in V(G')\setminus U$ to $u \in U$).
+    If the length of $S_{u,v}$ is less than $4$ then we know what is the fastest path between vertices, as $x,y \in U^*$.
+    Suppose now that $S_{u,v}$ is of length at least $4$ and assume that $x$ is closer to $u$ in $S_{u,v}$ than $y$.
+    Then we have two options; either the path from $x$ to $y$ travels only through the edges of $S_{u,v}$, denote such path as $P_{x,y}$,
+    or it is of the form $x \rightarrow v_1 \rightarrow u \leadsto v \rightarrow v_p \rightarrow y$, denote is as $P_{x,y}^*$.
+    Note that we can determined $P_{x,y}^*$ as it is a concatenation of a unique path from $x$ to $v_2$, together with the fastest path from $v_2$ to $v_{p}$, that travels through $u$ and $v$ (we know this path from \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}),
+    and the unique path from $v_p$ to $y$.
+    %
+    Because of \cref{cor:FPT-4determined} we can determine $c = d(P_{x,y}, \lambda)$.
+    If $c > D_{x,y}$ we set the fastest path to be $P_{x,y}^*$,
+    if $c = D_{x,y}$ then the fastest path is $P_{x,y}$, and if 
+    $c < D_{x,y}$ we conclude that our ILP has no solution and we stop with calculations.
+    %
     \item Vertices $x$ and $y$ are in different segments. 
 Let $x$ be a vertex in the segment $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and let $y$ be a vertex in the segment $S_{w,z} = (w=z_1, z_2,z_3, \dots, z_r = z)$.
+%
 By checking the durations of the fastest paths from $x$ to every vertex in $S_{w,z} \setminus \{w,z\}$
 we can determine the vertex $z_i \in S_{w,z} $, for which the duration from $x$ is the biggest.
 Note that if there are two such vertices $z_i$ and $z_{i+1}$, we know exactly how all fastest temporal paths enter $S_{w,z}$ 
-(we use similar arguing as in case~(\ref{FPT:equality-fromUtoX-twosplit}) from above, when we were determining the fastest path from $x \in V(G')$ to $u \in U$).
+(we use similar arguing as in case~(\ref{FPT:equality-fromUtoX-twosplit}) from above, where we were determining the fastest path from $x \in V(G')$ to $u \in U$).
 This implies that the fastest temporal paths from $x$ to all vertices $z_2, z_3, \dots, z_{i-1}$ (resp.~$z_{i+1}, z_{i+2}, \dots, z_{r-1}$)  pass through $w$ (resp.~$z$).
 Now we determine the vertex $v_j \in S_{u,v} \setminus \{u,v\}$,
 for which the value of the durations of the fastest paths from it to the vertex $y$ is the biggest.
@@ -2877,20 +2866,13 @@ $z_{r-1} \rightarrow z \leadsto v \rightarrow v_{p-1}$ and
 $z_{r-1} \rightarrow z \leadsto v \rightarrow v_{p-1}$,
 we can uniquely determine all fastest temporal paths from $x \neq v_j$ to any $y \in S_{u,v} \setminus \{z_i\}$.
 
-We have to now consider the case when 
-$x = v_j$ and $y = z_i$.
-If at least one of the segments $S_{u,v}$ and $S_{w,z}$ is of length more than $5$,
-then this segment has no inner edges with not yet determined labels
-and
-we can uniquely determine the fastest path from~$v_j$ to $z_i$,
+In case when $x = v_j$ and $y = z_i$ and the segments are of length at least $4$, we can uniquely determine the fastest path from~$v_j$ to $z_i$,
 using 
 similar arguing as in case~(\ref{FPT:equality-fromUtoX-onesplit}) from above, when we were determining the fastest path from $x \in V(G')$ to $u \in U$.
-If at least one of them is of length $3$ or less,
+If at least one of the segments is of length $3$ or less,
 we can again uniquely determine the fastest path from~$v_j$ to~$z_i$, using the same approach, 
 and the knowledge of fastest paths to (or from) all vertices of the segment of length~$3$
 (as we guessed them in guess~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}).
-If both segments are of the length $4$, then we know how all vertices reach each other,
-as we guessed the fastest paths in guesses~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}} and~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}.
 \end{enumerate}
 Once the fastest path is determined we introduce the equality constraint for it
 and iterate through all other paths, for which we introduce inequality constraints.
@@ -2904,7 +2886,6 @@ All of the above is enough to determine the labeling $\lambda$ of $G'$. Now we h
 %
 Now we are ready to explain how we determine the fastest temporal paths for all the vertices in $Z$
 
-%%% TODO NKL
 Recall that $G[Z]$ consists of disjoint trees and that each of these trees has a unique neighbor (clip vertex) $v$ in $G'$. We then define the tree $T_v$ in $G[Z \cup \{v\}]$ as the collection of trees from $G[Z]$ with a clip vertex $v$, together with the root $v$. 
 Determining the fastest temporal paths between any two vertices in the same tree is a straightforward process (see~\ref{thm:deltaExact-PolyTimeTrees}), so we exclude this case from our upcoming analysis.
 From \cref{obs:tree-only-neighbors} it follows that knowing temporal paths between any $y  \in V(G') \setminus (T_v)$ and all vertices in the first layer of the tree $T_v$ (\ie children of the root $v$),
