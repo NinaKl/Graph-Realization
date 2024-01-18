@@ -1249,7 +1249,7 @@ Let $v_i,v_j$ be two arbitrary vertices in $G$, then we know that there exists a
 \end{itemize}
 When the queue is empty, all edges have received a label. Iterate over all vertex pairs $u,v$ and check whether the fastest path from $u$ to $v$ in $(G,\lambda)$ has duration $D_{u,v}$. If this check succeeds for all vertex pairs, output the labelling $\lambda$, otherwise abort.
 
-It is easy to see that the described algorithm runs in polynomial time. In the remainder, we proof that it is correct.
+It is easy to see that the described algorithm runs in polynomial time. In the remainder, we prove that it is correct.
 
 $(\Rightarrow)$: Since the algorithm checks at the end whether all durations specified in $D$ are realized by the corresponding fastest paths, we clearly face a yes-instance whenever the algorithm outputs a labeling.
 
@@ -1257,7 +1257,7 @@ $(\Leftarrow)$: Assume we face a yes-instance, then there exists a labeling $\la
 
 We prove that our algorithm computes $\lambda$ by induction on the distance of the labeled edges to $e^\star$, where the distance of two edges $e,e'$ is defined as the length of a shortest path that uses $e$ as its first edge and $e'$ as its last edge.
 
-Initially, our algorithm labels $e^\star$ with one, which equals $\lambda(e^\star)$. Now let $e$ be an edge popped off the queue by the algorithm in some iteration. Let $e'$ be the edge incident with $e$ that already obtained a label and is considered by the algorithm. Since $G$ is a tree, we have that $e'$ is closer to $e^\star$ than $e$. By induction we have that the algorithm labeled $e'$ with $\lambda(e')$. 
+Initially, our algorithm labels $e^\star$ with one, which equals $\lambda(e^\star)$. Now let $e$ be an edge popped off the queue by the algorithm in some iteration, that is on the distance $i$ from $e^\star$. Let $e'$ be the edge incident with $e$ that is on the distance $i-1$ from $e^\star$. Since $G$ is a tree $e'$ has already been considered by the algorithm and thus already has a label. By induction we have that the algorithm labeled $e'$ with $\lambda(e')$. 
 Assume that $e=\{u,v\}$ and $e'=\{v,w\}$. Since $G$ is a tree there is only one path from $u$ to $w$ in $G$ and it uses edges $e$ and $e'$. It follows that $\lambda(e')-\lambda(e)+1=D_{u,w}$ if $\lambda(e')>\lambda(e)$, and $\lambda(e')-\lambda(e)+\Delta+1=D_{u,w}$ otherwise. Our algorithm labels $e$ with $(\lambda(e')-D_{u,w}+1)\bmod \Delta$. It is straightforward to verify that the label of $e$ computed by the algorithm equals $\lambda(e)$. It follows that the algorithm computes $\lambda$.
 %    From now on we can assume that we know that the underlying graph $G$ of $D$ is a tree and we know its structure.
 %    For the next part of the algorithm we use \cref{obs:travel-delays-in-trees}.

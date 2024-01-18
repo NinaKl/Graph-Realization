@@ -1493,7 +1493,7 @@ Let $v_i,v_j$ be two arbitrary vertices in $G$, then we know that there exists a
 \end{itemize}
 When the queue is empty, all edges have received a label. Iterate over all vertex pairs $u,v$ and check whether the fastest path from $u$ to $v$ in $(G,\lambda)$ has duration $D_{u,v}$. If this check succeeds for all vertex pairs, output the labeling $\lambda$, otherwise abort.
 
-It is easy to see that the described algorithm runs in polynomial time. In the remainder, we proof that it is correct.
+It is easy to see that the described algorithm runs in polynomial time. In the remainder, we prove that it is correct.
 
 $(\Rightarrow)$: Since the algorithm checks at the end whether all durations specified in $D$ are realized by the corresponding fastest paths, we clearly face a yes-instance whenever the algorithm outputs a labeling.
 
@@ -1501,7 +1501,7 @@ $(\Leftarrow)$: Assume we face a yes-instance, then there exists a labeling $\la
 
 We prove that our algorithm computes $\lambda$ by induction on the distance of the labeled edges to $e^\star$, where the distance of two edges $e,e'$ is defined as the length of a shortest path that uses $e$ as its first edge and $e'$ as its last edge.
 
-Initially, our algorithm labels $e^\star$ with one, which equals $\lambda(e^\star)$. Now let $e$ be an edge popped off the queue by the algorithm in some iteration. Let $e'$ be the edge incident with $e$ that already obtained a label and is considered by the algorithm. Since $G$ is a tree, we have that $e'$ is closer to $e^\star$ than $e$. By induction we have that the algorithm labeled $e'$ with $\lambda(e')$. 
+Initially, our algorithm labels $e^\star$ with one, which equals $\lambda(e^\star)$. Now let $e$ be an edge popped off the queue by the algorithm in some iteration, that is on the distance $i$ from $e^\star$. Let $e'$ be the edge incident with $e$ that is on the distance $i-1$ from $e^\star$. Since $G$ is a tree $e'$ has already been considered by the algorithm and thus already has a label. By induction we have that the algorithm labeled $e'$ with $\lambda(e')$. 
 Assume that $e=\{u,v\}$ and $e'=\{v,w\}$. Since $G$ is a tree there is only one path from $u$ to $w$ in $G$ and it uses edges $e$ and $e'$. It follows that $\lambda(e')-\lambda(e)+1=D_{u,w}$ if $\lambda(e')>\lambda(e)$, and $\lambda(e')-\lambda(e)+\Delta+1=D_{u,w}$ otherwise. Our algorithm labels $e$ with $(\lambda(e')-D_{u,w}+1)\bmod \Delta$. It is straightforward to verify that the label of $e$ computed by the algorithm equals $\lambda(e)$. It follows that the algorithm computes $\lambda$.
 \end{proof}
 
@@ -1567,8 +1567,10 @@ From \cref{thm:W1wrtFVS} and \cref{thm:FPTwrtFES} we immediately get the followi
 \end{itemize}
 \end{corollary}
 
-Before presenting the structure of our algorithm for \cref{thm:FPTwrtFES}, observe that, in a static graph, the number of paths between two vertices can be upper-bounded by a function $f(k)$ of the feedback edge number $k$ of the graph. 
-Therefore, for any fixed pair of vertices $u$ and $v$, we can ``guess'' the edges of the fastest temporal path from $u$ to $v$. 
+Before presenting the structure of our algorithm for \cref{thm:FPTwrtFES}, observe that, in a static graph, the number of paths between two vertices can be upper-bounded by a function $f(k)$ of the feedback edge number $k$ of the graph.
+This is true as any such path can traverse $0,1,2,\dots k$ feedback edges in different orders.
+Therefore, for any fixed pair of vertices $u$ and $v$, we can ``guess'' the edges of the fastest temporal path from $u$ to $v$
+(by guess we mean enumerate and test all possibilities).
 However, 
 % due to the difficulties illustrated in~\cref{fig:ftpExample}, 
 for an FPT algorithm with respect to $k$, we cannot afford to guess the edges of the fastest temporal path for each of the $O(n^2)$ pairs of vertices. 
@@ -2882,13 +2884,11 @@ once the correct segment is reached, there is a unique path to the desired verte
 Therefore we introduce $k^{O(k)}$ inequality constraints for each pair of vertices $x,y$.
 
 \subparagraph{\boldmath Fastest paths for vertices in $Z$.}
-All of the above is enough to determine the labeling $\lambda$ of $G'$. Now we have to extend the labeling to consider also the vertices of~$Z= V(G) \setminus V(G')$ that we initially removed from $G$.
-%
-Now we are ready to explain how we determine the fastest temporal paths for all the vertices in $Z$
+All of the above is enough to determine the labeling $\lambda$ of $G'$. We have to extend the labeling to consider also the vertices of~$Z= V(G) \setminus V(G')$ that we initially removed from $G$.
 
 Recall that $G[Z]$ consists of disjoint trees and that each of these trees has a unique neighbor (clip vertex) $v$ in $G'$. We then define the tree $T_v$ in $G[Z \cup \{v\}]$ as the collection of trees from $G[Z]$ with a clip vertex $v$, together with the root $v$. 
-Determining the fastest temporal paths between any two vertices in the same tree is a straightforward process (see~\ref{thm:deltaExact-PolyTimeTrees}), so we exclude this case from our upcoming analysis.
-From \cref{obs:tree-only-neighbors} it follows that knowing temporal paths between any $y  \in V(G') \setminus (T_v)$ and all vertices in the first layer of the tree $T_v$ (\ie children of the root $v$),
+Determining the fastest temporal paths between any two vertices in the same tree is a straightforward process (see~\cref{thm:deltaExact-PolyTimeTrees}), therefore we exclude this case from our upcoming analysis.
+From \cref{obs:tree-only-neighbors} it follows that knowing temporal paths between any $y  \in V(G')$ and all vertices in the first layer of the tree $T_v$ (\ie children of the root $v$),
 it is enough to determine the fastest temporal paths between $y$ and all other vertices in $T_v$.
 Therefore,
 in the upcoming analysis, we focus only on the vertices in the first layer of each tree $T_v$.
@@ -2915,8 +2915,8 @@ We distinguish the following two cases.
     we know the fastest temporal path from $r$ to $y$.
     \item \label{FPT:clipNotInU-1}
     The clip vertex $x \in U$ is not a vertex of interest. Then $x = v_j$ is a part of some segment $S_{u,v} = \{u=v_1, v_2, \dots, v_p = v)$, where $j \neq 1 \neq p$.
-    Then all the labels of the tree $T_x$ are determined with respect to the label $\lambda(v_{j-1}v_j)$ and with respect to the label $\lambda(v_{j}v_{j+1})$ (see~\cref{lemma:treeLabels-notInteresting}).
-    From the calculations above and the performed guesses we know the exact structure (\ie the sequence of vertices and edges) of the following paths:
+    Using \cref{lemma:treeLabels-notInteresting} we can determine all the edge labels of $T_x$ with respect to the label $\lambda(v_{j-1}v_j)$ and with respect to the label $\lambda(v_{j}v_{j+1})$.
+    Using the calculations of fastest temporal paths among vertices in $G'$ and the performed guesses we know the exact structure (\ie the sequence of vertices and edges) of the following paths:
     \begin{itemize}
         \item path $P_{xy}^*$ which is the fastest temporal path from the vertex $x$ to the vertex $y$,
         \item path $P_{xy}^u$ which is the fastest temporal path from the vertex $x$ to the vertex $y$, that passes through the vertex $u$,
@@ -2927,25 +2927,21 @@ We distinguish the following two cases.
     \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}).
     This path can then be easily (uniquely) extended to start from $x=v_i$, as there is a unique (temporal) path starting at $x$ and finishing in $u$ or $v$. 
     
-    
-    Before we proceed note also that the labels of the tree are determined with respect to the label of the edge $v_{i-1}v_i$ and $v_{i}v_{i+1}$ (see~\cref{lemma:treeLabels-notInteresting}), therefore we can determine the difference 
-    $|\lambda(v_{i-1} x) - \lambda (r x)|$ and $|\lambda(x v_{i+1}) - \lambda (r x)|$.
-    %
     Suppose now that $P_{xy}^* = P_{xy}^u$.
-    We calculate the value $c = D_{x,y} + |\lambda(v_{i-1} x) - \lambda (r x)|$ and compare it to $D_{r,y}$.
-    There are three options.
+    Since the labels of $T_x$ are determined with respect to $\lambda(v_{i-1} x)$ we can calculate the value $c = D_{x,y} + |\lambda(v_{i-1} x) - \lambda (r x)|$.
+    We then compare $c$ to $D_{r,y}$ and get one of the following three options.
     First $c = D_{r,y}$, in this case the fastest temporal path from $r$ to $y$ uses first the edge $rx$ and then continues to $y$ using the edges and vertices of $P_{xy}^*$.
     Second $c > D_{r,y}$, in this case the fastest temporal path from $r$ to $y$ uses first the edge $rx$ and then continues to $y$ using the vertices and edges of $P_{xy}^v$.
     Third $c < D_{r,y}$, in this case we stop the calculation and return false, as it cannot happen that a temporal path has a smaller duration than the corresponding value in the matrix $D$.
 %
 \end{enumerate}
-In both cases, we introduce the equality constraint for the determined fastest temporal path and inequality constraint for all the other $k^{O(k)}$ paths.
+In both cases, we introduce an equality constraint for the determined fastest temporal path and inequality constraints for all the other $k^{O(k)}$ paths.
 
 \subparagraph{\boldmath Fastest paths from $r \in Z$ to $y \in V(G) \setminus (U \cup U^*)$.}
 The proof in this case is similar to the one above.  We still split the analysis into two parts, one where the clip vertex $x$ of a tree $T_x$ that includes $r$ is in $U$ and one where it is not in $U$.
-The difference is that in some cases we need to also extend the ending part of the path (which can be done uniquely, using the same arguments as in the previous case).
+The difference is that in some cases we need to also extend the ending part of the path (which can be done uniquely, using the same arguments as in the above analysis).
 
-Once we determine the fastest temporal path from $r$ to $y$ we introduce an equality constraint for it, and for all other $k^{O(k)}$ paths we introduce the inequality constraints.
+Once we determine the fastest temporal path from $r$ to $y$ we introduce an equality constraint for it, and for all other $k^{O(k)}$ paths we introduce inequality constraints.
 
 The procedure produces one equality constraint (for the fastest path) and $k^{O(k)}$ inequality constraints.
 
