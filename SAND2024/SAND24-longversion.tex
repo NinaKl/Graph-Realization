@@ -2487,7 +2487,21 @@ Let us now show the following important property of these equivalence classes.
     Define $P_2$ as the second path from $z_2$ to $y$ that first uses the edge $z_1u$ and then the path $P$.
     Similarly, $Q_1$ represents the second path from $z_1$ to $y$ that first uses the edge $z_2u$ and then the path $Q$.
     Our objective is to demonstrate that either $P = Q$ or that $d(P_1, \lambda) = d(Q_1, \lambda)$ (and $d(P_2, \lambda) = d(Q_2, \lambda)$).
-    This implies that $z_1$ and $z_2$ use temporal paths that coincide on the vertices of $V(G) \setminus V(T_u)$ to reach $y$.
+    This implies that $z_1$ and $z_2$ use temporal paths that coincide on the vertices of $V(G) \setminus V(T_u)$ to reach $y$. For an illustration see \cref{fig:FPT-equivClass}.
+
+    \begin{figure}[t]
+	\centering
+	\includegraphics[width=0.6\columnwidth]{fig-fpt-equivClass}
+	\caption{An example of the situation in \cref{lemma:treeEquivClass-intVertices}.
+        We have two paths $Q$ (in blue) and $P$ (in red) from $x$ to $y$.
+        We assume that the fastest temporal path from $z_1$ to $y$ is $P_1 = \{z_1 u\} \cup P$,
+		and the fastest temporal path from $z_2$ to $y$ is $Q_2 = \{z_2 x\} \cup Q$.
+        %
+        We denote with $Q_1 = \{z_1 u\} \cup Q$ another temporal path from $z_1$ to $y$, 
+        with $P_2 = \{z_2 u\} \cup P$ another temporal path from $z_2$ to $y$.
+        The labels on the edges $z_1 x, z_2 x$ are $t_1,t_2$, respectively. Similar, the labels of the last edges of paths $P$ and $Q$ are  $t_p, t_q$, respectively.
+		\label{fig:FPT-equivClass}}
+\end{figure}
     
     Let us set the label of the edge $z_1u$ to $t_1$, the label of $z_2u$ to $t_2$, the label of the last edge of the path $P$ as $t_p$ and the label of the last edge of the path $Q$ as $t_q$.
     By the definition, since $P_1$ represents the fastest temporal path form $z_1$ to $y$ we get that
