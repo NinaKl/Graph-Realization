@@ -21,14 +21,14 @@
 		\node [vert,label=above:$z_1$] (z1) at (-1.5, -1) {};
 		\node [vert,label=below:$y$] (y) at (7, 0) {};
 		
-		\draw (z1) edge[] node[below, yshift=-1mm, text=black] {$t_1$}  (x);
-		\draw (z2) edge[] node[above, yshift= 1mm,  text=black] {$t_2$} (x);
+		\draw (z1) edge[] node[below, pos=0.6, yshift=-1mm, text=black] {$t_1$}  (x);
+		\draw (z2) edge[] node[above, pos=0.6, yshift= 1mm,  text=black] {$t_2$} (x);
 		\draw [red]
-		(x) edge[] [bend right] node[below, text=black] {$P$} 
+		(x) edge[] [bend right] node[below] {$P$} 
 		node[vert, pos=0.87, color=black, fill=white] {}
 		node[pos=0.96,below, text=black] {$t_p$} (y) ;
 		\draw [blue]
-		(x) edge[] [bend left] node[above, text=black] {$Q$} 
+		(x) edge[] [bend left] node[above] {$Q$} 
 		node[vert, pos=0.87, color=black, fill=white] {}
 		node[pos=0.96,above, text=black] {$t_q$}
 		(y) ;
