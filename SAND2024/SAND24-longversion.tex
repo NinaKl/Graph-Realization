@@ -1790,7 +1790,7 @@ We guess the following structures.
 	\setcounter{enumi}{\value{guesscounter}}
 	\item \label{FPT-guessFTPamongv2z2}
 	\textbf{Inner segment guess I}.
-	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be two segments. %,
+	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ and $S_{w,z} = (w=z_1,z_2, \dots, z_r = z)$ be two segments in $G'$. %,
 	%first one between vertices $u,v \in U$, second one between vertices $w, z \in U$.
 	We want to guess the fastest temporal path
 	$v_2 \rightarrow u \leadsto w \rightarrow z_2$. 
@@ -1808,18 +1808,16 @@ We guess the following structures.
 	\item \label{FPT:guess-uToSegmentz2}
 	\textbf{Inner segment guess II}.
 	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$,
-	and let $w \in U \cup Z^*$. %be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a vertex of interest.
+	and let $w \in U \cup Z^*$.
 	We want to
 	guess the following fastest temporal paths
 	$w \leadsto u \rightarrow v_2$, $w \leadsto v \rightarrow v_{p-1} \rightarrow \cdots \rightarrow v_2$,
 	and
 	$v_2 \rightarrow u \leadsto w$, $v_2 \rightarrow v_3 \rightarrow \cdots v \leadsto w$.
 	\\
-	For fixed $S_{u,v}$ and $w \in U \cup Z^*$ we have $k^{O(k)}$ different possible such paths, therefore we make $k^{O(k^4)}$ guesses for these paths.
+	For fixed $S_{u,v}$ and $w \in U \cup Z^*$ we have $k^{O(k)}$ different possible such paths, therefore we make $k^{O(k^5)}$ guesses for these paths.
 	%
 	For an example see~\cref{fig:FPT-guessG5}.
-	%All together we made $O(k^{k^4}$  new guesses for the structure of all of the above mentioned fastest temporal paths.
-	%Each of the previous partial ILP instances is therefore extended into $O(k^6)$ new ILP instances.
 	\item \label{FPT:guess-splitFromAnotherSegmentAndPaths}
 	\textbf{Split vertex guess I}.
 	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$, and let us
@@ -1864,75 +1862,28 @@ We guess the following structures.
 		and 
 		the fastest temporal paths from $v_i$ to $z_{r-1}, z_{r-2}, \dots, z_{j+1}$ go through $z$.
 		In this case we only need to guess the following two fastest temporal paths 
-		$u \leadsto w \rightarrow z_2$
-		and $u \leadsto z \rightarrow z_{r-1}$.
-		Each of this paths we then uniquely extend along the segment $S_{w,z}$ up to the vertex $v_j$, resp.~$v_{j+1}$,
-		which give us fastest temporal paths from $u$ to $v_j$ and from $u$ to $v_{j+1}$.
-		In this case we do not introduce any new guesses, as we have aready guessed 
-		the fastest paths of the form
-		$u \leadsto w \rightarrow z_2$
-		and $u \leadsto z \rightarrow z_{r-1}$
-		(see guess~\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}).
+		$v_i \leadsto w \rightarrow z_2$
+		and $v_i \leadsto z \rightarrow z_{r-1}$.
+		Each of these paths we then uniquely extend along the segment $S_{w,z}$ up to the vertex $z_j$, resp.~$z_{j+1}$,
+		which give us fastest temporal paths from $v_i$ to $z_j$ and from $v_i$ to $z_{j+1}$.
+		In this case we introduce only two more guesses.
+        We repeat this procedure for all pairs of segments. which results in creating $k^{O(k^5)}$ new guesses.
 	\end{enumerate}
-	Note that this case results also in knowing the fastest paths from the vertex $v_i \in S_{u,v}$ to $w,z \in S_{w,z}$ for all segments $S_{w,z}$, 
-	\ie we know the fastest paths from a fixed $v_i \in S_{u,v}$ to all vertices of interest in $U$.
-	%
 	For an example see~\cref{fig:FPT-guessG6}.
 	\item \label{FPT:guess-splitFromUtoAnotherSegment}
 	\textbf{Split vertex guess II}.
-Let $w \in U \cup Z^*$ be either a vertex of interest or a representative vertex of a tree, whose clipped vertex is a  of interest,
+    Let $w \in U \cup Z^*$,
     and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$.
-    Similarly as above, in guess \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}, we want to guess a split vertex of $w$ in $S_{u,v}$, and the fastest temporal path that reaches it.
+    We want to guess a split vertex of $w$ in $S_{u,v}$, and the fastest temporal path that reaches it.
     We again have two cases,
     first one where $v_i$ is a unique vertex in $S_{u,v}$ that is furthest away from $w$,
     and the
     second one where $v_i, v_{i+1}$ are two incident vertices in $S_{u,v}$, that are furthest away from $w$.
-    In first case we know exactly how the fastest paths from $w$ to all vertices $v_j \in S_{u,v} \setminus \{v_i\}$
-    travel through the segment $S_{u,v}$ (\ie either through $u$ or $v$).
-    Therefore we have to guess how the fastest path from $w$ reaches vertex $v_i$,
-    we have two options, either it travels through $u \rightarrow v_2 \rightarrow \cdots \rightarrow v_{i-1} \rightarrow v_i$
-    or 
-    $v \rightarrow v_{p-1} \rightarrow \cdots \rightarrow v_{i+1} \rightarrow v_i$.
-    Which produces two new guesses.
-    In the second case we know exactly how the fastest temporal path reaches $v_i$ and $v_{i+1}$, and consequently all the inner vertices.
-    Therefore no new guesses are needed.
-    Note that the above guesses, together with the guesses from \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}},
-    uniquely determine fastest temporal paths from $w$ to all vertices in $S_{u,v}$ 
-    (this also holds for the case when $w \in S_{u,v}$, \ie $w = u$ or $w = v$).
-    
-    All together we make two guesses for each pair of vertex $w \in U$ and segment $S_{u,v}$.
-    We repeat this for all vertices of interest, and all segments,
-    which produces $k^{O(k^2)}$ new guesses.
+    All together we make two guesses for each pair $w, S_{u,v}$.
+	We repeat this for all vertices in $U \cup Z^*$, and all segments,
+	which produces $k^{O(k^5)}$ new guesses.
     %
     For an example see~\cref{fig:FPT-guessG7}.
- %
-%	Let $w \in U \cup Z^*$ 
-%	and let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$.
-%	We want to guess a split vertex of $w$ in $S_{u,v}$, and the fastest temporal path that reaches it.
-%	We again have two cases,
-%	first one where $v_i$ is a unique vertex in $S_{u,v}$ that is furthest away from $w$,
-%	and the
-%	second one where $v_i, v_{i+1}$ are two incident vertices in $S_{u,v}$, that are furthest away from $w$.
-	\begin{comment}
-	In first case we know exactly how the fastest paths from $w$ to all vertices $v_j \in S_{u,v} \setminus \{v_i\}$
-	travel through the segment $S_{u,v}$ (\ie either through $u$ or $v$).
-	Therefore we have to guess how the fastest path from $w$ reaches vertex $v_i$,
-	we have two options, either it travels through $u \rightarrow v_2 \rightarrow \cdots \rightarrow v_{i-1} \rightarrow v_i$
-	or 
-	$v \rightarrow v_{p-1} \rightarrow \cdots \rightarrow v_{i+1} \rightarrow v_i$.
-	Which produces two new guesses.
-	In the second case we know exactly how the fastest temporal path reaches $v_i$ and $v_{i+1}$, and consequently all the inner vertices.
-	Therefore no new guesses are needed.
-	Note that the above guesses, together with the guesses from G-\ref{FPT:guess-uToSegmentz2},
-	uniquely determine fastest temporal paths from $w$ to all vertices in $S_{u,v}$ 
-	(this also holds for the case when $w \in S_{u,v}$, \ie $w = u$ or $w = v$).
-	\end{comment}
-%	All together we make two guesses for each pair of vertex $w \in U$ and segment $S_{u,v}$.
-%	We repeat this for all vertices of interest, and all segments,
-%	which produces $k^{O(k^2)}$ new guesses.
-	%
-%	For an example see~\cref{fig:FPT-guessG7}.
-%	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to Appendix.
 	% counter for guesses continues
 	\setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
@@ -2523,7 +2474,7 @@ Remember, in the case where the clip vertex $u$ of the tree $T_u$ in $G[Z \cup \
 Let us now show the following important property of these equivalence classes.
 \begin{lemma}\label{lemma:treeEquivClass-intVertices}
     Let $u \in V(G')$ be a clip vertex of the tree $T_u$ in $G[Z \cup \{u\}]$, where $u \in U$,
-    and let $z_1,z_2 \in V(T_v)$ be in the same equivalence class of the tree $T_u$.
+    and let $z_1,z_2 \in V(T_u)$ be in the same equivalence class of the tree $T_u$.
     Then, the fastest temporal paths from $z_1$ and from $z_2$ to any other vertex in $G'$ coincide on the edges in $G'$.
     Similarly, the fastest temporal paths from any other vertex in $G'$ to $z_1$ and to $z_2$ coincide on the edges in $G'$.
 \end{lemma}
