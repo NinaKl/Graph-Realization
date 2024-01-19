@@ -657,8 +657,8 @@ Note that, in contrast to the previous result (\cref{thm:NPhardness}), the reduc
     Furthermore, for all $i<j$ we assume that the edges in $F_{i,j}$ are ordered in some arbitrary but fixed way, that is, $F_{i,j}=\{e^{i,j}_1,e^{i,j}_2,\ldots,e^{i,j}_m\}$.
 
 We give a reduction to a variant of \deltaExact\ where the period $\Delta$ is infinite (that is, the sought temporal graph is not periodic and the labeling function $\lambda : E\rightarrow \mathbb{N}$ maps to the natural numbers) and we allow $D$ to have infinity entries, meaning that the two respective vertices are not temporally connected. 
-Note that, given the matrix $D$, we can easily compute the underlying graph $G$, as follows. Two vertices $v,v'$ are adjacent if $G$ if and only if $D_{v,v'}=1$, as having an edge between $v$ and $v'$ is the only way that there exists a temporal path from $v$ to $v'$ with duration 1. 
-For simplicity of the presentation of the reduction, we describe the underlying graph $G$ (which directly implies the entries of $D$ where $D(v,v')=1$) and then we provide the remaining entries of $D$. 
+Note that, given the matrix $D$, we can easily compute the underlying graph $G$, as follows. Two vertices $v,v'$ are adjacent in $G$ if and only if $D_{v,v'}=1$, as having an edge between $v$ and $v'$ is the only way that there exists a temporal path from $v$ to $v'$ with duration 1. 
+For simplicity of the presentation of the reduction, we describe the underlying graph $G$ (which directly implies the entries of $D$ where $D_{v,v'}=1$) and then we provide the remaining entries of $D$. 
 In the Appendix, we show how to obtain the result for a finite $\Delta$ (by introducing a so-called ``infinity gadget'') and a matrix $D$ of durations of fastest paths which only has finite entries. 
 
 
