@@ -157,7 +157,7 @@ Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported
 \ccsdesc[500]{Mathematics of computing~Discrete mathematics}
 %TODO mandatory: Please choose ACM 2012 classifications from https://dl.acm.org/ccs/ccs_flat.cfm 
 
-\keywords{Temporal graph, periodic temporal labeling, fastest temporal path, graph realization, temporal connectivity.} %TODO mandatory; please add comma-separated list of keywords
+\keywords{Temporal graph, periodic temporal labeling, fastest temporal path, graph realization, temporal connectivity, parameterized complexity.} %TODO mandatory; please add comma-separated list of keywords
 
 \category{} %optional, e.g. invited paper
 
@@ -437,10 +437,11 @@ For simplicity of the presentation (and with a slight abuse of notation) we refe
 That is, we put as indices of the matrix $D$ the corresponding vertices of $G$ whenever it is clear from the context. 
 
 Let $P=(u=v_1, v_2, \dots, v_p=v)$ be a path from $u$ to $v$ in $G$. 
-Recall that, in our paper, every edge has exactly one time label in every period of $\Delta$ consecutive time steps. 
+Recall that, in our paper, every edge has exactly one time label in every period of $\Delta$ consecutive time steps.
 Therefore, as we are only interested in the fastest duration of temporal paths, 
 many times we refer to $(P,\lambda,\Delta)$ as any of the temporal paths from $u=v_1$ to $v=v_p$ along the edges of $P$, which starts at the edge $v_1 v_2$ at time $\lambda(v_1 v_2) + c \Delta$, for some $c\in \mathbb{N}$, and then sequentially visits the rest of the edges of $P$ as early as possible. 
 We denote by $d(P,\lambda,\Delta)$, or simply by $d(P,\lambda)$ when $\Delta$ is clear from the context, the duration of any of the temporal paths $(P,\lambda,\Delta)$; note that they all have the same duration. 
+Whenever we use the term \emph{label of an edge} $e$, we actually mean $\lambda(e) \in [\Delta]$. Note that for a given path $(P, \lambda, \Delta)$ that passes through the edge $e$, the label used by $P$ at that edge is $\lambda(e) + c \Delta$, for some $c \geq 0$.
 Many times we also refer to a path $P=(u=v_1, v_2, \dots, v_p=v)$ from $u$ to $v$ in $G$,
 as a temporal path in $(G,\lambda,\Delta)$,
 where we actually mean that $(P,\lambda,\Delta)$ is a temporal path with $P$ as its underlying (static) path.
@@ -451,6 +452,17 @@ We remark that a fastest path between two vertices in a temporal graph can be co
 %that runs in polynomial-time.
 Hence, given a $\Delta$-periodic temporal graph $(G,\lambda,\Delta)$, we can compute in polynomial-time  the matrix $D$
 which consists of durations of fastest temporal paths among all pairs of vertices in $(G,\lambda,\Delta)$.
+
+We use standard terminology from parameterized complexity theory~\cite{DF13,FG06,Cyg+15}.
+Let~$\Sigma$ denote a
+finite alphabet.
+A parameterized problem~$L\subseteq \{(x,k)\in \Sigma^*\times \mathbb N_0\}$ is a subset of all instances~$(x,k)$ from~$\Sigma^*\times \mathbb N_0$,
+where~$k$ denotes the \emph{parameter}.
+A parameterized problem~$L$ is 
+FPT (\emph{fixed-parameter tractable}) if there is an algorithm that decides every instance~$(x,k)$ for~$L$ in~$f(k)\cdot |x|^{O(1)}$ time,
+where~$f$ is any computable function only depending on the parameter.
+If a parameterized problem $L$ is W[1]-hard, then it is presumably not
+fixed-parameter tractable. 
 
 
 \subparagraph{Organization of the paper.}
@@ -745,12 +757,12 @@ Note that, in contrast to the result of the previous section (\cref{thm:NPhardne
     \deltaExact\ is W[1]-hard when parameterized by the feedback vertex number of the underlying graph.
 \end{theorem}
 \begin{proof}
-    We present a parameterized reduction from the W[1]-hard problem \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval}.  Here, given a $k$-partite graph $H=(W_1\uplus W_2 \uplus\ldots\uplus W_k, F)$, we are asked whether $H$ contains a clique of size $k$. If $w\in W_i$, then we say that $w$ has \emph{color} $i$. W.l.o.g.\ we assume that $|W_1|=|W_2|=\ldots=|W_k|=n$ and that every vertex has at least one neighbor of every color. 
+    We present a parameterized reduction from the W[1]-hard problem \textsc{Multicolored Clique} parameterized by the number of colors~\cite{fellows2009multipleinterval}.  Here, given a $k$-partite graph $H=(W_1\uplus W_2 \uplus\ldots\uplus W_k, F)$, we are asked whether $H$ contains a clique of size $k$. If $w\in W_i$, then we say that $w$ has \emph{color} $i$. W.l.o.g.\ we assume that $|W_1|=|W_2|=\ldots=|W_k|=n$. 
     Furthermore, for all $i\in[k]$, we assume the vertices in $W_i$ are ordered in some arbitrary but fixed way, that is, $W_i=\{w^i_1,w^i_2,\ldots,w^i_n\}$.
     Let $F_{i,j}$ with $i<j$ denote the set of all edges between vertices from $W_i$ and $W_j$. We assume w.l.o.g.\ that $|F_{i,j}|=m$ for all $i< j$  (if not we can add $k \max_{i,j}|F_{i,j}|$ vertices to each $W_i$ and use those to add up to $\max_{i,j}|F_{i,j}|$ additional isolated edges to each $F_{i,j}$).
     Furthermore, for all $i<j$ we assume that the edges in $F_{i,j}$ are ordered in some arbitrary but fixed way, that is, $F_{i,j}=\{e^{i,j}_1,e^{i,j}_2,\ldots,e^{i,j}_m\}$.
 
-We give a reduction to a variant of \deltaExact\ where the period $\Delta$ is infinite (that is, the sought temporal graph is not periodic) and we allow $D$ to have infinity entries, meaning that the two respective vertices are not temporally connected. 
+We give a reduction to a variant of \deltaExact\ where the period $\Delta$ is infinite (that is, the sought temporal graph is not periodic and the labeling function $\lambda : E\rightarrow \mathbb{N}$ maps to the natural numbers) and we allow $D$ to have infinity entries, meaning that the two respective vertices are not temporally connected. 
 Note that, given the matrix $D$, we can easily compute the underlying graph $G$, as follows. Two vertices $v,v'$ are adjacent if $G$ if and only if $D_{v,v'}=1$, as having an edge between $v$ and $v'$ is the only way that there exists a temporal path from $v$ to $v'$ with duration 1. 
 For simplicity of the presentation of the reduction, we describe the underlying graph $G$ (which directly implies the entries of $D$ where $D(v,v')=1$) and then we provide the remaining entries of $D$. 
 At the end of the proof we show how to obtain the result for a finite $\Delta$ and a matrix $D$ of durations of fastest paths, that only has finite entries.
@@ -1502,7 +1514,7 @@ $(\Leftarrow)$: Assume we face a yes-instance, then there exists a labeling $\la
 We prove that our algorithm computes $\lambda$ by induction on the distance of the labeled edges to $e^\star$, where the distance of two edges $e,e'$ is defined as the length of a shortest path that uses $e$ as its first edge and $e'$ as its last edge.
 
 Initially, our algorithm labels $e^\star$ with one, which equals $\lambda(e^\star)$. Now let $e$ be an edge popped off the queue by the algorithm in some iteration, that is on the distance $i$ from $e^\star$. Let $e'$ be the edge incident with $e$ that is on the distance $i-1$ from $e^\star$. Since $G$ is a tree $e'$ has already been considered by the algorithm and thus already has a label. By induction we have that the algorithm labeled $e'$ with $\lambda(e')$. 
-Assume that $e=\{u,v\}$ and $e'=\{v,w\}$. Since $G$ is a tree there is only one path from $u$ to $w$ in $G$ and it uses edges $e$ and $e'$. It follows that $\lambda(e')-\lambda(e)+1=D_{u,w}$ if $\lambda(e')>\lambda(e)$, and $\lambda(e')-\lambda(e)+\Delta+1=D_{u,w}$ otherwise. Our algorithm labels $e$ with $(\lambda(e')-D_{u,w}+1)\bmod \Delta$. It is straightforward to verify that the label of $e$ computed by the algorithm equals $\lambda(e)$. It follows that the algorithm computes $\lambda$.
+Assume that $e=\{u,v\}$ and $e'=\{v,w\}$. Since $G$ is a tree there is only one path from $u$ to $w$ in $G$ and it uses edges $e$ and $e'$. It follows that $\lambda(e')-\lambda(e)+1=D_{u,w}$ if $\lambda(e')>\lambda(e)$, and $\lambda(e')-\lambda(e)+\Delta+1=D_{u,w}$ otherwise. Our algorithm labels $e$ with $(\lambda(e')-D_{u,w}+1)\bmod \Delta$. It is straightforward to verify that the label of $e$ computed by the algorithm equals $\lambda(e)$. It follows that the algorithm computes~$\lambda$.
 \end{proof}
 
 
@@ -1567,7 +1579,7 @@ From \cref{thm:W1wrtFVS} and \cref{thm:FPTwrtFES} we immediately get the followi
 \end{itemize}
 \end{corollary}
 
-Before presenting the structure of our algorithm for \cref{thm:FPTwrtFES}, observe that, in a static graph, the number of paths between two vertices can be upper-bounded by a function $f(k)$ of the feedback edge number $k$ of the graph.
+Before presenting the structure of our algorithm for \cref{thm:FPTwrtFES}, observe that, in a static graph, the number of paths between two vertices can be upper-bounded by a function $f(k)$ of the feedback edge number $k$ of the graph~\cite{casteigts2021finding}.
 This is true as any such path can traverse $0,1,2,\dots k$ feedback edges in different order.
 Therefore, for any fixed pair of vertices $u$ and $v$, we can ``guess'' the edges of the fastest temporal path from $u$ to $v$
 (by guess we mean enumerate and test all possibilities).
@@ -1577,15 +1589,15 @@ for an FPT algorithm with respect to $k$, we cannot afford to guess the edges of
 To overcome this difficulty, our algorithm follows this high-level strategy:
 \begin{itemize}
     %%%\item We perform a preprocessing step by iteratively removing all vertices of degree one.
-    \item We identify a small number $f(k)$ of ``important vertices''; these consist of the sets that we call $U, U^{\ast}, Z^{\ast}$.
+    \item We identify a small number $f(k)$ of ``important vertices''.%; these consist of the sets that we call $U, U^{\ast}, Z^{\ast}$.
     \item For each pair $u,v$ of important vertices, we guess the edges of the fastest temporal path from $u$ to $v$ (and from $v$ to $u$).
     \item From these guesses we can still not deduce the edges of the fastest temporal paths between many pairs of non-important vertices. However, as we prove, it suffices to guess only a small number of specific auxiliary structures (to be defined later).
     \item From these guesses we deduce fixed relationships between the labels of most of the edges of the graph. 
-    \item For all the edges, for which we do not have deduced a label yet, we introduce a \emph{variable}. Using all these variables, we build an Integer Linear Program (ILP). 
-    Among the constraints in this ILP we have that, for each of the $O(n^2)$ pairs of vertices $u,v$ in the graph, the duration of one specific temporal path from $u$ to $v$ (according to our guesses) is \emph{equal} to the desired duration $D_{u,v}$, while the duration of each of the other temporal paths from $u$ to $v$ is \emph{at least} $D_{u,v}$.
+    \item For all the edges, for which we have not deduced a label yet, we introduce a \emph{variable}. With all these variables, we build an Integer Linear Program (ILP). 
+    Among the constraints in this ILP we have that, for each of the $O(n^2)$ pairs of vertices $u,v$ in the graph, the duration of one specific temporal path from $u$ to $v$ (according to our guesses) is \emph{equal} to the desired duration $D_{u,v}$, while the duration of each of the other temporal path from $u$ to $v$ is \emph{at least} $D_{u,v}$.
     \item 
     %%%By making any of the above guesses, we restrict the solution space for the problem \deltaExact. This restricted solution space coincides with the set of feasible solutions to the resulting ILP. Furthermore, the set of feasible solutions for all constructed ILPs coincide with the set of all solutions to \deltaExact\ (\ie regardless of our guesses). 
-    By making each of the above combinations of guesses, we essentially enumerate all possible ways that our instance of \deltaExact\ has a solution, and for each of these possible ways we create an ILP. That is, our instance of \deltaExact\ has a solution if and only if at least one of these ILPs has a feasible solution.
+    Each specific configuration of fastest temporal paths among all pairs of vertices corresponds to a specific ILP instance. By exhaustively trying all possible fastest temporal paths configurations it follows that our instance of \deltaExact\ has a solution if and only if at least one of these ILPs has a feasible solution.
     As each ILP can be solved in FPT time with respect to $k$ by Lenstra's Theorem~\cite{Lenstra1983Integer} (the number of variables is upper bounded by a function of $k$), we obtain our FPT algorithm for \deltaExact\ with respect to $k$.
 \end{itemize}
 
@@ -1627,8 +1639,8 @@ Therefore, we can solve each of our ILP instances in FPT time with respect to $k
 \end{comment}
 %
 
-\subsubsection{Preprocessing of the input}
-From the underlying graph $G$ of $D$ we first create a graph $G'$ by
+\subsubsection{Preprocessing of the input \label{sec:preprocessing-FPT}}
+From the underlying graph $G$ of $D$ we extract a (connected) graph $G'$ by
 iteratively removing vertices of degree one from $G$,
 and denote with 
 \[
@@ -1651,30 +1663,29 @@ We set $U^*$ to be the set of vertices in $V(G') \setminus U$ that are neighbors
 Again, using the tree structure, we get that for any $u \in U$ its neighborhood is of size $|N(u)| \in O(k)$, since every neighbor of $u$ is the first vertex of a (unique) path to another vertex in $U$.
 It follows that $|U^*| \in O(k^2)$.
 
-From the construction of $Z$ (\ie by exhaustively removing vertices of degree one from~$G$), it follows that $G[Z]$ (the graph induced in $G$ by $Z$) consists of disjoint trees. 
-Each of these trees has a unique neighbor $v$ in $G'$. 
+From the construction of~$Z$ (\ie by exhaustively removing vertices of degree one from~$G$), it follows that $G[Z]$ (the graph induced in $G$ by~$Z$) is a forest, \ie consists of disjoint trees. 
+Each of these trees has a unique neighbor $v$ in~$G'$. 
 Denote by $T_v$ the tree obtained by considering such a vertex $v$ and all the trees from $G[Z]$ that are incident to $v$ in $G$. 
 We then refer to $v$ as the \emph{clip vertex} of the tree $T_v$.
-In the case where $v$ is a vertex of interest we define also the set $Z^*_v$ of \emph{representative vertices} of $T_v$, as follows.
-
-\noindent
-We first create an empty set $C_w$ for every vertex $w$ that is a neighbor of $u$ in $G'$.
-We then iterate through every vertex $r$ that is in the first layer of the tree $T_v$ (\ie vertex that is a child of the root $v$ in the tree $T_v$), check the matrix $D$ and find the vertex $w \in N_{G'}(v)$ that is on the smallest duration from $r$.
+In the case where $v$ is a vertex of interest we define also the set $Z^*_v$ of \emph{representative vertices} of~$T_v$, as follows.
+%
+We first create an empty set~$C_w$ for every vertex $w$ that is a neighbor of $v$ in~$G'$.
+We then iterate through every vertex~$r$ that is in the first layer of the tree $T_v$ (\ie vertex that is a child of the root $v$ in the tree~$T_v$), check the matrix $D$ and find the vertex~$w \in N_{G'}(v)$ that is on the smallest duration from $r$.
 In other words, for an $r \in N_{T_v}(v)$ we find $w \in N_{G'}(v)$ such that $D_{r,w} \leq D_{r,w'}$ for all $w' \in  N_{G'}(v)$.
 %
 We add vertex $r$ to $C_w$.
 In the case when there exists also another vertex $w' \in  N_{G'}(v) $ for which $D_{r,w'} = D_{r,w}$, we add $r$ also to the set $C_{w'}$. In fact, in this case $C_{w'} = C_w$.
-At the end we create $|N_{G'}(v)|=O(k)$ sets $C_w$, whose union contains all children of $v$ in $T_v$. 
+At the end we create $|N_{G'}(v)| \in O(k)$ sets $C_w$, whose union contains all children of $v$ in $T_v$. 
 For every two sets $C_w$ and $C_{w'}$, where $w,w'\in N_{G'}(v)$, we have that either $C_w = C_{w'}$, or $C_w \cap C_{w'} = \emptyset$. 
-We call each of these sets $\{C_w : w \in N_{G'}(v)\}$ an \emph{equivalence class} of the tree $T_v$. 
-Now, from each equivalence class $C_w$ we choose an arbitrary vertex $r_w$ and put it into the set $Z^*_v$.
+We interpret each of these sets $\{C_w : w \in N_{G'}(v)\}$ as an \emph{equivalence class} of the neighbors of $v$ in the tree $T_v$. 
+Now, from each equivalence class~$C_w$ we choose an arbitrary vertex $r_w \in C_w$ and put it into the set $Z^*_v$.
 %
-We repeat the above procedure for all trees $T_u$ with the clip vertex $u$ from $U$, and define $Z^*$ as 
+We repeat the above procedure for all trees $T_u$ with the clip vertex $u$ from $U$, and define $Z^*$ as  
 \begin{equation}
     Z^* = \bigcup\limits_{v \in U} Z^*_v.
 \end{equation}
 %
-Since $|U| \in O(k)$ and for each $u \in U$ it holds $|N_{G'}(u)| = O(k)$, we get that $|Z^*| \in O(k^2)$. 
+Since $|U| \in O(k)$ and for each $u \in U$ it holds $|N_{G'}(u)| \in O(k)$, we get that $|Z^*| \in O(k^2)$. 
 %For every vertex in the first layer of the tree $T_u$, where $u \in U$, we check the corresponding values in the matrix $D$ exactly once. Therefore, $Z^*$ is determined in linear time. 
 Finally, the set of \emph{important vertices} is defined as the set $U \cup U^{\ast} \cup Z^{\ast}$.
 For an illustration see \cref{fig:labelingVertices}. Note that determining sets $U, U^*$ and $Z^*$ takes linear time.
@@ -1715,7 +1726,7 @@ Furthermore, it's important to observe that a temporal path in $G'$ between two 
 Moreover, any inner vertex $v_i$ in the segment $S_{u,v}$ ($v_i \in S_{u,v} \setminus \{u,v\}$) is part of precisely two segments: $S_{u,v}$ and $S_{v,u}$.
 Given that we have at most $4k$ interesting vertices in $G'$, we can deduce the following crucial result.
 \begin{corollary}\label{obs:FPT-k2segments}
-    There are at most $O(k^2)$ segments in $G'$.
+    There are $O(k^2)$ segments in $G'$.
 \end{corollary}
 %TODO: one reviewer asked how we get this number? (number of paths)
 %For a pair $u,v$ of vertices in $U$, there are $O(k!)=O(k^k)$ possible paths in $G'$ between them.  
@@ -2508,13 +2519,13 @@ Furthermore, using the algorithm for trees (see \cref{thm:deltaExact-PolyTimeTre
     %
 \end{proof}
 
-Remember, in the case where the clip vertex $u$ of the tree $T_u$ in $G[Z \cup \{u\}]$ is a vertex of interest, we split the vertices in the first layer of $T_u$ into at most $|N_{G'}(u)|$ equivalence classes.
+Remember, in the case where the clip vertex $u$ of the tree $T_u$ in $G[Z \cup \{u\}]$ is a vertex of interest, we split the vertices in the first layer of $T_u$ into at most $|N_{G'}(u)|$ equivalence classes (as explained in \cref{sec:preprocessing-FPT}).
 Let us now show the following important property of these equivalence classes.
 \begin{lemma}\label{lemma:treeEquivClass-intVertices}
     Let $u \in V(G')$ be a clip vertex of the tree $T_u$ in $G[Z \cup \{u\}]$, where $u \in U$,
     and let $z_1,z_2 \in V(T_v)$ be in the same equivalence class of the tree $T_u$.
-    Then, the fastest temporal paths from $z_1$ and from $z_2$ to any other vertex in $G'$ coincide on the edges of $G'$.
-    Similarly, the fastest temporal paths from any other vertex in $G'$ to $z_1$ and to $z_2$ coincide on the edges of $G'$.
+    Then, the fastest temporal paths from $z_1$ and from $z_2$ to any other vertex in $G'$ coincide on the edges in $G'$.
+    Similarly, the fastest temporal paths from any other vertex in $G'$ to $z_1$ and to $z_2$ coincide on the edges in $G'$.
 \end{lemma}
 %
 \begin{proof}
@@ -2531,7 +2542,7 @@ Let us now show the following important property of these equivalence classes.
     By the definition, since $P_1$ represents the fastest temporal path form $z_1$ to $y$ we get that
         $D_{z_1,y} = t_p - t_1 + c_p \Delta$, where $c_p \in \mathbb{N}$.
     Similarly, for the path $Q_2$ it holds that $D_{z_2,y} = t_q - t_2 + c_q \Delta$ with $c_q \in \mathbb{N}$.
-    Note that since $z_1$ and $z_2$ are in the same equivalence class, it holds that the first label of $P$ and the first label of $Q$ have to be bigger than $t_1,t_2$. Meaning, that the difference between the first label of $P$ (resp.~$Q$) with $t_1$ and $t_2$ is smaller than $\Delta$,
+    Note that the difference between the first label of $P$ (resp.~$Q$) with $t_1$ and $t_2$ is smaller than $\Delta$,
     or the difference (with at least one $t_1,t_2$) is $\Delta$ if and only if the first label of $P$ and the first label of $Q$ are the same. 
     This observation is crucial in our arguing below.
     
