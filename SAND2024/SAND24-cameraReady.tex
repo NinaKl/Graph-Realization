@@ -1,4 +1,4 @@
-\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate,anonymous]{lipics-v2021}
+\documentclass[a4paper,UKenglish,cleveref, autoref, thm-restate]{lipics-v2021}
 %This is a template for producing LIPIcs articles. 
 %See lipics-v2021-authors-guidelines.pdf for further information.
 %for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
@@ -189,15 +189,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
 \begin{document}
 \maketitle
 
@@ -219,8 +210,8 @@ We show that our problem is W[1]-hard when parameterized by the \emph{feedback v
 
 
 
-\vspace{0,2cm}
-\noindent \textbf{Due to lack of space, the full paper with all proofs is attached in a clearly marked Appendix to be read at the discretion of the Program Committee.}
+%\vspace{0,2cm}
+%\noindent \textbf{Due to lack of space, the full paper with all proofs is attached in a clearly marked Appendix to be read at the discretion of the Program Committee.}
 \end{abstract}
 
 %\clearpage
@@ -283,12 +274,11 @@ only if a train is scheduled to run on the respective rail segment at time $t$~\
 Similarly, a satellite, which makes pre-determined periodic movements, can establish a communication link (\ie a temporal edge) with another satellite whenever they are sufficiently close to each other; the existence of these communication links is also periodic. 
 In a railway (resp.~satellite) network, a fastest temporal path from $u$ to $v$ represents the fastest railway connection between two stations 
 (resp.~the quickest communication delay between two moving satellites). 
-Furthermore, periodicity appears also in (the otherwise quite complex) social networks which describe the dynamics of people meeting~\cite{snapnets,sapiezynski2015tracking}, as every person individually follows mostly a daily routine~\cite{Arrighi2023Multi}. 
+Furthermore, periodicity appears also in (the otherwise quite complex) social networks which describe the dynamics of people meeting~\cite{snapnets,sapiezynski2015tracking}, as every person individually follows mostly a weekly routine.%~\cite{Arrighi2023Multi}. 
 
-
-Although periodic temporal graphs have already been studied 
+Expanding the work on periodic temporal graphs
 (see~\cite[Class 8]{casteigts2012time} and~\cite{Arrighi2023Multi,ErlebachS20,morawietz2021timecop,morawietz2020timecop}), 
-we make here the first attempt to understand the complexity of a graph realization problem in the context of temporal graphs. 
+our study represents the first attempt to understand the complexity of a graph realization problem in the context of temporal graphs. 
 Therefore, we focus in this paper on the most fundamental case, where all edges have the same period $\Delta$ 
 (while in the more general case, each edge $e$ in the underlying graph has a period $\Delta_e$).
 As it turns out, the periodic temporal graph realization problem with respect to a given $n \times n$ matrix $D$ of the fastest duration times has a very different computational complexity behavior than the classic graph realization problem with respect to shortest path distances in static graphs. 
@@ -366,8 +356,7 @@ This naturally leads us to build one Integer Linear Program (ILP) for each of th
 
 
 The above results provide a fairly complete picture of the parameterized computational complexity of \deltaExact\ with respect to structural parameters of the underlying graph which measure ``tree-likeness''. To obtain our results, we prove several properties of fastest temporal paths, which may be of independent interest. 
-Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the Appendix.
-
+Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the full version on arXiv \cite{fullPaper}.
 
 \subparagraph{Related work.} Graph realization problems on static graphs have been studied since the 1960s. We provide an overview of the literature in the introduction. 
 To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. However, many other connectivity-related problems have been studied in the temporal setting~\cite{Mertzios-transitivity21,Akrida-explorer-21,enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22,FuchsleMNR22}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart.
@@ -387,6 +376,20 @@ can be that the edge changes are adversarial or random (while obeying some const
 and therefore they are not necessarily known in advance~\cite{Kuhn2011Dynamic}. 
 
 
+\subparagraph{Problem setting.}
+We would like to point out that the choice of our setting is not unique. There exist different variations of the problem, where each one gives interesting motivation to be considered. We now briefly mention a few of them, together with some of the potential obstacles one could encounter when studying them.
+As we already mentioned, the periodic temporal graphs can also be defined as temporal graphs where each edge $e$ admits a different period $\Delta_e$, or/and where each edge $e$ admits more than one time label per period $\Delta_e$.
+Because of simplicity, we focus only on a case with one label per edge and a common period $\Delta$. This should give us a good understanding of the problem and potential starting points for the research of the extended versions.
+In another setting, one could define the sought temporal paths differently.
+First of all, we could be looking for ``non-stric'' temporal paths. These are paths with non-decreasing consecutive labels (\ie a path can traverse more than a single edge in one time step).
+One of the potential drawbacks of this scenario is that the input matrix does not uniquely describe the underlying graph.
+In the next modification, one could also consider foremost or shortest temporal paths, instead of the fastest temporal paths.
+We believe that the complexity of the problem for these two variations does not differ significantly from the problem discussed in this paper.
+Some of our proof techniques and approaches can be easily adaptable to these modified settings and therefore certain results would carry over (for example, the NP-hardness).
+Lastly, the big question is why consider periodic temporal graphs and not simply just temporal graphs.
+One of the reasons is the fact that a periodic temporal graph is temporally connected whenever its underlying graph is connected, and therefore the input matrix $D$ consists of all finite values (which is also true in the case of realizing ``static'' graphs).
+Building upon this property, a periodic temporal graph with one label per edge is always temporally connected, while the same does not hold for a non-periodic temporal graph.
+Also for the case of non-periodic temporal graphs, some of our results and approaches carry over. For example, the NP-hardness and W[1]-hardness parameterized by the feedback vertex number of the underlying graph can be easily modified for the non-periodic temporal graph setting.
 
 
 \subparagraph{Preliminaries and notation.}
@@ -658,26 +661,37 @@ Note that, in contrast to the previous result (\cref{thm:NPhardness}), the reduc
 We give a reduction to a variant of \deltaExact\ where the period $\Delta$ is infinite (that is, the sought temporal graph is not periodic and the labeling function $\lambda : E\rightarrow \mathbb{N}$ maps to the natural numbers) and we allow $D$ to have infinity entries, meaning that the two respective vertices are not temporally connected. 
 Note that, given the matrix $D$, we can easily compute the underlying graph $G$, as follows. Two vertices $v,v'$ are adjacent in $G$ if and only if $D_{v,v'}=1$, as having an edge between $v$ and $v'$ is the only way that there exists a temporal path from $v$ to $v'$ with duration 1. 
 For simplicity of the presentation of the reduction, we describe the underlying graph $G$ (which directly implies the entries of $D$ where $D_{v,v'}=1$) and then we provide the remaining entries of $D$. 
-In the Appendix, we show how to obtain the result for a finite $\Delta$ (by introducing a so-called ``infinity gadget'') and a matrix $D$ of durations of fastest paths which only has finite entries. 
+In the full paper \cite{fullPaper}, we show how to obtain the result for a finite $\Delta$ (by introducing a so-called ``infinity gadget'') and a matrix $D$ of durations of fastest paths which only has finite entries. 
 
-
+\begin{figure}%[t]
+\noindent\makebox[\textwidth]{
+\centering
+\includegraphics{fig-W1-reduction}
+    }
+    \caption{Illustration of part of the underlying graph $G$ and a possible labeling. Edges incident with vertices $\hat{v}_1,\hat{v}_2$ of connector gadgets are omitted. Gray vertices form a feedback vertex set.
+    The double line connections, between a vertex $v_{i-1}^j$ in the verification gadget, and $u_1^3$ in the edge selection gadget, 
+    and, between a vertex $u_2^3$ in the edge selection gadget, and $v_{i}^j$ in the verification gadget,
+    consist of $5n$ vertices $a_1^{j,i,3},a_2^{j,i,3},\dots,a_{5n}^{j,i,3}$ 
+    and $b_1^{j,i,3},b_2^{j,i,3},\dots,b_{5n}^{j,i,3}$, respectively.
+    }\label{fig:hardness1}
+\end{figure}
 
 
 In the following, we give an informal description of the main ideas of the reduction. The construction uses several gadgets, where the main ones are an ``edge selection gadget'' and a ``verification gadget''.
 
 
 Every \emph{edge selection gadget} is associated with a color combination $i,j$ in the \textsc{Multicolored Clique} instance, and its main purpose is to ``select'' an edge connecting a vertex from color $i$ with a vertex from color $j$.
-Roughly speaking, the edge selection gadget consists of $m$ paths, one for every edge in $F_{i,j}$ (see Figure~3 in the Appendix for reference). The distance matrix $D$ will enforce that the labels on those paths effectively order them temporally, that is, in particular, the labels on one of the paths will be smaller than the labels on all other paths. The edge corresponding to this path is selected.
+Roughly speaking, the edge selection gadget consists of $m$ paths, one for every edge in $F_{i,j}$ (see \cref{fig:hardness1} for reference). The distance matrix $D$ will enforce that the labels on those paths effectively order them temporally, that is, in particular, the labels on one of the paths will be smaller than the labels on all other paths. The edge corresponding to this path is selected.
 
 
  We have a \emph{verification gadget} for every color $i$. They interact with the edge selection gadgets as follows.
- The verification gadget for color $i$ is connected to all edge selection gadgets that involve color $i$. More specifically, this is connected to every path corresponding to an edge at a position in the path that encodes the endpoint of color $i$ of that edge (again, see Figure~3 in the Appendix for reference). Intuitively, the distances in the verification gadget are only realizable if the selected edges all have the same endpoint of color $i$.
+ The verification gadget for color $i$ is connected to all edge selection gadgets that involve color $i$. More specifically, this is connected to every path corresponding to an edge at a position in the path that encodes the endpoint of color $i$ of that edge (again, see \cref{fig:hardness1} for reference). Intuitively, the distances in the verification gadget are only realizable if the selected edges all have the same endpoint of color $i$.
 Hence, the distances of all verification gadgets can be realized if and only if the selected edges form a clique. 
 
 Furthermore, we use an \emph{alignment gadget} which, intuitively, ensures that the labelings of all gadgets use the same range of time labels. Finally, we use \emph{connector gadgets} which create shortcuts between all vertex pairs that are irrelevant for the functionality of the other gadgets. This allows us to easily fill in the distance matrix with the corresponding values.
 We ensure that all our gadgets have a constant feedback vertex number, hence the overall feedback vertex number is quadratic in the number of colors of the \textsc{Multicolored Clique} instance and we get the parameterized hardness result.
 
-In the following, for every gadget, we give a formal description of the underlying graph of this gadget (\ie not the complete distance sub-matrix of the gadget). Due to space constraints, we defer the description of the distance matrix $D$ and the formal proof of correctness for the reduction to the Appendix.
+In the following, for every gadget, we give a formal description of the underlying graph of this gadget (\ie not the complete distance sub-matrix of the gadget). Due to space constraints, we defer the description of the distance matrix $D$ and the formal proof of correctness for the reduction to the full paper~\cite{fullPaper}.
 
     Given an instance $H$ of \textsc{Multicolored Clique}, we construct an instance $D$ of \deltaExact\ (with infinity entries and no periods) as follows. 
     %To ease the presentation, we first describe the underlying graph $G$ that is implicitly defined by the entries $D_{v,v'}=1$, that is, the pairs of vertices $v,v'$ that should be connected by a temporal path of duration one, meaning that there needs to be an edge connecting the two vertices. Afterwards, we describe the remaining entries of $D$.
@@ -729,9 +743,9 @@ In the following, for every gadget, we give a formal description of the underlyi
 
 
 
-Furthermore, we use \emph{connector gadgets}, two for each edge selection gadget, and two for every verification gadget. They consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and, intuitively, are used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{Yes}-instances much easier. Finally, we have an \emph{alignment gadget}, which is a star with a center vertex $w^\star$ and a leaf for every other gadget. Intuitively, this gadget is used to relate labels of different gadgets to each other. A formal description of these two gadgets is given in the Appendix.
+Furthermore, we use \emph{connector gadgets}, two for each edge selection gadget, and two for every verification gadget. They consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and, intuitively, are used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{Yes}-instances much easier. Finally, we have an \emph{alignment gadget}, which is a star with a center vertex $w^\star$ and a leaf for every other gadget. Intuitively, this gadget is used to relate labels of different gadgets to each other. A formal description of these two gadgets is given in the full paper~\cite{fullPaper}.
 
-This finishes the description of the underlying graph $G$. For an illustration see Figure~3 in the Appendix. We can observe that the vertex set containing
+This finishes the description of the underlying graph $G$. For an illustration see \cref{fig:hardness1}. We can observe that the vertex set containing
 %\begin{itemize}
  %   \item 
     vertices $v_{i,j}^\star$ and $v_{i,j}^{\star\star}$ of each edge selection gadget,
@@ -744,7 +758,7 @@ This finishes the description of the underlying graph $G$. For an illustration s
 %\end{itemize}
 forms a feedback vertex set in $G$ with size $O(k^2)$.
 
-As mentioned before, due to space constraints, we defer the description of the distance matrix $D$ and a formal correctness proof of the reduction to the Appendix.
+As mentioned before, due to space constraints, we defer the description of the distance matrix $D$ and a formal correctness proof of the reduction to the full paper~\cite{fullPaper}.
 \end{proof}
 
 
@@ -892,7 +906,7 @@ To overcome this difficulty, our algorithm follows this high-level strategy:
 \end{itemize}
 
 
-We now present the first part of our FPT algorithm, that is, identifying important vertices and guessing information about the fastest temporal paths. A full description of the algorithm is deferred to the Appendix.
+We now present the first part of our FPT algorithm, that is, identifying important vertices and guessing information about the fastest temporal paths. A full description of the algorithm is deferred to the full paper~\cite{fullPaper}.
 
 \begin{figure}[t]
 	\centering
@@ -968,7 +982,7 @@ For an illustration see \cref{fig:labelingVertices}.
 
 
 \subparagraph{Guesses.} 
-For every pair of important vertices $u,v \in U \cup U^{\ast} \cup Z^{\ast}$, we guess the sequence of edges in the fastest temporal path from $u$ to $v$. Since $U \cup U^{\ast} \cup Z^{\ast}\in O(k^2)$ and there are $k^{O(k)}$ possibilities for a sequence of edges between a fixed vertex pair, we have $k^{O(k^5)}$ overall possible guesses. We  defer further details to the Appendix (see guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-6}}}).
+For every pair of important vertices $u,v \in U \cup U^{\ast} \cup Z^{\ast}$, we guess the sequence of edges in the fastest temporal path from $u$ to $v$. Since $U \cup U^{\ast} \cup Z^{\ast}\in O(k^2)$ and there are $k^{O(k)}$ possibilities for a sequence of edges between a fixed vertex pair, we have $k^{O(k^5)}$ overall possible guesses. We  defer further details to the full paper~\cite{fullPaper} (see guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-6}}}).
 
 \setcounter{guesscounter}{6}
 
@@ -1021,7 +1035,7 @@ We guess the following structures.
 	${v_{p-1} \rightarrow v \leadsto z \rightarrow z_{r-1}}$, and  
 	${v_{p-1} \rightarrow v \leadsto u \rightarrow v_{2}}$.
 	%
-	For an example see Figure~8a in the Appendix.
+	For an example see~\cref{fig:FPT-guessG4}.
 	\item \label{FPT:guess-uToSegmentz2}
 	\textbf{Inner segment guess II}.
 	Let $S_{u,v} = (u=v_1,v_2, \dots, v_p = v)$ be a segment in $G'$,
@@ -1034,7 +1048,7 @@ We guess the following structures.
 	\\
 	For fixed $S_{u,v}$ and $w \in U \cup Z^*$ we have $k^{O(k)}$ different possible such paths, therefore we make $k^{O(k^5)}$ guesses for these paths.
 	%
-	For an example see Figure~8b in the Appendix.
+	For an example see~\cref{fig:FPT-guessG5}.
 	%All together we made $O(k^{k^4}$  new guesses for the structure of all of the above mentioned fastest temporal paths.
 	%Each of the previous partial ILP instances is therefore extended into $O(k^6)$ new ILP instances.
 	\item \label{FPT:guess-splitFromAnotherSegmentAndPaths}
@@ -1089,7 +1103,7 @@ We guess the following structures.
         We repeat this procedure for all pairs of segments. which results in creating $k^{O(k^5)}$ new guesses.
 	\end{enumerate}
 	%
-	For an example see Figure~8c in the Appendix.
+	For an example see~\cref{fig:FPT-guessG5}.
 	\item \label{FPT:guess-splitFromUtoAnotherSegment}
 	\textbf{Split vertex guess II}.
 	Let $w \in U \cup Z^*$ 
@@ -1103,16 +1117,64 @@ We guess the following structures.
 	We repeat this for all vertices in $U \cup Z^*$, and all segments,
 	which produces $k^{O(k^5)}$ new guesses.
 	%
-	For an example see Figure~8d in the Appendix.
-	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to Appendix.
+	For an example see~\cref{fig:FPT-guessG6}.
+	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to the full paper~\cite{fullPaper}.
 	% counter for guesses continues
 	\setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
 %
 
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\resizebox{0.88\linewidth}{!}{
+			\includegraphics{fig-guess1}}
+		\caption{Example of an Inner segment guess I (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}), where we guessed the fastest temporal paths of the form $v_2 \rightarrow u \leadsto w \rightarrow z_2$ (in blue)
+			and $v_2 \rightarrow u \leadsto z \rightarrow z_{r-1}$ (in red).
+			\label{fig:FPT-guessG4}}
+	\end{subfigure}
+	\quad
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\resizebox{0.88\linewidth}{!}{
+			
+			\includegraphics{fig-guess2}}
+		\caption{Example of an Inner segment guess II (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}), where we guessed the fastest temporal paths of the form $w \leadsto u \rightarrow v_2$ (in blue) and $w \leadsto v \rightarrow v_{p-1}$ (in red). 
+			\label{fig:FPT-guessG5}}
+	\end{subfigure}
+	
+	\begin{subfigure}[b]{0.48\textwidth}
+		\vspace{-0.4cm}
+        \centering
+		\resizebox{0.98\linewidth}{!}{
+			%
+			\includegraphics{fig-guess3}}
+		\caption{Example of a Split vertex guess I (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}), where, for a fixed vertex $v_i \in S_{u,v}$,
+			we calculated its corresponding split vertex $z_j \in S_{w,z}$,
+			and guessed the fastest paths of the form
+			$v_i \rightarrow v_{i-1} \rightarrow \cdots \rightarrow u \leadsto z \rightarrow z_{r-1} \cdots \rightarrow z_j$ (in blue) 
+			and $v_i \rightarrow v_{i+1} \rightarrow \cdots \rightarrow v \leadsto w \rightarrow z_2 \rightarrow \cdots \rightarrow z_{j-1}$ (in red). 
+			\label{fig:FPT-guessG6}}
+	\end{subfigure}
+	\quad
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\resizebox{0.88\linewidth}{!}{
+			\includegraphics{fig-guess4}}
+		\caption{Example of a Split vertex guess II (\textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}), where, for a vertex of interest $w$, 
+			we
+			calculated its corresponding split vertex $v_i \in S_{u,v}$,
+			and guessed the fastest paths of the form
+			$w \leadsto u \rightarrow v_2 \rightarrow \cdots \rightarrow v_i$  (in blue) 
+			and $w \leadsto v \rightarrow v_{p-1} \rightarrow \cdots \rightarrow v_{i+1}$ (in red). 
+			\label{fig:FPT-guessG7}}
+	\end{subfigure}
+	\caption{Illustration of the guesses \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}, and \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}.}
+\end{figure}
 
-There are two more guesses \textcolor{lipicsGray}{\textsf{\textbf{G-11}}} and \textcolor{lipicsGray}{\textsf{\textbf{G-12}}} that are deferred to the Appendix. 
-We prove in the Appendix that, for all guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-12}}}, there are in total at most $f(k)$ possible choices, and for each one of them we create an ILP with at most $f(k)$ variables and at most $f(k)\cdot |D|^{O(1)}$ constraints. Each of these ILPs can be solved in FPT time by Lenstra's Theorem~\cite{Lenstra1983Integer}.
+There are two more guesses \textcolor{lipicsGray}{\textsf{\textbf{G-11}}} and \textcolor{lipicsGray}{\textsf{\textbf{G-12}}} that are deferred to the full paper~\cite{fullPaper}. 
+We prove in~\cite{fullPaper} that, for all guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-12}}}, there are in total at most $f(k)$ possible choices, and for each one of them we create an ILP with at most $f(k)$ variables and at most $f(k)\cdot |D|^{O(1)}$ constraints. Each of these ILPs can be solved in FPT time by Lenstra's Theorem~\cite{Lenstra1983Integer}.
 %We create all of the above guesses independently.
 %We start with the first one, that results in $O(k^{k^3})$ different possibilities, then we split each one of these guesses into $O(k^{k^3})$ new ones, that respond to the guessing in the second step, etc.
 %After creating all of the guesses we end up with $f(k)$ different cases (where $f$ is a double exponential) 
@@ -1122,21 +1184,21 @@ We prove in the Appendix that, for all guesses \textcolor{lipicsGray}{\textsf{\t
 %For the labels of edges of the fastest path $P$ we introduce the equality constraint, while for the labels of the edges of all other paths $P'_i$ we introduce the inequality constraint (\ie the duration $d(P_i')$ of any $P'_i$ cannot be smaller than $d(P)=D_{u,v}$).
 %We can do this efficiently, while introducing only a small number of variables,
 %which ensures that each ILP is solved in an FPT-time.
-For detailed explanation and proofs of this part see Appendix.
+For detailed explanation and proofs of this part see~\cite{fullPaper}.
 
 
 \section{Conclusion}\label{sec:conclusion}
 We believe that our work spawns several interesting future research directions and builds a base upon which further temporal graph realization problems can be investigated.
 
 %\subparagraph{Further parameterizations.} 
-There are several structural parameters which can be considered to obtain tractability which are either larger or incomparable to the feedback vertex number. We believe that the \emph{vertex cover number} or the \emph{tree depth} are promising candidates.
+There are several structural parameters which can be considered to obtain tractability which are either larger than or incomparable to the feedback vertex number. We believe that the \emph{vertex cover number} or the \emph{tree depth} are promising candidates.
 Furthermore, we can consider combining a structural parameter such as the \emph{treewidth} with $\Delta$.
 
 %\subparagraph{Further problem variants.}
 There are many natural variants of our problem that are well-motivated and warrant consideration. 
 %In the following, we give two specific examples. 
 We believe that one of the most natural generalizations of our problem is to allow more than one label per edge in every $\Delta$-period. A well-motivated variant (especially from the network design perspective) of our problem would be to consider the entries of the duration matrix $D$ as upper-bounds on the duration of fastest paths rather than exact durations. 
-Our work gives a starting point for many interesting future research directions such as the two mentioned examples.
+%Our work gives a starting point for many interesting future research directions such as the two mentioned examples.
 
 
 
