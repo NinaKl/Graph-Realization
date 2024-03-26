@@ -375,7 +375,7 @@ However, there are notable differences. For example, one important assumption in
 can be that the edge changes are adversarial or random (while obeying some constraints such as connectivity), 
 and therefore they are not necessarily known in advance~\cite{Kuhn2011Dynamic}. 
 
-
+\begin{comment}
 \subparagraph{Problem setting.}
 We would like to point out that the choice of our setting is not unique. There exist different variations of the problem, where each one gives interesting motivation to be considered. We now briefly mention a few of them, together with some of the potential obstacles one could encounter when studying them.
 As we already mentioned, the periodic temporal graphs can also be defined as temporal graphs where each edge $e$ admits a different period $\Delta_e$, or/and where each edge $e$ admits more than one time label per period $\Delta_e$.
@@ -390,6 +390,7 @@ Lastly, the big question is why consider periodic temporal graphs and not simply
 One of the reasons is the fact that a periodic temporal graph is temporally connected whenever its underlying graph is connected, and therefore the input matrix $D$ consists of all finite values (which is also true in the case of realizing ``static'' graphs).
 Building upon this property, a periodic temporal graph with one label per edge is always temporally connected, while the same does not hold for a non-periodic temporal graph.
 Also for the case of non-periodic temporal graphs, some of our results and approaches carry over. For example, the NP-hardness and W[1]-hardness parameterized by the feedback vertex number of the underlying graph can be easily modified for the non-periodic temporal graph setting.
+\end{comment}
 
 
 \subparagraph{Preliminaries and notation.}
@@ -661,7 +662,7 @@ Note that, in contrast to the previous result (\cref{thm:NPhardness}), the reduc
 We give a reduction to a variant of \deltaExact\ where the period $\Delta$ is infinite (that is, the sought temporal graph is not periodic and the labeling function $\lambda : E\rightarrow \mathbb{N}$ maps to the natural numbers) and we allow $D$ to have infinity entries, meaning that the two respective vertices are not temporally connected. 
 Note that, given the matrix $D$, we can easily compute the underlying graph $G$, as follows. Two vertices $v,v'$ are adjacent in $G$ if and only if $D_{v,v'}=1$, as having an edge between $v$ and $v'$ is the only way that there exists a temporal path from $v$ to $v'$ with duration 1. 
 For simplicity of the presentation of the reduction, we describe the underlying graph $G$ (which directly implies the entries of $D$ where $D_{v,v'}=1$) and then we provide the remaining entries of $D$. 
-In the full paper \cite{fullPaper}, we show how to obtain the result for a finite $\Delta$ (by introducing a so-called ``infinity gadget'') and a matrix $D$ of durations of fastest paths which only has finite entries. 
+At the end of the proof, we show how to obtain the result for a finite $\Delta$ (by introducing a so-called ``infinity gadget'') and a matrix $D$ of durations of fastest paths which only has finite entries. 
 
 \begin{figure}%[t]
 \noindent\makebox[\textwidth]{
@@ -691,7 +692,7 @@ Hence, the distances of all verification gadgets can be realized if and only if 
 Furthermore, we use an \emph{alignment gadget} which, intuitively, ensures that the labelings of all gadgets use the same range of time labels. Finally, we use \emph{connector gadgets} which create shortcuts between all vertex pairs that are irrelevant for the functionality of the other gadgets. This allows us to easily fill in the distance matrix with the corresponding values.
 We ensure that all our gadgets have a constant feedback vertex number, hence the overall feedback vertex number is quadratic in the number of colors of the \textsc{Multicolored Clique} instance and we get the parameterized hardness result.
 
-In the following, for every gadget, we give a formal description of the underlying graph of this gadget (\ie not the complete distance sub-matrix of the gadget). Due to space constraints, we defer the description of the distance matrix $D$ and the formal proof of correctness for the reduction to the full paper~\cite{fullPaper}.
+In the following, for every gadget, we give a formal description of the underlying graph of this gadget (\ie not the complete distance sub-matrix of the gadget). Due to space constraints, we defer the description of the distance matrix $D$ and the formal proof of correctness for the reduction to~\cite{fullPaper}.
 
     Given an instance $H$ of \textsc{Multicolored Clique}, we construct an instance $D$ of \deltaExact\ (with infinity entries and no periods) as follows. 
     %To ease the presentation, we first describe the underlying graph $G$ that is implicitly defined by the entries $D_{v,v'}=1$, that is, the pairs of vertices $v,v'$ that should be connected by a temporal path of duration one, meaning that there needs to be an edge connecting the two vertices. Afterwards, we describe the remaining entries of $D$.
@@ -743,7 +744,7 @@ In the following, for every gadget, we give a formal description of the underlyi
 
 
 
-Furthermore, we use \emph{connector gadgets}, two for each edge selection gadget, and two for every verification gadget. They consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and, intuitively, are used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{Yes}-instances much easier. Finally, we have an \emph{alignment gadget}, which is a star with a center vertex $w^\star$ and a leaf for every other gadget. Intuitively, this gadget is used to relate labels of different gadgets to each other. A formal description of these two gadgets is given in the full paper~\cite{fullPaper}.
+Furthermore, we use \emph{connector gadgets}, two for each edge selection gadget, and two for every verification gadget. They consist of six vertices $\hat{v}_0,\hat{v}_0',\hat{v}_1,\hat{v}_2,\hat{v}_3,\hat{v}_3'$ and, intuitively, are used to connect many vertex pairs by fast paths, which will make arguing about possible labelings in \textsc{Yes}-instances much easier. Finally, we have an \emph{alignment gadget}, which is a star with a center vertex $w^\star$ and a leaf for every other gadget. Intuitively, this gadget is used to relate labels of different gadgets to each other. A formal description of these two gadgets is given in~\cite{fullPaper}.
 
 This finishes the description of the underlying graph $G$. For an illustration see \cref{fig:hardness1}. We can observe that the vertex set containing
 %\begin{itemize}
@@ -758,7 +759,38 @@ This finishes the description of the underlying graph $G$. For an illustration s
 %\end{itemize}
 forms a feedback vertex set in $G$ with size $O(k^2)$.
 
-As mentioned before, due to space constraints, we defer the description of the distance matrix $D$ and a formal correctness proof of the reduction to the full paper~\cite{fullPaper}.
+As mentioned before, due to space constraints, we defer the description of the distance matrix $D$ and a formal correctness proof of the reduction to~\cite{fullPaper}.
+
+\emph{Infinity gadget.} Finally, we show how to get rid of the infinity entries in $D$ and how to allow a finite $\Delta$. To this end, we introduce the \emph{infinity gadget}. We add four vertices $z_1, z_2, z_3, z_4$ to the graph and we set $\Delta=n^{11}$. Let $V$ denote the set of all remaining vertices. We set the following durations.
+\begin{itemize}
+    \item For all $v\in V$ we set $d(z_1,v)=2$, $d(z_2,v)=d(v,z_2)=1$, $d(z_3,v)=d(v,z_3)=1$, and $d(z_4,v)=2$.
+    Furthermore, we set $d(v,z_1)=n^{11}$ and $d(v,z_4)=n^{10}-1$.
+    \item We set $d(z_1,z_2)=d(z_2,z_1)=1$, $d(z_2,z_3)=d(z_3,z_2)=1$, and $d(z_3,z_4)=d(z_4,z_3)=1$.
+    \item We set $d(z_1,z_3)=3$, $d(z_3,z_1)=n^{11}-1$, $d(z_2,z_4)=n^{10}-2$, and $d(z_4,z_2)=n^{11}-n^{10}+4$.
+    \item We set $d(z_1,z_4)=n^{10}$ and $d(z_4,z_1)=2n^{11}-n^{10}+2$.
+    \item For every pair of vertices $v,v'\in V$ where previously the duration of a fastest path from $v$ to $v'$ was specified to be infinite, we set $d(v,v')=n^{10}$.
+\end{itemize}
+Now we analyse which implications we get for the labels on the newly introduced edges.
+Assume $\lambda(\{z_1,z_2\})=t$, then we get the following.
+%\begin{itemize}
+    %\item 
+    For all $v\in V$ we have that $d(z_1,v)=2$ and hence we get that $\lambda(\{z_2,v\})=t+1$. 
+    %\item 
+    Since $d(z_1,z_4)=n^{10}$, we have that $\lambda(z_3,z_4)=t+n^{10}-1$.
+    From this follows that for all $v\in V$, since $d(z_4,v)=2$, that $\lambda(\{z_3,v\})=t+n^{10}$.
+    Finally, since $d(z_1,z_3)=3$, we have that $\lambda(\{z_2,z_3\})=t+2$.
+%\end{itemize}
+For an illustration see \cref{fig:hardness2}. It is easy to check that all duration requirements between vertex pairs in $\{z_1,z_2,z_3,z_4\}$ are met and that all duration requirements between each vertex $v\in V$ and each vertex in  $\{z_1,z_2,z_3,z_4\}$ are met. Furthermore, it is easy to check that the gadget increases the feedback vertex set by two ($z_2$ and $z_3$ need to be added).
+
+\begin{figure}[t]
+%\noindent\makebox[\textwidth]{
+\centering
+
+\includegraphics{fig-W1-infinity}
+    \caption{Illustration of the infinity gadget. Gray vertices need to be added to the feedback vertex set.}\label{fig:hardness2}
+\end{figure}
+
+Lastly, consider two vertices $v,v'\in V$. Note that before the addition of the infinity gadget, by construction of $G$ we have that $d(v,v')\le n^9+2$ or $d(v,v')=\infty$. Furthermore, if $D$ is a \textsc{Yes}-instance, we have shown in the correctness proof of the reduction that the difference between the smallest label and the largest label is at most $n^9+1$. This implies that for a vertex pair $v,v'\in V$ with $d(v,v')=\infty$ we have in the periodic case with $\Delta=n^{11}$, that $d(v,v')\ge n^{11}-n^9>n^{10}$. Which means, after adding the vertices and edges of the infinity gadget, we indeed have that $d(v,v')=n^{10}$. For all vertex pairs $v,v'$ where in the original construction we have $d(v,v')\neq\infty$, we can also see that adding the infinity gadget and setting $\Delta=n^{11}$ does not change the duration of a fastest path from $v$ to $v'$, since all newly added temporal paths have duration at least $n^{10}$. We can conclude that the originally constructed instance $D$ is a \textsc{Yes}-instance if and only if it remains a \textsc{Yes}-instance after adding the infinity gadget and setting $\Delta=n^{11}$.
 \end{proof}
 
 
@@ -906,7 +938,7 @@ To overcome this difficulty, our algorithm follows this high-level strategy:
 \end{itemize}
 
 
-We now present the first part of our FPT algorithm, that is, identifying important vertices and guessing information about the fastest temporal paths. A full description of the algorithm is deferred to the full paper~\cite{fullPaper}.
+We now present the first part of our FPT algorithm, that is, identifying important vertices and guessing information about the fastest temporal paths. A full description of the algorithm is deferred to~\cite{fullPaper}.
 
 \begin{figure}[t]
 	\centering
@@ -982,7 +1014,7 @@ For an illustration see \cref{fig:labelingVertices}.
 
 
 \subparagraph{Guesses.} 
-For every pair of important vertices $u,v \in U \cup U^{\ast} \cup Z^{\ast}$, we guess the sequence of edges in the fastest temporal path from $u$ to $v$. Since $U \cup U^{\ast} \cup Z^{\ast}\in O(k^2)$ and there are $k^{O(k)}$ possibilities for a sequence of edges between a fixed vertex pair, we have $k^{O(k^5)}$ overall possible guesses. We  defer further details to the full paper~\cite{fullPaper} (see guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-6}}}).
+For every pair of important vertices $u,v \in U \cup U^{\ast} \cup Z^{\ast}$, we guess the sequence of edges in the fastest temporal path from $u$ to $v$. Since $U \cup U^{\ast} \cup Z^{\ast}\in O(k^2)$ and there are $k^{O(k)}$ possibilities for a sequence of edges between a fixed vertex pair, we have $k^{O(k^5)}$ overall possible guesses. We  defer further details to~\cite{fullPaper} (see guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-6}}}).
 
 \setcounter{guesscounter}{6}
 
@@ -1118,7 +1150,7 @@ We guess the following structures.
 	which produces $k^{O(k^5)}$ new guesses.
 	%
 	For an example see~\cref{fig:FPT-guessG6}.
-	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to the full paper~\cite{fullPaper}.
+	Detailed analysis follows arguing from above (as in \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}) and is deferred to~\cite{fullPaper}.
 	% counter for guesses continues
 	\setcounter{guesscounter}{\value{enumi}}
 \end{enumerate}
@@ -1173,7 +1205,7 @@ We guess the following structures.
 	\caption{Illustration of the guesses \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT-guessFTPamongv2z2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-uToSegmentz2}}}}, \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromAnotherSegmentAndPaths}}}}, and \textcolor{lipicsGray}{\textsf{\textbf{G-\ref{FPT:guess-splitFromUtoAnotherSegment}}}}.}
 \end{figure}
 
-There are two more guesses \textcolor{lipicsGray}{\textsf{\textbf{G-11}}} and \textcolor{lipicsGray}{\textsf{\textbf{G-12}}} that are deferred to the full paper~\cite{fullPaper}. 
+There are two more guesses \textcolor{lipicsGray}{\textsf{\textbf{G-11}}} and \textcolor{lipicsGray}{\textsf{\textbf{G-12}}} that are deferred to~\cite{fullPaper}. 
 We prove in~\cite{fullPaper} that, for all guesses \textcolor{lipicsGray}{\textsf{\textbf{G-1}}} to \textcolor{lipicsGray}{\textsf{\textbf{G-12}}}, there are in total at most $f(k)$ possible choices, and for each one of them we create an ILP with at most $f(k)$ variables and at most $f(k)\cdot |D|^{O(1)}$ constraints. Each of these ILPs can be solved in FPT time by Lenstra's Theorem~\cite{Lenstra1983Integer}.
 %We create all of the above guesses independently.
 %We start with the first one, that results in $O(k^{k^3})$ different possibilities, then we split each one of these guesses into $O(k^{k^3})$ new ones, that respond to the guessing in the second step, etc.
