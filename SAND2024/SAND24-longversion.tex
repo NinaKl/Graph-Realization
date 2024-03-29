@@ -306,12 +306,12 @@ only if a train is scheduled to run on the respective rail segment at time $t$~\
 Similarly, a satellite, which makes pre-determined periodic movements, can establish a communication link (\ie a temporal edge) with another satellite whenever they are sufficiently close to each other; the existence of these communication links is also periodic. 
 In a railway (resp.~satellite) network, a fastest temporal path from $u$ to $v$ represents the fastest railway connection between two stations 
 (resp.~the quickest communication delay between two moving satellites). 
-Furthermore, periodicity appears also in (the otherwise quite complex) social networks which describe the dynamics of people meeting~\cite{snapnets,sapiezynski2015tracking}, as every person individually follows mostly a daily routine~\cite{Arrighi2023Multi}. 
+Furthermore, periodicity appears also in (the otherwise quite complex) social networks which describe the dynamics of people meeting~\cite{snapnets,sapiezynski2015tracking}, as every person individually follows mostly a weekly routine.%~\cite{Arrighi2023Multi}. 
 
 
-Although periodic temporal graphs have already been studied 
+Expanding the work on periodic temporal graphs have already been studied 
 (see~\cite[Class 8]{casteigts2012time} and~\cite{Arrighi2023Multi,ErlebachS20,morawietz2021timecop,morawietz2020timecop}), 
-we make here the first attempt to understand the complexity of a graph realization problem in the context of temporal graphs. 
+our study represents the first attempt to understand the complexity of a graph realization problem in the context of temporal graphs. 
 Therefore, we focus in this paper on the most fundamental case, where all edges have the same period $\Delta$ 
 (while in the more general case, each edge $e$ in the underlying graph has a period $\Delta_e$).
 As it turns out, the periodic temporal graph realization problem with respect to a given $n \times n$ matrix $D$ of the fastest duration times has a very different computational complexity behavior than the classic graph realization problem with respect to shortest path distances in static graphs. 
@@ -3159,7 +3159,7 @@ We showed that our problem is W[1]-hard when parameterized by the feedback verte
 
 We believe that our work spawns several interesting future research directions and builds a base upon which further temporal graph realization problems can be investigated.
 
-\subparagraph{Further parameterizations.} There are several structural parameters which can be considered to obtain tractability which are either larger or incomparable to the feedback vertex number.
+\subparagraph{Further parameterizations.} There are several structural parameters which can be considered to obtain tractability which are either larger than or incomparable to the feedback vertex number.
 \begin{itemize}
     \item The \emph{vertex cover number} measures the distance to an independent set, on which we trivially only have no-instances of our problem. We believe this is a promising parameter to obtain tractability.
     \item The \emph{tree-depth} measures ``star-likeness'' of a graph and is incomparable to both the feedback vertex number and the feedback edge number. We leave the parameterized complexity of our problem with respect to this parameter open.
@@ -3169,7 +3169,7 @@ Furthermore, we can consider combining a structural parameter with $\Delta$. Our
 
 \subparagraph{Further problem variants.}
 There are many natural variants of our problem that are well-motivated and warrant consideration. In the following, we give two specific examples. We believe that one of the most natural generalizations of our problem is to allow more than one label per edge in every $\Delta$-period. A well-motivated variant (especially from the network design perspective) of our problem would be to consider the entries of the duration matrix $D$ as upper-bounds on the duration of fastest paths rather than exact durations. 
-Our work gives a starting point for many interesting future research directions such as the two mentioned examples.
+%Our work gives a starting point for many interesting future research directions such as the two mentioned examples.
 
 \bibliography{bibliography}	
 

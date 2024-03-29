@@ -142,7 +142,7 @@
 
 \author{George B. Mertzios}{Department of Computer Science, Durham University, UK}{george.mertzios@durham.ac.uk}{https://orcid.org/0000-0001-7182-585X}{Supported by the EPSRC grant EP/P020372/1.}
 
-\author{Hendrik~Molter}{Department of Computer Science, Ben-Gurion~University~of~the~Negev, Beer-Sheva, Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant No.~1456/18, and the ERC, grant number 949707.}
+\author{Hendrik~Molter}{Department of Computer Science, Ben-Gurion~University~of~the~Negev, Beer-Sheva, Israel}{molterh@post.bgu.ac.il}{https://orcid.org/0000-0002-4590-798X}{Supported by the ISF, grant nr.~1456/18, and by the European Union's Horizon Europe research and innovation programme under grant agreement 949707.}
 
 \author{Paul G. Spirakis}{Department of Computer Science, University of Liverpool, UK}{p.spirakis@liverpool.ac.uk}{https://orcid.org/0000-0001-5396-3749}{Supported by the EPSRC grant EP/P02002X/1.}
 
@@ -359,7 +359,7 @@ The above results provide a fairly complete picture of the parameterized computa
 Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the full version on arXiv \cite{fullPaper}.
 
 \subparagraph{Related work.} Graph realization problems on static graphs have been studied since the 1960s. We provide an overview of the literature in the introduction. 
-To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. However, many other connectivity-related problems have been studied in the temporal setting~\cite{Mertzios-transitivity21,Akrida-explorer-21,enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22,FuchsleMNR22}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart.
+To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. However, many other connectivity-related problems have been studied in the temporal setting~\cite{Mertzios-transitivity21,Akrida-explorer-21,enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22,FuchsleMNR22,KMZ23}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart.
 
 %There are some problem settings that share similarities with ours, which we discuss now in more detail.
 
@@ -667,7 +667,7 @@ At the end of the proof, we show how to obtain the result for a finite $\Delta$ 
 \begin{figure}%[t]
 \noindent\makebox[\textwidth]{
 \centering
-\includegraphics{fig-W1-reduction}
+\includegraphics{fig-W1-reduction_nolabels}
     }
     \caption{Illustration of part of the underlying graph $G$ and a possible labeling. Edges incident with vertices $\hat{v}_1,\hat{v}_2$ of connector gadgets are omitted. Gray vertices form a feedback vertex set.
     The double line connections, between a vertex $v_{i-1}^j$ in the verification gadget, and $u_1^3$ in the edge selection gadget, 
