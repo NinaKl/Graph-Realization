@@ -1,0 +1,10 @@
+In this paper we initiate the study of the \emph{temporal graph realization} problem with respect to the fastest path durations among its vertices,  while we focus on periodic temporal graphs. 
+Given an $n \times n$ matrix $D$ and a $\Delta \in \mathbb{N}$, the goal is to construct a $\Delta$-periodic temporal graph with $n$ vertices 
+such that the duration of a \emph{fastest path} from $v_i$ to $v_j$ is equal to $D_{i,j}$, or to decide that such a temporal graph does not exist. 
+The variations of the problem on static graphs has been well studied and understood since the 1960's (e.g.\ [Erd\H{o}s and Gallai, 1960], [Hakimi and Yau, 1965]).
+
+As it turns out, the periodic temporal graph realization problem has a very different computational complexity behavior than its static (i.e. non-temporal) counterpart. 
+First we show that the problem is NP-hard in general, but polynomial-time solvable if the so-called underlying graph is a tree.
+Building upon those results, we investigate its parameterized computational complexity with respect to structural parameters of the underlying static graph which measure the ``tree-likeness''. We prove a tight classification between such parameters that allow fixed-parameter tractability (FPT) 
+and those which imply W[1]-hardness. 
+We show that our problem is W[1]-hard when parameterized by the \emph{feedback vertex number} (and therefore also any smaller parameter such as \emph{treewidth}, \emph{degeneracy}, and \emph{cliquewidth}) of the underlying graph, while we show that it is in FPT when parameterized by the \emph{feedback edge number} (and therefore also any larger parameter such as \emph{maximum leaf number}) of the underlying graph.  
