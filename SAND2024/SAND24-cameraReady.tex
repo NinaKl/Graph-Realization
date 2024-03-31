@@ -360,7 +360,11 @@ The above results provide a fairly complete picture of the parameterized computa
 Due to space constraints, proofs of results marked with $\star$ are (partially) deferred to the full version on arXiv \cite{fullPaper}.
 
 \subparagraph{Related work.} Graph realization problems on static graphs have been studied since the 1960s. We provide an overview of the literature in the introduction. 
-To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. However, many other connectivity-related problems have been studied in the temporal setting~\cite{Mertzios-transitivity21,Akrida-explorer-21,enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22,FuchsleMNR22,KMZ23}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart.
+To the best of our knowledge, we are the first to consider graph realization problems in the temporal setting. 
+Very recently, Erlebach et al.~\cite{ErlebachMW-SAND24} have built upon our results and, among others, studied the case where edges might appear more than once in each period. 
+Many other connectivity-related problems have been studied in the temporal setting~\cite{Mertzios-transitivity21,Akrida-explorer-21,enright2021deleting,MolterRZ21,klobas2023interference,deligkas2022optimizing,erlebach2021temporal,Flu+19a,Zsc+19,CasteigtsCS22,FuchsleMNR22,KMZ23}, most of which are much more complex and computationally harder than their non-temporal counterparts, and some of which do not even have a non-temporal counterpart. 
+
+
 
 %There are some problem settings that share similarities with ours, which we discuss now in more detail.
 
@@ -1230,7 +1234,7 @@ Furthermore, we can consider combining a structural parameter such as the \emph{
 %\subparagraph{Further problem variants.}
 There are many natural variants of our problem that are well-motivated and warrant consideration. 
 %In the following, we give two specific examples. 
-We believe that one of the most natural generalizations of our problem is to allow more than one label per edge in every $\Delta$-period. A well-motivated variant (especially from the network design perspective) of our problem would be to consider the entries of the duration matrix $D$ as upper-bounds on the duration of fastest paths rather than exact durations. 
+We believe that one of the most natural generalizations of our problem is to allow more than one label per edge in every $\Delta$-period. A well-motivated variant (especially from the network design perspective) of our problem is to consider the entries of the duration matrix $D$ as upper-bounds on the duration of fastest paths rather than exact durations. This problem variant has very recently been studied by Mertzios et al.~\cite{MMS24}. 
 %Our work gives a starting point for many interesting future research directions such as the two mentioned examples.
 
 
